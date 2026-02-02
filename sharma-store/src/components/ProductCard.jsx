@@ -1,0 +1,135 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ShoppingCart, Zap, Heart } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useWishlist } from '../context/WishlistContext';
+import { usePerformance } from '../hooks/usePerformance';
+import Button from './Button';
+
+const ProductCard = ({ product }) => {
+    const navigate = useNavigate();
+    const { addToCart } = useCart();
+    const { isInWishlist, toggleWishlist } = useWishlist();
+    const isWishlisted = isInWishlist(product.id);
+
+    // Fallback image logic
+    const [imgSrc, setImgSrc] = useState(product.image || product.imageUrl || product.img || 'https://placehold.co/400x400?text=No+Image');
+
+    const { currentUser } = useAuth(); // Import useAuth at top
+
+    const handleAddToCart = (e) => {
+        e.stopPropagation();
+        if (!currentUser) {
+            alert("Please log in to add items to your cart.");
+            navigate('/login');
+            return;
+        }
+        addToCart(product);
+    };
+
+    const handleBuyNow = (e) => {
+        e.stopPropagation();
+        if (!currentUser) {
+            alert("Please log in to proceed with purchase.");
+            navigate('/login');
+            return;
+        }
+        navigate('/checkout', { state: { directBuyProduct: { ...product, quantity: 1 } } });
+    };
+
+    const handleWishlist = (e) => {
+        e.stopPropagation();
+        toggleWishlist(product);
+    };
+
+    const { shouldAnimate } = usePerformance();
+
+    return (
+        <div
+            onClick={() => {
+                if (product?.id) {
+                    navigate(`/product/${product.id}`);
+                } else {
+                    console.error("Product ID missing in ProductCard:", product);
+                }
+            }}
+            className={`group bg-white rounded-3xl overflow-hidden shadow-sm transition-all duration-300 cursor-pointer flex flex-col h-full border border-gray-100 relative gpu-accelerated ${shouldAnimate ? 'hover:shadow-xl hover:shadow-orange-500/10' : ''}`}
+        >
+            {/* Image Area */}
+            <div className="relative aspect-square bg-gray-50 w-full overflow-hidden">
+                <img
+                    src={imgSrc}
+                    alt={product.name}
+                    className={`w-full h-full object-cover transition-transform duration-700 ${shouldAnimate ? 'group-hover:scale-110' : ''}`}
+                    onError={() => setImgSrc('https://placehold.co/400x400?text=No+Image')}
+                />
+
+                {/* Category Label */}
+                <p className="absolute top-4 left-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg">
+                    {product.category || 'Collection'}
+                </p>
+
+                {/* Wishlist Button */}
+                <button
+                    onClick={handleWishlist}
+                    className={`absolute top-4 right-4 p-2 rounded-full backdrop-blur-md transition-all duration-200 ${isWishlisted ? 'bg-red-50 text-red-500' : 'bg-white/60 text-gray-400 hover:bg-white hover:text-red-500'}`}
+                >
+                    <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
+                </button>
+            </div>
+
+            {/* Content Area */}
+            <div className="p-5 flex flex-col flex-grow">
+                {/* Title & Price */}
+                <div className="mb-4">
+                    <h3 className="font-bold text-gray-900 text-lg leading-tight mb-2 truncate group-hover:text-orange-600 transition-colors">
+                        {product.name}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                        <span className="text-gray-900 font-black text-xl">₹{product.price}</span>
+                        {product.originalPrice && <span className="text-gray-400 text-sm line-through font-bold">₹{product.originalPrice}</span>}
+                    </div>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-auto grid grid-cols-[auto_1fr] gap-2">
+                    {/* Add to Cart - Reveal on Desktop Hover */}
+                    <div className="transition-all duration-300 ease-out transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 lg:block hidden">
+                        <Button
+                            variant="secondary"
+                            size="md"
+                            onClick={handleAddToCart}
+                            className="px-0 w-12 !min-w-[48px] !p-0 aspect-square rounded-full flex items-center justify-center bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-none hover:shadow-none"
+                        >
+                            <ShoppingCart size={18} />
+                        </Button>
+                    </div>
+                    {/* Mobile: Always Visible */}
+                    <div className="lg:hidden block">
+                        <Button
+                            variant="secondary"
+                            size="md"
+                            onClick={handleAddToCart}
+                            className="px-0 w-12 !min-w-[48px] !p-0 aspect-square rounded-full flex items-center justify-center bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-none hover:shadow-none"
+                        >
+                            <ShoppingCart size={18} />
+                        </Button>
+                    </div>
+
+                    <Button
+                        variant="primary"
+                        size="md"
+                        onClick={handleBuyNow}
+                        className="w-full rounded-full shadow-lg shadow-orange-500/20 group-hover:shadow-orange-500/40 transition-all"
+                    >
+                        <Zap size={18} className="mr-1" fill="currentColor" />
+                        Buy Now
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProductCard;

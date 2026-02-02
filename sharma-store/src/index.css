@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Outfit', sans-serif;
+  background-color: #f8fafc;
+  /* Slate-50 */
+  background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  color: #1e293b;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Notebook Grid Pattern */
+.notebook-grid {
+  background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+}
+
+/* Glassmorphism Utility */
+.frosted-paper {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+
+.bento-shadow {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+}
+
+/* Tactile Buttons */
+button {
+  /* @apply cursor-pointer active:scale-95 transition-transform duration-100; */
+  cursor: pointer;
+  transition: transform 100ms;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Scrollbar Hiding */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Safe Area Padding */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* --- Z-INDEX SCALE FRAMEWORK --- */
+/* Use these classes or equivalent tailwind values to maintain hierarchy */
+.z-base {
+  z-index: 0;
+}
+
+.z-navbar {
+  z-index: 40;
+}
+
+/* Sticky headers */
+.z-floating {
+  z-index: 50;
+}
+
+/* WhatsApp, ChatBot, Floating Pills */
+.z-modal {
+  z-index: 60;
+}
+
+/* Dialogs, Lightboxes */
+.z-toast {
+  z-index: 70;
+}
+
+/* Notifications */
+.z-highest {
+  z-index: 9999;
+}
+
+/* Critical overlays */
+
+/* --- PERFORMANCE UTILITIES --- */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+
+
+/* Page Transitions */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  /* Standardized Easing */
+  will-change: transform, opacity;
+}
+
+/* Zoom In Animation */
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation: zoomIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Preloader Writing Animation */
+.text-write {
+  stroke: #f97316;
+  /* Brand Orange */
+  stroke-width: 2px;
+  fill: transparent;
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: writeText 3.5s ease-out forwards;
+}
+
+@keyframes writeText {
+  to {
+    stroke-dashoffset: 0;
+    fill: #1e293b;
+  }
+}
+
+.animate-writing {
+  animation: pencilMove 3.5s ease-out forwards;
+}
+
+@keyframes pencilMove {
+  0% {
+    transform: translateX(-150px) translateY(5px) rotate(-10deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    transform: translateX(140px) translateY(-5px) rotate(-10deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(150px) translateY(-10px) rotate(-10deg);
+    opacity: 0;
+  }
+}
+
+/* Breathing Glow Animation */
+@keyframes breathe {
+
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+    transform: scale(1.02);
+  }
+}
+
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+/* Bounce Short for Icons */
+@keyframes bounceShort {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-bounce-short {
+  animation: bounceShort 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
