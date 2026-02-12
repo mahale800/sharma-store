@@ -85,3 +85,4 @@ To access the Admin Panel during development:
 ---
 
 > **Note**: This project is ready for deployment on Vercel, Netlify, or Firebase Hosting. Ensure `.env` variables are set in your deployment provider settings.
+"# sharma-store" 
