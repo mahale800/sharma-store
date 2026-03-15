@@ -21,7 +21,8 @@ const AdminFeedback = () => {
 
     useEffect(() => {
         fetchFeedback();
-    }, [fetchFeedback]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleBatchSentiment = async () => {
         setSentimentLoading(true);

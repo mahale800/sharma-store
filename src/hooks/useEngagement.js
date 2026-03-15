@@ -27,7 +27,7 @@ export const useEngagement = () => {
             // keeping it simple for client-side demo.
             await Promise.all(batch.map(event => addDoc(collection(db, "analytics_events"), event)));
         } catch (error) {
-            console.error("Failed to flush analytics:", error);
+            console.warn("Failed to flush analytics:", error.message);
             // Re-queue failed events (optional, maybe complicated to avoid dupes)
         }
     }, []);
@@ -123,7 +123,7 @@ export const useEngagement = () => {
             return { events, metrics };
 
         } catch (error) {
-            console.error("Error fetching stats:", error);
+            console.warn("Error fetching stats:", error.message);
             return null;
         } finally {
             setLoading(false);

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { usePerformance } from '../../hooks/usePerformance';
 
@@ -36,7 +36,15 @@ const SentimentCharts = ({ feedbackList = [] }) => {
 
     const { shouldAnimate } = usePerformance();
 
+    // Delay chart render by one tick so the container has measured dimensions
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        const t = requestAnimationFrame(() => setMounted(true));
+        return () => cancelAnimationFrame(t);
+    }, []);
+
     if (pieData.length === 0) return null;
+    if (!mounted) return <div className="min-h-[300px]" />;
 
     return (
         <div className={`flex flex-col gap-6 h-full ${shouldAnimate ? 'animate-in fade-in duration-500' : ''}`}>

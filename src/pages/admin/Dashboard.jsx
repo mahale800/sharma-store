@@ -38,7 +38,8 @@ const Dashboard = () => {
             }
         };
         loadData();
-    }, [getFeedback, getEngagementStats]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Generate Insights when both data sources are ready
     const { allowBackgroundTasks } = usePerformance();

@@ -16,7 +16,7 @@ export const useFeedback = () => {
             });
             return true;
         } catch (err) {
-            console.error("Error submitting feedback:", err);
+            console.warn("Error submitting feedback:", err.message);
             setError(err.message);
             return false;
         } finally {
@@ -49,7 +49,7 @@ export const useFeedback = () => {
             const snapshot = await getDocs(q);
             return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         } catch (err) {
-            console.error("Error fetching feedback:", err);
+            console.warn("Error fetching feedback:", err.message);
             setError(err.message);
             return [];
         } finally {
