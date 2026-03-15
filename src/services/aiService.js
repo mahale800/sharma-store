@@ -1,4 +1,4 @@
-console.log("OpenRouter key at runtime:", import.meta.env.VITE_OPENROUTER_API_KEY ? "Present" : "Missing");
+console.debug("OpenRouter key at runtime:", import.meta.env.VITE_OPENROUTER_API_KEY ? "Present" : "Missing");
 
 const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 

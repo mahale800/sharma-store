@@ -54,7 +54,7 @@ const OrderSuccess = () => {
 
     if (!location.state) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="py-20 flex items-center justify-center p-4">
                 <div className="text-center">
                     <h2 className="text-xl font-bold text-gray-900 mb-2">Order Not Found</h2>
                     <p className="text-gray-500">Redirecting to home...</p>
@@ -64,7 +64,7 @@ const OrderSuccess = () => {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+        <div className="py-10 flex flex-col items-center justify-center p-4 text-center bg-transparent">
             <div className="w-32 h-32 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-8 animate-bounce-short shadow-xl shadow-green-100/50">
                 <CheckCircle size={64} strokeWidth={3} />
             </div>

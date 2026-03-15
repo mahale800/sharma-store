@@ -41,7 +41,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,ico,png,svg,html,json}'],
-        navigateFallback: undefined, // Disable navigateFallback for better SPA routing
+        navigateFallback: '/index.html', // Enable navigateFallback for SPA offline routing
         navigateFallbackDenylist: [/^\/api/, /^\/admin\/api/],
         runtimeCaching: [
           {

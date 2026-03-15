@@ -34,7 +34,7 @@ const CheckoutLayout = () => {
     if (isSuccess) return <Outlet />;
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 md:pb-10 pt-safe font-sans">
+        <div className="min-h-screen bg-slate-50 pt-28 md:pt-32 pb-20 md:pb-10 font-sans">
 
             {/* Header */}
             <div className="bg-white border-b border-gray-100 sticky top-0 z-40">

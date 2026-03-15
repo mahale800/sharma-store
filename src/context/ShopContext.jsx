@@ -31,9 +31,21 @@ export const ShopProvider = ({ children }) => {
     // 4. Fetch Data (Once per app load)
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
-            const data = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+            const data = snapshot.docs.map(doc => {
+                const prod = doc.data();
+                return {
+                    name: prod.name || 'Unnamed Product',
+                    price: prod.price || 0,
+                    category: prod.category || 'Uncategorized',
+                    description: prod.description || 'No description available.',
+                    stock: prod.stock || 0,
+                    image: prod.image || prod.imageUrl || 'https://placehold.co/400x400?text=No+Image',
+                    ...prod,
+                    id: doc.id
+                };
+            });
             // Set SOURCE of truth
-            console.log("Fetched Products:", data);
+            // console.debug("Fetched Products:", data);
             setAllProducts(data);
             setLoading(false);
         }, (error) => {

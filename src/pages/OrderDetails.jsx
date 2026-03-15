@@ -49,10 +49,10 @@ const OrderDetails = () => {
         fetchOrder();
     }, [orderId]);
 
-    if (loading) return <div className="min-h-screen pt-32 flex justify-center"><div className="animate-spin w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full"></div></div>;
+    if (loading) return <div className="flex justify-center py-20"><div className="animate-spin w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full"></div></div>;
 
     if (!order) return (
-        <div className="min-h-screen pt-32 text-center px-4">
+        <div className="text-center px-4 py-20">
             <h2 className="text-2xl font-bold text-gray-900">Order Not Found</h2>
             <Link to="/my-orders" className="text-orange-600 font-bold hover:underline mt-4 block">Back to Orders</Link>
         </div>
@@ -64,7 +64,7 @@ const OrderDetails = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20 px-4 md:px-8 print:bg-white print:pt-0 print:pb-0 print:p-0">
+        <div className="bg-gray-50 px-4 md:px-8 print:bg-white print:p-0 w-full">
             <div className="max-w-4xl mx-auto">
 
                 {/* Header Actions (Hidden on Print) */}

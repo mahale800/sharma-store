@@ -16,7 +16,7 @@ const registerServiceWorker = () => {
       }
     },
     onOfflineReady() {
-      console.log('App is ready for offline work.');
+      console.debug('App is ready for offline work.');
     },
     onRegisterError(error) {
       console.error('SW registration failed:', error);

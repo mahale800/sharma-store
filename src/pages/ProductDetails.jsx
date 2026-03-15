@@ -93,7 +93,7 @@ const ProductDetails = () => {
         });
     };
 
-    if (loading) return <div className="min-h-screen bg-white flex items-center justify-center"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
+    if (loading) return <div className="py-20 bg-white flex items-center justify-center"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
 
     if (!product) return (
         <div className="w-full bg-white flex flex-col items-center justify-center p-8 text-center">
