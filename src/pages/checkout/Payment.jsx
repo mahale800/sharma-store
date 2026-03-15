@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { db } from '../../firebase/firebase';
-import { collection, addDoc, doc, updateDoc, increment, arrayUnion } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, increment, arrayUnion, runTransaction, getDoc } from 'firebase/firestore';
 import { ShieldCheck, Loader2, Edit2, MapPin, Banknote, QrCode, Lock, CreditCard, ChevronRight, Wallet, CheckCircle } from 'lucide-react';
 import Button from '../../components/Button';
 import { sendOrderNotification } from '../../services/whatsappService';
@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const Payment = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { currentUser } = useAuth();
     const { cartItems, getCartTotal, clearCart } = useCart();
 
@@ -21,27 +22,43 @@ const Payment = () => {
 
     // State
     const [loading, setLoading] = useState(false);
-    const [processingStep, setProcessingStep] = useState(null); // 'connecting', 'verifying', 'approving'
-    const [paymentMethod, setPaymentMethod] = useState('card'); // card, upi, wallet, cod
-    const [shippingAddress, setShippingAddress] = useState(() => JSON.parse(localStorage.getItem('sharma-shipping-address')));
+    const [processingStep, setProcessingStep] = useState(null);
+    const [paymentMethod, setPaymentMethod] = useState('card');
+    const [shippingAddress, setShippingAddress] = useState(() => {
+        const saved = localStorage.getItem('sharma-shipping-address');
+        return saved ? JSON.parse(saved) : null;
+    });
+    const [error, setError] = useState('');
 
     // Form States
     const [cardData, setCardData] = useState({ number: '', name: '', expiry: '', cvv: '' });
     const [upiId, setUpiId] = useState('');
     const [walletProvider, setWalletProvider] = useState('paytm');
 
-    // Auth & Data Check
+    // Auth & Data Check with enhanced guards
     useEffect(() => {
-        if (!currentUser) { navigate('/login'); return; }
+        if (!currentUser) {
+            navigate('/login', { state: { from: '/checkout' } });
+            return;
+        }
 
-        if (cartItems.length === 0) {
-            navigate('/cart');
+        if (!cartItems || cartItems.length === 0) {
+            navigate('/cart', { replace: true });
             return;
         }
 
         const savedAddr = localStorage.getItem('sharma-shipping-address');
-        if (!savedAddr) navigate('/checkout/address');
-    }, [currentUser, navigate, cartItems]);
+        if (!savedAddr) {
+            navigate('/checkout/address', { replace: true });
+            return;
+        }
+
+        // Validate total amount
+        if (totalAmount <= 0) {
+            navigate('/cart', { replace: true });
+            return;
+        }
+    }, [currentUser, navigate, cartItems, totalAmount]);
 
     // Helpers
     const formatCardNumber = (val) => {
@@ -62,6 +79,9 @@ const Payment = () => {
 
     const processOrder = async () => {
         try {
+            setLoading(true);
+            setProcessingStep('verifying');
+
             // Generate IDs
             const readableOrderId = generateOrderId();
             const transactionId = paymentMethod !== 'cod'
@@ -74,20 +94,54 @@ const Payment = () => {
                 userEmail: currentUser.email || shippingAddress.email,
                 address: shippingAddress,
                 items: orderItems,
-                total: totalAmount,
+                total: parseFloat(totalAmount.toFixed(2)),
                 status: 'Pending',
                 paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : paymentMethod.toUpperCase(),
                 isPaid: paymentMethod !== 'cod',
                 transactionId: transactionId,
                 source: 'Cart Checkout',
-                createdAt: new Date()
+                createdAt: new Date(),
+                customerName: shippingAddress.fullName,
+                phone: shippingAddress.phoneNumber
             };
 
-            const docRef = await addDoc(collection(db, "orders"), orderData);
+            // INVENTORY LOCKING: Use transaction to prevent overselling
+            setProcessingStep('approving');
+            
+            const docRef = await runTransaction(db, async (transaction) => {
+                // Check and update stock for each item
+                for (const item of orderItems) {
+                    const productRef = doc(db, 'products', item.id);
+                    const productDoc = await getDoc(productRef);
+                    
+                    if (!productDoc.exists()) {
+                        throw new Error(`Product ${item.name} not found`);
+                    }
+                    
+                    const productData = productDoc.data();
+                    const currentStock = productData.stock || 0;
+                    const requestedQty = item.quantity || 1;
+                    
+                    if (currentStock < requestedQty) {
+                        throw new Error(`Insufficient stock for ${item.name}. Only ${currentStock} available.`);
+                    }
+                    
+                    // Decrement stock atomically
+                    transaction.update(productRef, {
+                        stock: increment(-requestedQty)
+                    });
+                }
+                
+                // Create order document
+                const newOrderRef = doc(collection(db, 'orders'));
+                transaction.set(newOrderRef, orderData);
+                
+                return newOrderRef;
+            });
 
-            // Award Coins
-            const coinsEarned = Math.floor(totalAmount / 10); // 10% Reward
-            if (coinsEarned > 0) {
+            // Award Coins (10% reward)
+            const coinsEarned = Math.floor(totalAmount / 10);
+            if (coinsEarned > 0 && currentUser) {
                 const userRef = doc(db, 'users', currentUser.uid);
                 const newTx = {
                     id: Date.now(),
@@ -96,16 +150,20 @@ const Payment = () => {
                     type: 'credit',
                     date: new Date().toISOString()
                 };
-                updateDoc(userRef, {
+                await updateDoc(userRef, {
                     coins: increment(coinsEarned),
                     loyaltyHistory: arrayUnion(newTx)
                 }).catch(e => console.error("Coin award failed", e));
             }
 
-            // WhatsApp
-            sendOrderNotification({ ...orderData, id: docRef.id });
+            // Send WhatsApp notification
+            sendOrderNotification({ ...orderData, id: docRef.id }).catch(e => {
+                console.error("WhatsApp notification failed", e);
+            });
 
+            // Clear cart and redirect
             clearCart();
+            localStorage.removeItem('sharma-shipping-address');
 
             navigate('/order-success', {
                 state: {
@@ -114,13 +172,17 @@ const Payment = () => {
                     items: orderItems,
                     total: totalAmount,
                     customerName: shippingAddress.fullName
-                }
+                },
+                replace: true
             });
         } catch (error) {
-            console.error("Order failed", error);
-            alert("Order processing failed. Please try again.");
+            console.error("Order processing failed:", error);
+            setError(error.message || "Order processing failed. Please try again.");
             setLoading(false);
             setProcessingStep(null);
+            
+            // Show error for 5 seconds then clear
+            setTimeout(() => setError(''), 5000);
         }
     };
 
