@@ -1,39 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { doc, getDoc, setDoc, collection, addDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
-import { Save, Loader2, Store, Bell, Phone, MessageSquare } from 'lucide-react';
+import { Save, Loader2, Store, Phone, MessageSquare } from 'lucide-react';
 import Button from '../../components/Button';
-import { seedProducts } from '../../data/seedProducts';
 
 const Settings = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [seedLoading, setSeedLoading] = useState(false);
 
-    // Seed Handler
-    const handleSeed = async () => {
-        // DEBUG: Immediate alert to prove click works
-        alert("DEBUG: Button Clicked! Starting Seed...");
 
-        // if (!confirm("Are you sure? This will add 40 products to your live database.")) return;
-        setSeedLoading(true);
-
-        try {
-            const productsRef = collection(db, "products");
-            let count = 0;
-            for (const product of seedProducts) {
-                await addDoc(productsRef, product);
-                count++;
-            }
-            alert(`Success! Added ${count} products.`);
-            window.location.reload(); // Force reload to show changes
-        } catch (error) {
-            console.error("Seeding failed:", error);
-            alert("Failed to seed data. Check console: " + error.message);
-        } finally {
-            setSeedLoading(false);
-        }
-    };
 
     // Default Settings
     const [config, setConfig] = useState({
@@ -92,37 +67,7 @@ const Settings = () => {
                 <p className="text-sm font-medium text-gray-500">Configure your store preferences.</p>
             </div>
 
-            {/* Developer Zone - SEED DATA (MOVED TO TOP) */}
-            <div className="bg-red-50 p-6 rounded-3xl border-2 border-red-200 shadow-xl mb-8 relative z-[9999]" style={{ isolation: 'isolate' }}>
-                <h2 className="text-lg font-black text-red-600 flex items-center gap-2 mb-4">
-                    <span className="text-2xl">⚠</span> Developer Zone (v2 - FIX)
-                </h2>
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-white rounded-2xl border border-red-100 shadow-sm relative z-[9999]">
-                    <div>
-                        <h3 className="font-bold text-gray-900 text-lg">👇 CLICK THIS BUTTON TO FIX DATA</h3>
-                        <p className="text-sm text-gray-500 font-bold">Adds 40 sample products (10/category).</p>
-                    </div>
 
-                    {/* Raw Text Button just in case */}
-                    <button onClick={() => alert("Raw button works")} className="underline text-red-500 font-bold z-[10000] relative cursor-pointer">
-                        Test Click
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleSeed();
-                        }}
-                        disabled={seedLoading}
-                        style={{ pointerEvents: 'auto', cursor: 'pointer', zIndex: 99999, position: 'relative' }}
-                        className="px-8 py-4 bg-red-600 text-white font-black text-lg rounded-xl shadow-xl hover:bg-red-700 hover:scale-105 transition-all flex items-center gap-2 active:bg-green-500"
-                    >
-                        {seedLoading ? <Loader2 className="animate-spin" /> : <Store size={24} />}
-                        {seedLoading ? "SEEDING DATA..." : "INJECT TEST DATA NOW"}
-                    </button>
-                </div>
-            </div>
 
             <form onSubmit={handleSave} className="frosted-paper p-8 rounded-[2.5rem] border border-white/60 shadow-lg space-y-8">
 
@@ -236,23 +181,6 @@ const Settings = () => {
             </form>
 
 
-            {/* Developer Utils (Discreet) */}
-            <div className="pt-12 pb-4 opacity-40 hover:opacity-100 transition-opacity">
-                <div className="border border-gray-200 rounded-3xl p-6 bg-gray-50/50">
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Advanced Utils</h3>
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-gray-600">Reset & Seed Database</span>
-                        <button
-                            type="button"
-                            onClick={handleSeed}
-                            disabled={seedLoading}
-                            className="text-xs bg-gray-200 hover:bg-red-100 hover:text-red-600 px-3 py-2 rounded-lg font-bold transition-colors"
-                        >
-                            {seedLoading ? "Processing..." : "Inject Test Data"}
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

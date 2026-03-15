@@ -43,7 +43,7 @@ import GlobalErrorBoundary from './components/GlobalErrorBoundary';
 
 import Preloader from './components/Preloader';
 import SplashScreen from './components/common/SplashScreen';
-// import Footer from './components/Footer';
+
 
 // Contexts
 import { AuthProvider } from './context/AuthContext';
@@ -53,7 +53,7 @@ import { ShopProvider } from './context/ShopContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { NotificationProvider } from './context/NotificationContext';
 
-import './App.css';
+
 import { useEngagement } from './hooks/useEngagement';
 
 // Separated Routes Component to use useLocation
