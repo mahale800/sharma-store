@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sharma Store - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f87816",
+                        "background-light": "#f9fafb",
+                        "background-dark": "#101728",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .dot-grid {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .dark .dot-grid {
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+        }
+        .frosted-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .frosted-glass {
+            background: rgba(16, 23, 40, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .bento-card {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .bento-card:hover {
+            transform: translateY(-4px) scale(1.01);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181411] dark:text-gray-100 min-h-screen dot-grid">
+<!-- Floating Island Navbar -->
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[960px] px-4">
+<div class="frosted-glass rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
+<div class="flex items-center gap-3">
+<div class="size-9 bg-primary text-white rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined">auto_stories</span>
+</div>
+<h1 class="text-lg font-extrabold tracking-tight hidden sm:block">Sharma Store</h1>
+</div>
+<div class="flex-1 max-w-md mx-8 hidden md:block">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+<input class="w-full bg-white/50 dark:bg-gray-800/50 border-none rounded-full py-2 pl-10 pr-4 focus:ring-2 focus:ring-primary text-sm" placeholder="Search for magic..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute top-1 right-1 size-2 bg-primary rounded-full"></span>
+</button>
+<button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="max-w-[1100px] mx-auto px-6 pt-32 pb-20">
+<!-- Story Circles Section -->
+<section class="mb-12 overflow-x-auto no-scrollbar">
+<div class="flex items-center gap-8 min-w-max pb-4 px-2">
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="size-16 rounded-full p-1 border-2 border-primary ring-2 ring-white dark:ring-gray-900 bg-white dark:bg-gray-800 shadow-sm transition-transform group-hover:scale-105">
+<div class="size-full rounded-full bg-cover bg-center" data-alt="Close up of colorful pens collection" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRi6DLZcDjA6QCvAombyhOlMTVgAKecMbJeiIaCQxWJvht59XNUyfKlQsGTCNwSUAKjE7iFYbfoIHKt6CadIRuCS86uwZ677Olrf1cnEyw2QMt8srUjA2BGJRs3ZeLwP1_H5K3A5SmQt8XGFE5hfpmlsc1DKS0-QNfzyH1qJG5AbYXiACd8EPiD-QGcoBS0f_KNGagAwCRBJATVu7Dtlhke7qtacPJOg6bvYK9sqM0j0_HEhpBM8vQ7eQK1oJMVakQvK7yQwkLAdY');"></div>
+</div>
+<span class="text-xs font-semibold">Pens</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="size-16 rounded-full p-1 border-2 border-primary/30 ring-2 ring-white dark:ring-gray-900 bg-white dark:bg-gray-800 shadow-sm transition-transform group-hover:scale-105">
+<div class="size-full rounded-full bg-cover bg-center" data-alt="Stacked aesthetic minimalist notebooks" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAWtvgZBbr4IjFMsCA2Zid-yt9g00edM1ezXiDRH9rBbo_VUN3l7DGlxS01yCRn2dupjQTmMYh-npBshkChPePJG8miMF1qLroYwKcDgYx4CYTfisBF_a9oUjussnLFIQVgVzCkBE0gKRZ0BASP4ZpShJzpo0Mi4YAENixykVitvyXrFrSQcKIZwmd5EebuvD0m3IGQd7ujE_b2pPly7nfiDJXPZ5hK8j6IqpduEs27cHkFgSGtN69Bmk-2xpqqsE4kVzQlRTZ0VQ4');"></div>
+</div>
+<span class="text-xs font-semibold">Notebooks</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="size-16 rounded-full p-1 border-2 border-primary/30 ring-2 ring-white dark:ring-gray-900 bg-white dark:bg-gray-800 shadow-sm transition-transform group-hover:scale-105">
+<div class="size-full rounded-full bg-cover bg-center" data-alt="Wooden educational children toys" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAiLCpoqGHiKjJeafzYd3Rf-5RhH-ME7AoQg2vQi1QGK5QO-jQ61idz0l9sQeWgm5n-76FnkoVK4rGIOptkY9bHGhSYHnmhT-I47qNTTrqYNyovSmB0pBmpNATQeebb6Tf9facj07WFj4P99sL40SzumhsjltduZJuXN8VsfTvU9uRSdvmPknnf4E1K6kt_5Jdtq7kBc5zG795wbAOKwfLfvF2wmXd-evrgPYKcm0qHlD2p8vmXLBREYIyOMD3Ybp1TCEmY_5E-Zhk');"></div>
+</div>
+<span class="text-xs font-semibold">Toys</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="size-16 rounded-full p-1 border-2 border-primary/30 ring-2 ring-white dark:ring-gray-900 bg-white dark:bg-gray-800 shadow-sm transition-transform group-hover:scale-105">
+<div class="size-full rounded-full bg-cover bg-center" data-alt="Celebration and party supplies" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCIb82aAc5e7mBraYEfT1pD2RLYNQZNJrhcRqNPTVnI6cr0XLQ1elE3r8-xBS8ayVSW0rX9ZV94XP6_B5rrIKvsxNl4Q1gmu-yLr7qxdmwJTPyb8ZKE5LBeUR4aLmoUmmY7IDZpe8pr3_XEEu02gIwdctr_VQUVAoIj6OKGz8NjpNm1ovATfma1HbO5UBPiax29aSngYFiCL9JxmHoYFMI3FbqUu20B_OrQn6Cs-ZmovkURD76QCo_IwNb9_tnMEwqJMA2isU1B1pM');"></div>
+</div>
+<span class="text-xs font-semibold">Party</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="size-16 rounded-full p-1 border-2 border-primary/30 ring-2 ring-white dark:ring-gray-900 bg-white dark:bg-gray-800 shadow-sm transition-transform group-hover:scale-105">
+<div class="size-full rounded-full bg-cover bg-center" data-alt="Gourmet gift basket arrangement" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDf-_AWeXIxqNthlTP7PzA0_hPWZghs_JivB4XGHgdJe3KbWt9IULUJ15LwOopUvn0wScTDcwrEy5pA2n7vQ3gijEw3q9AWYa61bzS5VsxCMoZfup6Skzpd3MK48CxbqkkBUycJubJcByiF00TdWpMC16qccccAE9hHtWv0VMszMR5PEd8-gwpkbJP6MrqKW1mK_-qcx9cnnZF8fGR2R2C2psSwEKIfbtuSCZd2538T07h2KtSnI8vj3ttjwRAsm1EN48h-JM7ghd8');"></div>
+</div>
+<span class="text-xs font-semibold">Hampers</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="size-16 rounded-full p-1 border-2 border-primary/30 ring-2 ring-white dark:ring-gray-900 bg-white dark:bg-gray-800 shadow-sm transition-transform group-hover:scale-105">
+<div class="size-full rounded-full bg-cover bg-center" data-alt="Artistic abstract kit items" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDr6j_wDykUBDn6iyZLw73bPrKYzNACoyG6WYo8UwlGxzV9PAMBjSe5yspqRJiF2qe-P1oUpYzBfb37aP10ECpDj0xfRHXoL3Z8uVKcesEJ_AjV6m4jonpvj2Pr7_s74HgijPAH9esRDNr2FX9NhRTJUHowlXXTtJjI_7CLyZa_7BVcF4TAhbkx7f3zjMBmp1HB7mLGNY6Qz9SG-yv_vkKkJ0HeT3b_x4b9mTLHWqKBMW2mXuBb79tcxfcXucEQDoomX1_8yS8jkk4');"></div>
+</div>
+<span class="text-xs font-semibold">DIY Kits</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="size-16 rounded-full p-1 border-2 border-primary/30 ring-2 ring-white dark:ring-gray-900 bg-white dark:bg-gray-800 shadow-sm transition-transform group-hover:scale-105">
+<div class="size-full rounded-full bg-cover bg-center" data-alt="Top selling gift items" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB0A6kg02bxfXdgeeNZkJ-rvCbS5XuXtbdp9xCQF5HK9oxS2EdfKyRDUrCkk_UzGQvCwhuqUBBSCMJy2wFuXxL9GBHfHEFwU8BiBSsSc8g3J00e8hRM29_6P5_cW0aTRbvDrEeN1KuZwjWnLNPUZXs9rfc1Kz8kU_Lp5Ps7BQ-pFruUyqrDEeWQEviv7mrUU9rLsJ4F3XrY4hWE3YWxlFTIYL8dVfcCIe7ew-JhPViKG8cZQ5_Kq0mVVdK0b_Q6IAlMD6oyNOxZUQY');"></div>
+</div>
+<span class="text-xs font-semibold">Best Sellers</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Section -->
+<section class="grid grid-cols-1 md:grid-cols-4 grid-rows-none md:grid-rows-2 gap-6 h-auto md:h-[600px]">
+<!-- Large Feature Box (2x2) -->
+<div class="md:col-span-2 md:row-span-2 bento-card relative overflow-hidden rounded-3xl bg-slate-200 group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Premium flat lay stationery kit set" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD70dMhJRxxx1JkcYFU7rveOCn1TMUdPu9KNO0By0DHbA_7S6pPBGK_9UMrFmhdpVV8ZFRwcGUHoyKfir-RqXxhPPwmNJk_t5Ib8fYKop5ipK519sChvTLSi-WtJni2MS_BLGlARs7WQivQmy-urSsFbrW1GI_bQM44yb_3zjtMRgVCGoKk5-3K_ToStxTzZc04OrT9iE3U-d2smA_QpNQ6JOcdq7siaDWcM4_hgz0-0fyRAlRg3TKthKTT-fl_oL8oUct93x5mPTA');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-10 text-white">
+<span class="bg-primary/90 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block">Curated</span>
+<h2 class="text-4xl font-extrabold mb-4 leading-tight">Premium<br/>Stationery Kit</h2>
+<p class="text-lg text-white/80 mb-6 max-w-sm">Everything you need to organize your creativity in one beautiful box.</p>
+<button class="bg-white text-black font-bold px-8 py-3 rounded-xl hover:bg-primary hover:text-white transition-colors flex items-center gap-2">
+                        Explore Collection <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Trendy Toys (1x1) -->
+<div class="md:col-span-1 md:row-span-1 bento-card bg-[#fde047] rounded-3xl p-8 flex flex-col justify-between group">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-4xl text-yellow-800">rocket_launch</span>
+<div class="size-12 bg-white/50 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-yellow-900">add</span>
+</div>
+</div>
+<h3 class="text-2xl font-bold text-yellow-900 leading-tight">Trendy Toys</h3>
+<p class="text-sm text-yellow-800/80 mt-2">Play &amp; Learn with magic</p>
+</div>
+<div class="flex -space-x-3 mt-4">
+<div class="size-10 rounded-full border-2 border-yellow-200 bg-cover bg-center" data-alt="Soft plush toy icon" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCYVilwFvqt4tqoQ0GDjBytvAJ4JBa4bB9k2nNUk6LmocmXdXXuRzxkLBtSIYe7UqOeF4_MOTTviAj88STbLHd8oFBFKFxdIW6wHjsJWnZow4CLevjCTM7L6lblPn0it-2D0raGlTExuFr89IQIeHApZJwhTzNv5nbstaInhXIcb1VMZX1dVqsA7e1tfDMFgzEb9_lcVOwK3pkfepS7mp3whgG1HrAINUd7rROzmmcNmMZE-WlZD5pFI7vW3dgaq8iAjhKdDoIBu04');"></div>
+<div class="size-10 rounded-full border-2 border-yellow-200 bg-cover bg-center" data-alt="Wooden building block icon" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCLx8-IQkay-3tTOubKKce1WNcS-IC5SdjQF6FzDds-Nml3UNmXCltyflmjS9jI0SxFsT_NTeE0NT8qGTI-vusJp1ufHuCqQs_eBzkKDL2SyXxjcRaj_1uudDEKMYsfhjNo0DWhPHuG1lrV7LAwlxssupcV6asDIZ6DTNfndphn6-6-jfC_4NPfREFylaAUgwUtFHkg6seHC4ykmJcolrWWruyAz1YIra5RsghO5R_SAKOvagMXRyNT97tl8kC2cdSGaYz2_pdergM');"></div>
+<div class="flex items-center justify-center size-10 rounded-full border-2 border-yellow-200 bg-white text-[10px] font-bold">+12</div>
+</div>
+</div>
+<!-- Gift Hampers (1x1) -->
+<div class="md:col-span-1 md:row-span-1 bento-card bg-[#ffedd5] rounded-3xl p-8 flex flex-col justify-between group">
+<div class="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity bg-cover bg-center" data-alt="Soft floral gift pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDWgtuFhWYPdcv7oQ8HLNru5BjIwedBeCa3J6-A10iZtNFSsrmM6K2udaxId3bBvKrNRMrJCFga6Q9rDkopKprdS3ejZFf3dRh4DMJ4ht3yei3TrxXmBSD9rhVtsVXPZXJo8XdGeWaCaJhugYCOYuMLBekcABoAwW4v_tC_14C2LEub-JAMn9EVeEW_sKGl0SCYqX9aB9Wwy1yH7GaQdM7HxAffdH0aPo_42JeFFe-snoeqfI5G8L4BlNUrJeKoPDqf_wLiIxF6nVM');"></div>
+<div class="relative z-10">
+<h3 class="text-2xl font-bold text-orange-900 leading-tight">Gift Hampers</h3>
+<p class="text-sm text-orange-800/80 mt-2">Perfectly curated sets</p>
+</div>
+<div class="relative z-10">
+<button class="size-12 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+</div>
+</div>
+<!-- Join the Club (2x1) -->
+<div class="md:col-span-2 md:row-span-1 bento-card bg-[#0f172a] rounded-3xl p-8 flex items-center justify-between overflow-hidden group">
+<div class="max-w-[60%]">
+<h3 class="text-2xl font-bold text-white mb-2">Join the Club</h3>
+<p class="text-slate-400 text-sm mb-6">Get 15% off your first order and exclusive access to new drops.</p>
+<div class="flex gap-2">
+<input class="bg-slate-800 border-none rounded-xl text-white text-sm px-4 py-2 w-full focus:ring-1 focus:ring-primary" placeholder="Your email" type="email"/>
+<button class="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm shrink-0">Sign Up</button>
+</div>
+</div>
+<div class="relative h-full w-32 hidden sm:block">
+<div class="absolute -right-4 top-1/2 -translate-y-1/2 rotate-12 bg-primary/20 p-6 rounded-3xl border border-primary/30">
+<span class="material-symbols-outlined text-6xl text-primary">redeem</span>
+</div>
+</div>
+</div>
+</section>
+<!-- New Arrivals Section Header -->
+<div class="mt-20 flex items-center justify-between px-2">
+<div>
+<h2 class="text-3xl font-bold tracking-tight">New Arrivals</h2>
+<p class="text-gray-500 mt-1">Fresh from our workshop this week</p>
+</div>
+<button class="text-primary font-bold flex items-center gap-1 hover:underline">
+                View All <span class="material-symbols-outlined text-sm">open_in_new</span>
+</button>
+</div>
+<!-- Product Cards Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
+<div class="group cursor-pointer">
+<div class="aspect-[4/5] rounded-3xl bg-gray-100 mb-4 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110" data-alt="Minimalist desktop planner notebook" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkP3cJY8Ev3Nq-e8afehVDw4Er8w4NCDyF_e4NXERgCcREId2wXM0znU1AQc-SeLJhswQtAhPAAtkx3lbxGbnhbwBNTv3NT1XJya-BM2RMhX6pmvBqDN_t14kWA2BXU1CCjeUZhDylP4uUvdBio52Ep4L4sC28SKGr9Yh_TxAMS2ayFI-jnRgygG6QQycinE36UODKWVIPDT1gBrc2aZn3J3wewGmuJXony1uApF_S5hp7isK-V_bowUSdJ-IbdfPc003tcCvj3_g');"></div>
+<button class="absolute top-4 right-4 size-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<h4 class="font-bold text-lg">Dream Planner 2024</h4>
+<p class="text-gray-500 text-sm">$24.00</p>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[4/5] rounded-3xl bg-gray-100 mb-4 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110" data-alt="Set of professional pastel highlighters" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQkSzbjAKRNNuU8_mYEVcWwKuAV1kQ65PvnFmDM0XUZzbCMEh7XELSKf0RtqoG3TzUh-eoth3z3xQ36grFGPJqZhzjTdHUVVElXq0aFYT98vfwIE9VGydAl63zuUf6-yHAFUo_efEI9h79Sqj6yg6BgsAIGkCP5ZCpHG73Z4Ho4cG8yGonjhifs3yIOZyQuosmxUpQa1jUbfyqcabbjEXFnaxu4_1_Td-ucUdcAZimSjG8YS6Mj09UZ_A6RV0asdBP4fRhuuiks0U');"></div>
+<button class="absolute top-4 right-4 size-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<h4 class="font-bold text-lg">Pastel Highlighter Set</h4>
+<p class="text-gray-500 text-sm">$12.50</p>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[4/5] rounded-3xl bg-gray-100 mb-4 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110" data-alt="Wooden animal educational puzzle" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCwvmsESEcYdcsTucO34XvR9ZiE9qp--K52lC8KxA0nRVCQRt1f-9wqRqRk1QX_9OBsFJhC2PNWx1f6A4Kx5qwSuvdmnwlDx9r7HEl1LsdS-3jKEBCCmFScfr82Fi9HFo9sFTTS3aUzUdz5wvVCZWY1a2mNiWF-iDD1gVLHPAbAkwoDhwypt3kJBOqJEd_7VBicwHLpolhYIsw5xtM_MOVrDKQztLHo8EBpVl4tJuyhKhLLiy_ua0UFK9QfoeoucgFVMwRXYH5XFRI');"></div>
+<button class="absolute top-4 right-4 size-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<h4 class="font-bold text-lg">Eco-Wooden Puzzle</h4>
+<p class="text-gray-500 text-sm">$35.00</p>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[4/5] rounded-3xl bg-gray-100 mb-4 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110" data-alt="Premium fountain pen in case" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBV7cB64kIhrnckr1oBHZbFO1ec8-ZBeJX0BSNaxmi-Kv5V5uxRYldxT4Ac-P4eGy7YVptEI0xB0sqpx8K88BBGtrB_pyfygBu-NVRWf5eukbdpYGdnHMvUHb3k5CxHH9MKxQKG-9b8aB_nd933BEr1GkwurCJm3V8Ry23QK9x3pBVGFZ1PHG1FJqj3zNrv_ye2a28yfGITejRjpyj8SKS4x5ihihnb5MIJiGzTzPY41ZUKEFg4SAV_AwDgETqUkO_xphzHFYYsshE');"></div>
+<button class="absolute top-4 right-4 size-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<h4 class="font-bold text-lg">Midnight Fountain Pen</h4>
+<p class="text-gray-500 text-sm">$48.00</p>
+</div>
+</div>
+</main>
+<!-- Simple Footer -->
+<footer class="border-t border-gray-200 dark:border-gray-800 py-12 bg-white dark:bg-gray-900">
+<div class="max-w-[1100px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-3 mb-6">
+<div class="size-8 bg-primary text-white rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">auto_stories</span>
+</div>
+<h2 class="text-lg font-bold">Sharma Store</h2>
+</div>
+<p class="text-gray-500 text-sm">Making everyday magic through paper, pens, and play since 2012.</p>
+</div>
+<div>
+<h5 class="font-bold mb-4">Shop</h5>
+<ul class="text-sm text-gray-500 space-y-2">
+<li><a class="hover:text-primary" href="#">Stationery</a></li>
+<li><a class="hover:text-primary" href="#">Toys &amp; Games</a></li>
+<li><a class="hover:text-primary" href="#">Gifts</a></li>
+<li><a class="hover:text-primary" href="#">New Drops</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold mb-4">Support</h5>
+<ul class="text-sm text-gray-500 space-y-2">
+<li><a class="hover:text-primary" href="#">Shipping Policy</a></li>
+<li><a class="hover:text-primary" href="#">Track Order</a></li>
+<li><a class="hover:text-primary" href="#">Returns</a></li>
+<li><a class="hover:text-primary" href="#">Contact Us</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold mb-4">Follow Us</h5>
+<div class="flex gap-4">
+<a class="size-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">public</span>
+</a>
+<a class="size-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">alternate_email</span>
+</a>
+<a class="size-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">share</span>
+</a>
+</div>
+</div>
+</div>
+<div class="max-w-[1100px] mx-auto px-6 mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 text-center text-xs text-gray-400">
+            © 2024 Sharma Store. All rights reserved. Crafted with care.
+        </div>
+</footer>
+</body></html>

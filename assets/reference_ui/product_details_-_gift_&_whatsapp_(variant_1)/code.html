@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Product Details - Premium Stationery Kit | Sharma Store</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;family=Newsreader:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#317481",
+                        "background-light": "#f8f7f7",
+                        "background-dark": "#1a1a1e",
+                        "accent-gold": "#B89A6A",
+                        "accent-blush": "#E8D9D2",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Newsreader", "serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .dot-grid {
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .dark .dot-grid {
+            background-image: radial-gradient(#374151 1px, transparent 1px);
+        }
+        .frosted-paper {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .dark .frosted-paper {
+            background: rgba(36, 36, 40, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .squircle {
+            border-radius: 1.5rem;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#131616] dark:text-gray-100 min-h-screen dot-grid">
+<div class="relative flex flex-col w-full min-h-screen">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 px-6 lg:px-20 py-4 frosted-paper border-b border-gray-200 dark:border-gray-800">
+<div class="max-w-[1440px] mx-auto flex items-center justify-between">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-1.5 rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl">book_5</span>
+</div>
+<h1 class="text-xl font-extrabold tracking-tight dark:text-white">SHARMA STORE</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Stationery</a>
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Toys</a>
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Gifts</a>
+<a class="text-sm font-semibold hover:text-primary transition-colors text-primary" href="#">New Arrivals</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+<input class="pl-10 pr-4 py-2 bg-white/50 dark:bg-gray-800/50 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/50 w-64" placeholder="Search curated goods..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-white/50 dark:hover:bg-gray-800 rounded-full transition-all">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-accent-blush overflow-hidden border-2 border-white dark:border-gray-700">
+<img class="w-full h-full object-cover" data-alt="User profile avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB95OOXkqO3ND2xmlqoRh0g_LKJ2IARCY_x8yPSb6RastJvUYt20rh6tSKwbdpd-_taUg9HPm7H3C3YDohMZM8ZCvGm20tZMfTAQQN7vrXnGTgGY-jx-0bc_aWFTsNRleUFzeNdhHzWP0suRdxecvW20VayBcKCVii_RUZFG1e9jo8IFFUOG3si9Fc7njxHyh2nTRGhjMTwl5MplgIFn5HNSGQFaHvtvdXqD-vXWCa_7Ts6KXrJy5eM6ZGK_XltwPPBLNgbcfuAOG4"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-[1440px] mx-auto px-6 lg:px-20 py-8 lg:py-12">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 mb-8 text-sm font-medium text-gray-500 dark:text-gray-400">
+<a class="hover:text-primary" href="#">Home</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<a class="hover:text-primary" href="#">Stationery</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-gray-900 dark:text-gray-100">Premium Kits</span>
+</nav>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<!-- Left: Product Showcase -->
+<div class="lg:col-span-7 space-y-6">
+<div class="aspect-[4/5] rounded-xl overflow-hidden shadow-2xl relative bg-white dark:bg-gray-800">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Hero shot of premium stationery kit with leather journal and brass pen" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBHHrBMLGfDe9BNOAm9DtiNOixgZpaHI4MiB0g3qojpmIn5_uA6Da0m8UvKRAUqm9tLzAWJcpsayKJQClI7DLeRSaVf4jd0wi9LZdrhv8L-z72omNs9Nn-B6KHwMOBybDf0Kkyi_Yf0B2qZHSkRr9n7zgP18Pp3UZ7DC1hqYY5O8MEuoBt1kUPNOSndqW6__rNulN2KnF3Kgsao0HQ4EX20dhq0R76xGH3sSIYGVQw_XlFOLMijmGRuM6IVMXaNNgNDLXNLWxuWDVc');"></div>
+<div class="absolute top-6 left-6">
+<span class="px-4 py-1.5 bg-primary text-white text-xs font-bold tracking-widest uppercase rounded-full shadow-lg">Artisan Crafted</span>
+</div>
+</div>
+<!-- Secondary Images -->
+<div class="grid grid-cols-4 gap-4">
+<div class="aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-primary transition-all cursor-pointer bg-white dark:bg-gray-800">
+<img class="w-full h-full object-cover" data-alt="Close up of leather journal texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjsuD7bomGJeyiec9I4gxIClWXFdaAqVv-vKBxDntkUWYXWapOanJwMo0HxdwNUhVRsofDuEA3xCegTGamypSdMGYk_U8ikrbykPi3WG74Po9qs0AhXzksxMYWZpO8a3OZrqZQ5kiDoC6simQoNwBt4kIhpTVwR1cDdqmgXcpg3RRMwNQT4Bsc4VLapgIT6slpPKbmcMztgb5EGafXHcPmkbi1v2gde9F3q-r4In8wabbMtbo5mJ_70_LpjmJd7-w0pcl2AxJfhhg"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-primary transition-all cursor-pointer bg-white dark:bg-gray-800">
+<img class="w-full h-full object-cover" data-alt="Detail of the brass fountain pen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHlNHqX5k5CCyML00_Qp9yqHzuWFWVvvbW3dkBMHHzE69D0jD-uvL-2YJwcoUDXWK2TYYST_7wYL9ufgw2ewN_ntJ-4b5MpBP2QHJ3VWqcx3Gk67XO2QJ6OalZdExNxSLGfjRhCc6J6xkneAb-uTvXRfWu23feP-FRcVP1YqEK9U3l8lSkM_bjzw6jhRhPsTjORuwODIrL4VHJ764aFYzNUfgm62ixuigrdNL6Y_BDRW-seKvqckIqUXUkGUVb-jvzZ1hHSU-whi0"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-primary transition-all cursor-pointer bg-white dark:bg-gray-800">
+<img class="w-full h-full object-cover" data-alt="Handwritten note with the specialty ink" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJUw1dHNcY1RkVrNiJvp5x7Rz14smLEpYR9mxXub2fIPqnB-D8jK2knPzGzcGAlvlsKm8hckB_2YqwDFMjeCgBklQ5Pm1x6gqL5NtsZD6x5C9m0nvrCjrXEvVTxSwA4h1maVoO-oM96UEshazAtvk2bpDjmVOkkpYdVxSJmgFylxvUC3o33AeC7ja1RlpLClaq_ptxEjtRp2v6rY9pXf3BpIEk0o9_m6QmfBswNcvFEFpSebPa0LNqsFBmsw1Lm-AtqCbRXrDrRJY"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden border-2 border-primary bg-white dark:bg-gray-800 relative">
+<img class="w-full h-full object-cover opacity-50" data-alt="Complete gift set components layout" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpis7Iw9sOGXrEG7eBB43dRcIzndKQey0yg7_o7XGrGixWq5guX4bAMK9lviZ5BqmOwZ6PUXkyFgBDGaLfOwWZK0x2s3A9IY-Ijl4pT7LhQW874FBFIlhmGp-Fh2zASCk9OYjcbnJjhysNAWLvgwvpLTk-XSnBzsGvUb9_v4Zz4WGPsRHiGNiNGTuKsnipm7XaiwcQFzGHAU88_eSl5HBoBoxAsLPgbtG_CqwgwcuihAuaFjiwDOxtO1KJDtAZ6SPYWRnM8hNMAo8"/>
+<div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-primary">VIDEO</div>
+</div>
+</div>
+</div>
+<!-- Right: Product Info Card -->
+<div class="lg:col-span-5 space-y-6 lg:sticky lg:top-32">
+<div class="frosted-paper p-8 squircle shadow-xl space-y-8">
+<div>
+<h2 class="font-serif text-4xl lg:text-5xl font-medium leading-tight mb-2">Premium Stationery Kit</h2>
+<div class="flex items-center gap-4">
+<span class="text-2xl font-bold text-gray-900 dark:text-white">$85.00</span>
+<span class="text-sm text-gray-500 line-through">$110.00</span>
+<span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">SAVE 22%</span>
+</div>
+</div>
+<!-- WhatsApp Integration -->
+<div class="flex items-center justify-between p-4 bg-primary/5 dark:bg-primary/20 rounded-xl border border-primary/20 group cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="bg-green-500 p-2 rounded-lg text-white">
+<span class="material-symbols-outlined text-xl">chat</span>
+</div>
+<div>
+<p class="text-sm font-bold">Have questions?</p>
+<p class="text-xs text-gray-600 dark:text-gray-400">Our concierge is online.</p>
+</div>
+</div>
+<button class="bg-white dark:bg-gray-800 px-4 py-2 rounded-lg text-xs font-bold text-primary shadow-sm hover:shadow-md transition-all">
+                                ASK ON WHATSAPP
+                            </button>
+</div>
+<div class="space-y-4">
+<p class="text-gray-600 dark:text-gray-300 leading-relaxed font-light italic font-serif text-lg">
+                                "The ultimate companion for the modern scribe. A marriage of hand-burnished leather, solid brass, and deep indigo pigments."
+                            </p>
+<ul class="grid grid-cols-2 gap-y-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+<li class="flex items-center gap-2"><span class="w-1 h-1 bg-accent-gold rounded-full"></span> Leather Journal (A5)</li>
+<li class="flex items-center gap-2"><span class="w-1 h-1 bg-accent-gold rounded-full"></span> Brass Fountain Pen</li>
+<li class="flex items-center gap-2"><span class="w-1 h-1 bg-accent-gold rounded-full"></span> 30ml Indigo Ink</li>
+<li class="flex items-center gap-2"><span class="w-1 h-1 bg-accent-gold rounded-full"></span> Cotton Dust Bag</li>
+</ul>
+</div>
+<!-- Gift Mode Toggle -->
+<div class="border-t border-b border-gray-100 dark:border-gray-700 py-6 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-gold">featured_seasonal_and_gifts</span>
+<div>
+<p class="font-bold text-sm">Send as a Gift</p>
+<p class="text-xs text-gray-500">Premium wrapping &amp; note</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Gift Mode Preview (Blush Accent) -->
+<div class="bg-accent-blush/30 dark:bg-accent-blush/10 rounded-xl p-4 border border-accent-blush space-y-3">
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-lg bg-white dark:bg-gray-800 shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-accent-gold text-3xl">redeem</span>
+</div>
+<div class="flex-1 space-y-1">
+<p class="text-xs font-bold uppercase tracking-wider text-accent-gold">Gift Package Includes:</p>
+<p class="text-xs text-gray-700 dark:text-gray-300">Mulberry paper wrap, hand-poured wax seal, and a calligraphed card.</p>
+</div>
+</div>
+<button class="w-full py-2 bg-white/50 dark:bg-gray-800/50 rounded-lg text-[10px] font-bold tracking-widest uppercase border border-white/50 dark:border-gray-700">Customize Message</button>
+</div>
+</div>
+<!-- CTA Section -->
+<div class="flex flex-col gap-4">
+<button class="w-full bg-primary text-white py-5 rounded-xl font-bold text-base shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all active:scale-[0.98]">
+                                ADD TO CART - $85.00
+                            </button>
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-green-500">check_circle</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">In Stock</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-accent-gold">verified_user</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">3-Year Warranty</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Trust Badges -->
+<div class="grid grid-cols-3 gap-4 px-4">
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="w-10 h-10 flex items-center justify-center border border-accent-gold/30 rounded-full text-accent-gold">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Free Delivery</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="w-10 h-10 flex items-center justify-center border border-accent-gold/30 rounded-full text-accent-gold">
+<span class="material-symbols-outlined">security</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Secure Pay</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="w-10 h-10 flex items-center justify-center border border-accent-gold/30 rounded-full text-accent-gold">
+<span class="material-symbols-outlined">eco</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Eco-Friendly</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Specs / Footer-like section -->
+<div class="mt-20 border-t border-gray-200 dark:border-gray-800 pt-16">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="space-y-4">
+<h4 class="font-serif italic text-xl">The Journal</h4>
+<p class="text-sm text-gray-500 leading-relaxed">Bound in vegetable-tanned leather from a family-owned tannery in Tuscany. It develops a unique patina with every thought recorded.</p>
+</div>
+<div class="space-y-4">
+<h4 class="font-serif italic text-xl">The Instrument</h4>
+<p class="text-sm text-gray-500 leading-relaxed">Turned from solid brass, the pen’s weight is perfectly balanced for long writing sessions. The iridium-tipped nib ensures a smooth flow.</p>
+</div>
+<div class="space-y-4">
+<h4 class="font-serif italic text-xl">The Commitment</h4>
+<p class="text-sm text-gray-500 leading-relaxed">We believe in objects that last generations. Every component of this kit is designed for longevity and repairability.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating WhatsApp Widget -->
+<div class="fixed bottom-8 right-8 z-[100]">
+<button class="flex items-center gap-3 bg-white dark:bg-gray-800 pl-4 pr-6 py-3 rounded-full shadow-2xl border border-gray-100 dark:border-gray-700 group hover:-translate-y-1 transition-all">
+<div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">
+<span class="material-symbols-outlined">chat</span>
+</div>
+<div class="text-left">
+<p class="text-[10px] font-black tracking-widest text-gray-400 uppercase leading-none mb-1">Instant Help</p>
+<p class="text-xs font-bold text-gray-800 dark:text-white">Ask on WhatsApp</p>
+</div>
+</button>
+</div>
+</div>
+</body></html>

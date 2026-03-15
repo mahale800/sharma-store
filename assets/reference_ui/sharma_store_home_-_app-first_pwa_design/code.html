@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sharma Store - App-First PWA Design</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f87816",
+                        "background-light": "#f9fafb",
+                        "background-dark": "#101728",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "2.5rem", // Super-rounded for PWA feel
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .notebook-grid {
+            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+        }
+        .frosted-paper {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .frosted-paper {
+            background: rgba(16, 23, 40, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .bento-shadow {
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181411] dark:text-gray-100 min-h-screen notebook-grid selection:bg-primary/30">
+<!-- Floating Island Navbar -->
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[1100px]">
+<div class="frosted-paper bento-shadow rounded-xl px-6 py-3 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="text-primary">
+<svg class="size-8" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="text-xl font-extrabold tracking-tight">Sharma.</span>
+</div>
+<div class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-600 dark:text-gray-400">
+<a class="text-primary" href="#">Home</a>
+<a class="hover:text-primary transition-colors" href="#">Shop</a>
+<a class="hover:text-primary transition-colors" href="#">Gift Guide</a>
+<a class="hover:text-primary transition-colors" href="#">Account</a>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<!-- Sharma Coins Balance -->
+<div class="bg-primary/10 text-primary px-4 py-2 rounded-lg flex items-center gap-2 border border-primary/20">
+<span class="material-symbols-outlined text-lg font-bold">payments</span>
+<span class="text-sm font-bold">1,250 Coins</span>
+</div>
+<div class="flex gap-1">
+<button class="size-10 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+<div class="size-10 rounded-lg bg-cover bg-center border-2 border-white dark:border-gray-700 shadow-sm" data-alt="User avatar profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBVANr7Lqq4LgHH3J7btxH5bYp2_rJrs2d52Zz6pLbRMNUX9iIK1TtUXrxxe58IrT3ihHwYh-u7Pto1gZQE5bEf8jKsn4-FYw4v306jrIrMbo9i2rJeq9jax0jd9CafZjtIlv0TV-TK8OE4P7al-bh-VZGr_YpVy0KAqZ9wIkv5ZAFoPCQscpLWa9L2ldW3klOyEduzI13g1EQvFFwKAr--5Lq9XgH45wQjmajtO7k7EdETRnnS36Aukd0xS77ULvB3aoKeCspxn1o");'></div>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content: Bento Grid Layout -->
+<main class="pt-32 pb-24 px-6 md:px-12 max-w-[1300px] mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-6">
+<!-- Hero Bento Card (2x2) -->
+<div class="md:col-span-2 md:row-span-2 frosted-paper rounded-xl overflow-hidden bento-shadow group">
+<div class="relative h-full flex flex-col p-10">
+<div class="relative z-10 flex flex-col justify-center h-full max-w-sm">
+<span class="bg-orange-100 text-primary text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full w-fit mb-4">Limited Release</span>
+<h1 class="text-4xl md:text-5xl font-black leading-tight mb-4 tracking-tighter">New Semester Essentials</h1>
+<p class="text-gray-600 dark:text-gray-400 mb-8 text-lg">Frosted paper textures for the modern creative. Curated for focus and flow.</p>
+<button class="bg-primary text-white font-bold py-4 px-8 rounded-lg w-fit shadow-lg shadow-primary/30 hover:scale-105 transition-transform">
+                            Shop Bundle
+                        </button>
+</div>
+<div class="absolute inset-0 bg-center bg-cover opacity-20 group-hover:scale-110 transition-transform duration-700" data-alt="Soft aesthetic stationary collection bundle" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGV2X_rCC0X5K5sA72QyfXWGP96H4s1-cAk_sqRaABSfgbyOZQ69OXfLL78sJSL8bQG_9TlpK9fT0JUO1SBWEQw7YdxW1pAjjD18iDdoans3rbVR-4qigSlO7TjGUFqDzpelN4hvtRl0xDJSERkAgPHJUjBHgpjpW9E3uIgIoXHFBx3n10UxtNuootknSfRxYoGPGpuk4QyM3SyTMgaTXddFzKucxPmKwz5gYQQz0HgYYXfuh1wtwrfQcL9kd4PD_iGvncNcXRL2I");'></div>
+</div>
+</div>
+<!-- Stats/Balance Bento (1x1) -->
+<div class="frosted-paper rounded-xl p-8 bento-shadow flex flex-col justify-between border-b-4 border-b-primary">
+<div>
+<span class="material-symbols-outlined text-primary text-4xl mb-4">stars</span>
+<h3 class="text-lg font-bold">Loyalty Perk</h3>
+</div>
+<div>
+<p class="text-3xl font-black text-primary">20% OFF</p>
+<p class="text-sm text-gray-500 font-medium">Redeem 500 Coins</p>
+</div>
+</div>
+<!-- Flash Sale Bento (1x1) -->
+<div class="bg-yellow-300 dark:bg-yellow-600 rounded-xl p-8 bento-shadow flex flex-col justify-between overflow-hidden relative">
+<div class="relative z-10">
+<h3 class="text-xl font-black text-black">Flash Sale</h3>
+<p class="text-sm text-black/70 font-bold">Ends in 04:22:10</p>
+</div>
+<div class="relative z-10">
+<p class="text-sm font-bold text-black uppercase">Wooden Toys</p>
+<p class="text-2xl font-black text-black">Up to 40% Off</p>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-black/10 text-9xl">shopping_cart</span>
+</div>
+<!-- Trending Row Header -->
+<div class="md:col-span-2 flex items-center justify-between px-2 pt-4">
+<h2 class="text-2xl font-black tracking-tight">Trending Now</h2>
+<a class="text-sm font-bold text-primary flex items-center gap-1" href="#">View all <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+<!-- Product Cards (1x1 each) -->
+<div class="frosted-paper rounded-xl overflow-hidden bento-shadow group">
+<div class="aspect-square bg-cover bg-center" data-alt="High quality wooden toy block set" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcGQsT0UaxxgN9JOj59LybbcHEijbMlaigedjZQ5SKR8YFKaFB7cUPa9ectiagMKmB0al73LdA34kuSwQaxEZ8SgvbWONfq4ovbMhRuTTfhT-cDm9VmUcBtaVZPe-jDexvMBzQWo4E_llFdDMhV25o7yL8QuU27SRwgr_ITpi6A9mNng5G6k_pVPTvbAgUj0Dz3_nbSnXpU_4H2N4rkqRei7u3UVjGrBI9b2tX6fT7B1mPwuT2rCzbTBoomI_gaF3vWvVYVa-vl5E");'></div>
+<div class="p-4">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Eco-Series</p>
+<h4 class="font-bold truncate">Wooden Toys</h4>
+<div class="flex items-center justify-between mt-2">
+<span class="text-primary font-black">$24.00</span>
+<button class="bg-gray-100 dark:bg-gray-800 size-8 rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="frosted-paper rounded-xl overflow-hidden bento-shadow group">
+<div class="aspect-square bg-cover bg-center" data-alt="Vintage style fountain pen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCB6njdMBqkOj-UVSY54xYu5-akhmV0qdXT8QT5pz3PCbzZ6x5IGz7rnhLorWq8tMq64-y7Ngcl4MIVNWHfGwQlTdnMdqu45D4wSF4XaMOZtoUik7OoDJlcB1JN8DNd25Hi0sVDD_61HlLBjcJiS4sIulKNFaFW0LlEEa7I1JM9VzXPmPAWIa4bqcWGwLkS2SJhkHCexYtKM8pAK7X-Qs05Sc8BuEpxA8ksEfC5v7vch3t-QlH4RDDXehZ8xsdNQXUqxexSZ3qhU9g");'></div>
+<div class="p-4">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Fine Writing</p>
+<h4 class="font-bold truncate">Fountain Pens</h4>
+<div class="flex items-center justify-between mt-2">
+<span class="text-primary font-black">$45.00</span>
+<button class="bg-gray-100 dark:bg-gray-800 size-8 rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="frosted-paper rounded-xl overflow-hidden bento-shadow group">
+<div class="aspect-square bg-cover bg-center" data-alt="Luxury journal notebook set" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAtEskljhB6f6rBeJNqxSyx_Mi9Omowt8oQz-CphLlDpm6wO7yTebMcr57EJ78sEzc41tg1UOT-PRYRuf65XxxyEoZ6--Me1Oweqt_L-VI8LQwc48xArkYMdNv3IxZNcqDjR-ciImxswxCalrUmEo_3JPp4Sc060jApnWhbNUzl62V34mP2FialK1IlpAhYIOOSfljpG63RWQCVvJyMC6R3HO_DVbEIpez-i3X805cXkIWh7FiYelga6oT0QAK1MN0tprk_3Pb4JLU");'></div>
+<div class="p-4">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Paperware</p>
+<h4 class="font-bold truncate">Journal Sets</h4>
+<div class="flex items-center justify-between mt-2">
+<span class="text-primary font-black">$18.90</span>
+<button class="bg-gray-100 dark:bg-gray-800 size-8 rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="frosted-paper rounded-xl overflow-hidden bento-shadow group">
+<div class="aspect-square bg-cover bg-center" data-alt="Handcrafted soft plushie toy" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCL7PyCQ-Km1cYvddFsO3YF0uVHGBj9lW5dnPn6d0WQs6K4oi2OJC7IyJFrZPi0cGV5f_wjC3ehG2v2OxeDOT6H8NL3bY33TSV57YBb6A1n0u0WhKFb4Z83rppj-DS1q9Gp4IKjsJf7hkQ_9ea6a6P68qMt8imQtfb15pIXRtadFWzuP2wvseYeoaYv-QsELBzQ3ACH3m9oHmbfj2ezB2p768FHdAbTObKFO2F3whKWAF2A7_NobgjAccyhG5lfE6VARqFeOtOAmps");'></div>
+<div class="p-4">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Soft Toys</p>
+<h4 class="font-bold truncate">Limited Plushies</h4>
+<div class="flex items-center justify-between mt-2">
+<span class="text-primary font-black">$32.00</span>
+<button class="bg-gray-100 dark:bg-gray-800 size-8 rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Global Stats Section -->
+<div class="mt-20">
+<h2 class="text-2xl font-black tracking-tight mb-8">Sharma Store Community</h2>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<div class="frosted-paper rounded-xl p-8 bento-shadow border border-gray-100 dark:border-gray-800">
+<p class="text-gray-500 font-semibold mb-1">Active Users</p>
+<p class="text-4xl font-black">15k+</p>
+<div class="flex items-center gap-1 text-green-600 mt-2 text-sm font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12% this month</span>
+</div>
+</div>
+<div class="frosted-paper rounded-xl p-8 bento-shadow border border-gray-100 dark:border-gray-800">
+<p class="text-gray-500 font-semibold mb-1">Gifts Sent</p>
+<p class="text-4xl font-black">5.2k</p>
+<div class="flex items-center gap-1 text-green-600 mt-2 text-sm font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+8% this month</span>
+</div>
+</div>
+<div class="frosted-paper rounded-xl p-8 bento-shadow border border-gray-100 dark:border-gray-800">
+<p class="text-gray-500 font-semibold mb-1">Coins Distributed</p>
+<p class="text-4xl font-black">1.2M</p>
+<div class="flex items-center gap-1 text-green-600 mt-2 text-sm font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+20% this month</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- WhatsApp FAB -->
+<div class="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-3 group">
+<div class="frosted-paper px-4 py-2 rounded-lg bento-shadow opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all text-sm font-bold whitespace-nowrap">
+            Chat with us!
+        </div>
+<button class="size-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
+<svg class="size-7" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.539 2.016 2.126-.54c1.029.563 2.025.873 3.162.873 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.766-5.768-5.766zm3.29 8.087c-.147.42-0.713.757-1.21.821-.394.051-.91.082-1.464-.102-.303-.102-.67-.215-1.121-.408-1.921-.821-3.176-2.767-3.272-2.895-.096-.127-.778-.971-.778-1.854s.467-1.315.632-1.472c.165-.157.362-.236.481-.236s.24.011.343.017c.108.006.252-.042.395.275.147.332.502 1.226.546 1.317.044.091.073.197.013.313-.06.117-.089.189-.176.289-.088.1-.184.223-.263.301-.088.088-.18.183-.077.348.103.165.457.712.96 1.157.648.572 1.19.749 1.358.834.168.085.265.071.362-.039.097-.11.417-.457.53-.614.113-.157.227-.131.382-.073.155.058.983.438 1.153.518s.282.12.325.19c.044.07.044.405-.103.825z"></path>
+</svg>
+</button>
+</div>
+</body></html>

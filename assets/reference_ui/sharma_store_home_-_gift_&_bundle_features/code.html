@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sharma Store - Gift &amp; Bundle Builder</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f87816",
+                        "background-light": "#f9fafb",
+                        "background-dark": "#101728",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .notebook-grid {
+            background-color: transparent;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-panel {
+            background: rgba(16, 23, 40, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative">
+<!-- Background Texture -->
+<div class="fixed inset-0 notebook-grid pointer-events-none opacity-40"></div>
+<div class="relative z-10">
+<!-- Floating Island Navbar -->
+<header class="sticky top-4 z-50 px-4 md:px-10 lg:px-40">
+<nav class="glass-panel rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="text-xl font-extrabold tracking-tight">Sharma Store</span>
+</div>
+<div class="hidden md:flex items-center gap-6 text-sm font-semibold">
+<a class="hover:text-primary transition-colors" href="#">Gift Finder</a>
+<a class="hover:text-primary transition-colors" href="#">My Bundles</a>
+<a class="hover:text-primary transition-colors" href="#">New Arrivals</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 rounded-full px-4 py-1.5 border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-slate-400 text-lg">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-32 lg:w-48 placeholder:text-slate-400" placeholder="Search stationery..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="size-10 rounded-full flex items-center justify-center hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<button class="size-10 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden border border-white dark:border-slate-700">
+<img class="w-full h-full object-cover" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8AWuU19QnCVJpqHfznihW0nHs-Lu92vc2_knnlLMgn2nflRfgZ7-X9yARL4ghtH9Gnfw2wNUj1bIkuy75re_LKxBQa07coqASrss2Enf6cGc6RBgtxWUJgYClEQQ5opFx9p9kVBy9voCKi0VQuHPTDf8wU0rWMZ9Zvr7iAzMAdb_bJNvO4lr0QP_X0416znkNP0Gy2S38CRinpOSF_eYMffNBwdr3yxtckAHj7iyC2_UJ0pJYjWGUZKJqGKJ6_DIChtWdZuqLx04"/>
+</button>
+</div>
+</div>
+</nav>
+</header>
+<main class="max-w-[1280px] mx-auto px-4 py-8 space-y-8">
+<!-- Bento Hero Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 min-h-[500px]">
+<!-- Primary Feature Card: Gift Mode -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row">
+<div class="flex-1 p-8 flex flex-col justify-center gap-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider w-fit">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                            Featured
+                        </div>
+<div class="space-y-2">
+<h1 class="text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight">Gift Mode: <span class="text-primary italic">On</span></h1>
+<p class="text-slate-500 dark:text-slate-400 text-lg max-w-md">Find the perfect matches based on age, interests, and creative spirit. Curated by experts.</p>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl w-fit transition-all shadow-lg shadow-primary/20 flex items-center gap-2 text-lg">
+<span>Enter Gift Mode</span>
+<span class="material-symbols-outlined">celebration</span>
+</button>
+</div>
+<div class="flex-1 relative min-h-[300px] md:min-h-0">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Modern desktop with colorful stationery and gifts" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBqLustshOfMDxctv_q4pFMGfcuwOS5umIQLEU4SLC3g_-K8aOtS04lqqBGKYBnFDICCvidUEv5-7mSGVF6GpmsGAIvKT4_Z3R6OzZoMfyLVFyuKgEVfbb3fbxhC4Wi05jyVIAu37wY7Tgy_AEI4EkurSsSU2wng__w7bPn17cN8hqhi5nlvLJJjwEKSUA58Wg3osqiAb65HpHTQb0egieN_TXPhO4sOnK-GusW0jFnm7vhiIOfxTippOBxisZUNIiFq_qQrgMhLOE");'></div>
+<div class="absolute inset-0 bg-gradient-to-r from-white dark:from-slate-900 via-transparent to-transparent md:hidden"></div>
+</div>
+</div>
+<!-- Right Top Card: Bundle & Save -->
+<div class="md:col-span-4 bg-primary/10 dark:bg-primary/5 rounded-xl border border-primary/20 p-8 flex flex-col justify-between overflow-hidden relative group">
+<div class="relative z-10">
+<h3 class="text-2xl font-bold mb-2">Bundle &amp; Save</h3>
+<p class="text-slate-600 dark:text-slate-400">Save up to 25% when you build your custom stationery box.</p>
+</div>
+<div class="mt-6 flex flex-wrap gap-2 relative z-10">
+<span class="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg text-xs font-bold shadow-sm border border-slate-100 dark:border-slate-700">Notebooks</span>
+<span class="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg text-xs font-bold shadow-sm border border-slate-100 dark:border-slate-700">Markers</span>
+<span class="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg text-xs font-bold shadow-sm border border-slate-100 dark:border-slate-700">Organizers</span>
+</div>
+<button class="mt-8 flex items-center gap-2 font-bold text-primary group-hover:gap-4 transition-all relative z-10">
+                        Start Building <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<!-- Abstract Shape Decor -->
+<div class="absolute -bottom-10 -right-10 size-40 bg-primary/20 rounded-full blur-3xl"></div>
+</div>
+</div>
+<!-- Bundle Builder Tool Strip -->
+<section class="glass-panel rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex flex-col gap-1 flex-1">
+<h2 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">auto_fix_high</span>
+                            Build Your School Kit
+                        </h2>
+<div class="flex items-center gap-4 mt-2">
+<div class="flex-1 bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden max-w-xs">
+<div class="bg-primary h-full w-[40%] transition-all duration-1000"></div>
+</div>
+<span class="text-sm font-bold text-primary">2/5 Items Added</span>
+</div>
+<p class="text-sm text-slate-500 mt-1 italic">Add 3 more items to unlock the "Pen-Pal Club" discount!</p>
+</div>
+<div class="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
+<!-- Selection Items -->
+<div class="flex items-center gap-3">
+<div class="size-14 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-2 relative group cursor-pointer hover:border-primary transition-all">
+<img class="w-full h-full object-contain" data-alt="Blue ink fountain pen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZAwKRjK5LJv_dRwqXPr9xJ3G8INOuZsUCUeVBSidHssOIn5fWeF_Rej8oivq2eTnPkWm1bZ6k8qiFSHNBAfGEECJkPuhgW3zPvXLmmN7ja4baOJCTlEHgpg1gmRcNP_JA_-blDFLwIT2reVEn933NMn4jeJ8Vq-FJKRfT7JFrm0yCpG3KlmMIc_9aC2iitH-YQQb4Z7mQmZ3ux7ObLvOdaI_dLUE8O2QPa881t3friOAaG3X_FDKb0T-RKTSktCT8Ya0pnpTb7A8"/>
+<span class="absolute -top-1 -right-1 size-5 bg-primary text-white text-[10px] flex items-center justify-center rounded-full font-bold">1</span>
+</div>
+<div class="size-14 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-2 relative group cursor-pointer hover:border-primary transition-all">
+<img class="w-full h-full object-contain" data-alt="Hardcover grid notebook" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0QokT_7tCE3jq6b8g1OU0R509nOaudaLriRGjNkLJ9A8RaOCmIOe92Qvswu5PUYE4uNT5750B7y7FqhivJk422Yy_0vaqYIy3C_LITeMyEFmaKbslD06tziBXv_Le8OXNW3mvyHcdPdWlX6R5g6Yb4iD7C6UqIqTxb0ut3aE5z-BHET6llkZ8rYexSbOQ8LWTNY9vObe_U69oy1aK2D1YlIRMg3a8ckQUoRVkY38K7W2JFf4mm0TXsHBtaJ-jnC5oJWZy4nNAavk"/>
+<span class="absolute -top-1 -right-1 size-5 bg-primary text-white text-[10px] flex items-center justify-center rounded-full font-bold">1</span>
+</div>
+<div class="size-14 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined">add</span>
+</div>
+<div class="size-14 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<div class="size-14 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">lock</span>
+</div>
+</div>
+<div class="h-10 w-[1px] bg-slate-200 dark:bg-slate-700 mx-2"></div>
+<button class="bg-primary text-white px-6 h-12 rounded-lg font-bold shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all whitespace-nowrap">
+                            Review Bundle
+                        </button>
+</div>
+</div>
+</section>
+<!-- Product Category Grid -->
+<section class="space-y-6">
+<div class="flex items-center justify-between px-2">
+<h2 class="text-2xl font-extrabold tracking-tight">Hand-Picked Collections</h2>
+<a class="text-primary font-bold text-sm flex items-center gap-1 hover:underline" href="#">View All Collections <span class="material-symbols-outlined text-sm">open_in_new</span></a>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Collection 1 -->
+<div class="group relative aspect-[3/4] rounded-xl overflow-hidden bg-white shadow-sm border border-slate-200 dark:border-slate-800 cursor-pointer">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Collection of colorful pastel pens" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8oyeL1NoQr9mzcxMtZP-y2QdfVfCc5QR3KuECwqXflLxq1BuXDh9TEOKVtYVmb_7T2u0-Th59VEP6861OfZsOFMiUd3ys_xRe1lDNFSC8LdZbYoF5Bnaj6TSXguZsh_4v6NJ07bJvx5goZqMrq6v30AUI9s4B6tgMRtoZvMBCfEG97wqZXxfRr8kUnf2uKKc8fTnNJcqeAAM3au-X_D3b1dkeRse1c5yhJvgtdD9arWyll3ikoiYudp3Hm6sEe1pq2RoaRPGb5FY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="text-white text-xs font-bold uppercase tracking-widest mb-1 opacity-80">Writing</p>
+<h3 class="text-white text-xl font-bold">Premium Fineliners</h3>
+<p class="text-white/70 text-sm mt-1">Starting from $12.00</p>
+</div>
+</div>
+<!-- Collection 2 -->
+<div class="group relative aspect-[3/4] rounded-xl overflow-hidden bg-white shadow-sm border border-slate-200 dark:border-slate-800 cursor-pointer">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Stacked aesthetic journals and notebooks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0hquhLe-Yd8HBS01zLi0W4KoLbJF1-TdLG08lQ5WbnWmLYqolbMOHXkdtmflnXQ7FVZUwA0s9wyy0C7Sk_08nJ8S4wYuru5WT-0-tVH9jtfFF35s5OrLmRUzgAbwb6XkVxnMDW728G_mwJNiI-qbAPS-DWSXUK1pfEVQXTAbyp78dEaDyMNUyieH2lxVwxUERoR1fYwNDo7mDoyD5QlGrpLjGYPI2SjXflKAUarjpFy4t7epoApzTrY5_RJAE0H4pvX56claIovA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="text-white text-xs font-bold uppercase tracking-widest mb-1 opacity-80">Paper</p>
+<h3 class="text-white text-xl font-bold">Dreamy Journals</h3>
+<p class="text-white/70 text-sm mt-1">Starting from $18.50</p>
+</div>
+</div>
+<!-- Collection 3 -->
+<div class="group relative aspect-[3/4] rounded-xl overflow-hidden bg-white shadow-sm border border-slate-200 dark:border-slate-800 cursor-pointer">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Wooden educational toy building blocks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzlAyv4Y0IGFYQSymO5wa4lav6cvpn1xDPBN-kSlt9HVs0PZviLmOH0oCuarcOqJB5mGLLVtx1r7fiRkNIEv52NGpX8RqfSA7UuyPoLuS-Ve3TTOm-itv0MIXZxbxxeLnyW9V6nZ4hzRE3-W4Y5vqYsnlUg4I2CxFBlGoUM553AKvDEW__4x4yaBmnEtIs7SaecckO7m7SbC2kbcbyMV_YjhBe01x0UlzKFlaPEORoHpr-ivWRghFJROHyeHxxlPclM8HmWEg_k64"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="text-white text-xs font-bold uppercase tracking-widest mb-1 opacity-80">Play</p>
+<h3 class="text-white text-xl font-bold">Sustainable Toys</h3>
+<p class="text-white/70 text-sm mt-1">Starting from $24.00</p>
+</div>
+</div>
+<!-- Collection 4 -->
+<div class="group relative aspect-[3/4] rounded-xl overflow-hidden bg-white shadow-sm border border-slate-200 dark:border-slate-800 cursor-pointer">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Artistic stickers and washi tapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZvCLtMpYkVGknslXtAK2bcAlzBcl6nPfYi0_UzIwgI-5T9KFxFJIl7m6mTAkNL-SJ_LglraSD2bABs_VPsT_NCJIiwg3G7D83OkE6Z3taM-1DZK8o_FuI6A4081mUfNdQFBxjmqTwedE1RGZG_wSoAESHCPN4TfoHNY0of2RZQGZEUJk7qJmi71wszSzV63le4omDhyF00IMB_WXFW-bqduiwUa4Vm_BgW_iWwMi83mn2uBex0Ly9gSnMeSueial0hd9ETIuTYSs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="text-white text-xs font-bold uppercase tracking-widest mb-1 opacity-80">Decor</p>
+<h3 class="text-white text-xl font-bold">Washi &amp; Stickers</h3>
+<p class="text-white/70 text-sm mt-1">Starting from $4.99</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Newsletter Card -->
+<section class="bg-slate-900 text-white rounded-xl p-8 lg:p-16 relative overflow-hidden flex flex-col items-center text-center gap-6">
+<div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none notebook-grid"></div>
+<div class="relative z-10 space-y-4 max-w-2xl">
+<h2 class="text-3xl lg:text-4xl font-extrabold">Join the Pen-Pal Club</h2>
+<p class="text-slate-400 text-lg">Be the first to know about new arrivals, creative prompts, and exclusive member-only discounts.</p>
+</div>
+<div class="relative z-10 flex flex-col sm:flex-row gap-3 w-full max-w-md">
+<input class="flex-1 rounded-lg bg-white/10 border border-white/20 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-slate-500" placeholder="Email address" type="email"/>
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-lg transition-all">Subscribe</button>
+</div>
+<div class="relative z-10 flex items-center gap-6 mt-4">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500">Curiosity Guaranteed</span>
+<div class="size-1 bg-slate-700 rounded-full"></div>
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500">Secure Payments</span>
+<div class="size-1 bg-slate-700 rounded-full"></div>
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500">Worldwide Shipping</span>
+</div>
+</section>
+</main>
+<footer class="max-w-[1280px] mx-auto px-4 py-12 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 transition-all cursor-pointer">
+<div class="size-6 text-slate-900 dark:text-white">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="text-sm font-bold tracking-tight">Sharma Store © 2024</span>
+</div>
+<div class="flex gap-8 text-sm font-medium text-slate-500">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Shipping Info</a>
+<a class="hover:text-primary transition-colors" href="#">Returns</a>
+<a class="hover:text-primary transition-colors" href="#">Contact Us</a>
+</div>
+<div class="flex gap-4">
+<button class="size-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">alternate_email</span>
+</button>
+<button class="size-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">share</span>
+</button>
+</div>
+</footer>
+</div>
+</body></html>

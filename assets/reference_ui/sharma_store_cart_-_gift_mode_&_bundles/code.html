@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sharma Store - Cart &amp; Bundles</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans & Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0a778a",
+                        "accent-coral": "#FFB39F",
+                        "background-light": "#f9f7f6",
+                        "background-dark": "#1a1a1a",
+                        "frosted-white": "rgba(255, 255, 255, 0.7)",
+                        "frosted-dark": "rgba(30, 30, 30, 0.7)",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f9f7f6;
+            background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+        }
+        .dark body {
+            background-color: #1a1a1a;
+            background-image: radial-gradient(#374151 0.5px, transparent 0.5px);
+        }
+        .frosted-glass {
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .frosted-glass {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .soft-stack-1 { transform: translateY(0px); z-index: 3; }
+        .soft-stack-2 { transform: translateY(-12px); z-index: 2; opacity: 0.95; }
+        .soft-stack-3 { transform: translateY(-24px); z-index: 1; opacity: 0.9; }
+        
+        .custom-checkbox:checked {
+            background-color: #0a778a;
+            background-image: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen font-display text-[#111718] dark:text-[#f0f4f4]">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Floating Pill Navigation -->
+<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+<nav class="frosted-glass bg-white/70 dark:bg-zinc-900/70 h-14 px-6 rounded-full flex items-center justify-between w-full max-w-[960px] shadow-lg border border-white/20">
+<div class="flex items-center gap-3">
+<div class="bg-primary text-white p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-lg leading-none">package_2</span>
+</div>
+<span class="font-extrabold text-lg tracking-tight">Sharma Store</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-semibold text-primary" href="#">Shop</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Stationery</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Toys</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Gifts</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full relative">
+<span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+<span class="absolute top-1 right-1 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">3</span>
+</button>
+<button class="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full">
+<span class="material-symbols-outlined text-[22px]">account_circle</span>
+</button>
+</div>
+</nav>
+</div>
+<!-- Main Content -->
+<main class="pt-32 pb-40 px-4 flex flex-col items-center">
+<div class="w-full max-w-[960px]">
+<!-- Page Heading -->
+<div class="flex flex-wrap items-end justify-between gap-4 mb-8 px-2">
+<div class="flex flex-col gap-1">
+<h1 class="text-4xl font-extrabold tracking-tight">Your Curated Selection</h1>
+<p class="text-zinc-500 dark:text-zinc-400 font-medium">3 premium items ready for delivery</p>
+</div>
+<button class="h-11 px-6 rounded-xl bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm font-bold hover:bg-white dark:hover:bg-zinc-800 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                        Continue Shopping
+                    </button>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Bundle Builder Card -->
+<div class="p-1">
+<div class="frosted-glass bg-white/70 dark:bg-zinc-900/70 p-6 rounded-2xl shadow-sm flex flex-col md:flex-row gap-6 items-center border-l-4 border-l-accent-coral">
+<div class="flex-1 flex flex-col gap-3">
+<div class="flex items-center gap-2 text-accent-coral font-bold text-xs uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+                                    Smart Bundle Applied
+                                </div>
+<h3 class="text-xl font-bold">School Kit Bundle Builder</h3>
+<p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+                                    Great choice! You saved <span class="text-primary font-bold">₹150</span> by bundling 3 notebooks, 1 pencil case, and an eraser set.
+                                </p>
+<button class="mt-2 h-9 px-4 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg text-sm font-bold w-fit transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+                                    Modify Bundle
+                                </button>
+</div>
+<div class="w-full md:w-48 aspect-video md:aspect-square bg-cover bg-center rounded-xl" data-alt="Composition of colorful notebooks and pens" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDardYQ2Cw-U-O8FdzeQtlRJ6rVbgrwx_qzAeRD6Ts08tPCDmBiWvJ6fGwXtFBSQ2WlAUyxw6PJVK69E6KhDd7rbT3X3epjzYv_BJM4jZvuV60Twijb8gFJ4ATLzxM38NxqVrItCfaq9CskkGSQCb0j0b5LA22YFYbtdkscAt-saYYgVRrFSIUFGhXJM9L2fWeVZGNH3SMRSoqvc2smWR_UUcNwZyR5J0fhfeAHGQgQR9EAHX302DJ2YiivQED1nyFhogBCw48AACo');">
+</div>
+</div>
+</div>
+<!-- Soft-Stack Cart Items -->
+<div class="relative pt-4">
+<!-- Item 1 -->
+<div class="soft-stack-1 relative frosted-glass bg-white dark:bg-zinc-900 p-5 rounded-2xl shadow-md flex items-center justify-between gap-4 border border-zinc-100 dark:border-zinc-800">
+<div class="flex items-center gap-5">
+<div class="size-20 bg-cover bg-center rounded-xl shadow-inner border border-zinc-100 dark:border-zinc-800" data-alt="Close up of a charcoal black fountain pen" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAvGS5C8RSPqWOVVgd7m1DzaNZDg5qSU3FgorTL_iqM8ktjfQf5FjHtl_QMqwOoRhiddIlWDbhunJedTcpVBY5nqVh-nJBHIzAHSOiLiN0EJeKc_Xl6fampMODB99B4EykMF1ELfUuvTH-YqRqR3S12TLg9aACIWwneriUwGSYFImJTqsUDuz9l-Fjr42h8B9xI7mEf1Uf-mHzuDopc639Vn6cxACrJfqRsI2IE3cvhUglshBj0JI5YnslRNj6Wks5MfqPsyP6q7aA');"></div>
+<div class="flex flex-col">
+<p class="font-bold text-lg">Lamy Safari Fountain Pen</p>
+<p class="text-zinc-500 dark:text-zinc-400 text-sm">Charcoal Black, Fine Nib</p>
+<p class="font-bold text-primary mt-1">₹2,450</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-3">
+<div class="flex items-center bg-zinc-100 dark:bg-zinc-800 rounded-full p-1 border border-zinc-200 dark:border-zinc-700">
+<button class="size-8 flex items-center justify-center rounded-full hover:bg-white dark:hover:bg-zinc-700 transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<input class="w-10 text-center bg-transparent border-none focus:ring-0 font-bold text-sm" type="number" value="1"/>
+<button class="size-8 flex items-center justify-center rounded-full hover:bg-white dark:hover:bg-zinc-700 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<button class="text-zinc-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+<!-- Item 2 (Bundle) -->
+<div class="soft-stack-2 relative frosted-glass bg-white dark:bg-zinc-900 p-5 rounded-2xl shadow-md flex items-center justify-between gap-4 border border-zinc-100 dark:border-zinc-800">
+<div class="flex items-center gap-5">
+<div class="size-20 bg-cover bg-center rounded-xl shadow-inner border border-zinc-100 dark:border-zinc-800" data-alt="Collection of stationery kit items" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC9OvL59cEwjqvtAzqFLIBJYs7-2bNIbJVusxU5PxzgDlFSHI1MxhZRtpB5wbXM-fPi01d72rQ79Q7zEK6cHWaFXgRKbI1OainRqJpODllBVGkm02fuUKazjdbcwxjCS12hjazNUlNC-coj6mskGeoITWXQYp7BtDGj836wNHOAhGH8rZyEKbEACoIhAeHnVUGx7Q0H2TAXhCNixglN8io_DhOuvBJPVNR2f_CAQBi-AbjD20AeejF68-UG_c50IjUGa8z5sL7wc6k');"></div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<p class="font-bold text-lg">School Kit Bundle</p>
+<span class="bg-accent-coral/20 text-accent-coral text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Bundle</span>
+</div>
+<p class="text-zinc-500 dark:text-zinc-400 text-sm line-clamp-1">3x Notebooks, 1x Case, 1x Eraser Set</p>
+<div class="flex items-center gap-2 mt-1">
+<p class="font-bold text-primary">₹850</p>
+<p class="text-zinc-400 line-through text-xs font-medium">₹1,000</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-3">
+<div class="flex items-center bg-zinc-100 dark:bg-zinc-800 rounded-full p-1 border border-zinc-200 dark:border-zinc-700">
+<button class="size-8 flex items-center justify-center rounded-full hover:bg-white dark:hover:bg-zinc-700 transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<input class="w-10 text-center bg-transparent border-none focus:ring-0 font-bold text-sm" type="number" value="1"/>
+<button class="size-8 flex items-center justify-center rounded-full hover:bg-white dark:hover:bg-zinc-700 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<button class="text-zinc-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Gift Mode Panel -->
+<div class="mt-8">
+<div class="frosted-glass bg-white/40 dark:bg-zinc-900/40 p-6 rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">featured_seasonal_and_gifts</span>
+</div>
+<div>
+<p class="font-bold text-lg">Gift Mode</p>
+<p class="text-zinc-500 dark:text-zinc-400 text-sm">Personalize this order for someone special</p>
+</div>
+</div>
+<!-- Custom Toggle -->
+<label class="inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="relative w-14 h-8 bg-zinc-200 dark:bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-bold ml-1">Gift Note</label>
+<textarea class="w-full rounded-xl border-zinc-200 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 focus:ring-primary focus:border-primary placeholder:text-zinc-400 text-sm p-4" placeholder="Write a heartwarming message here..." rows="3"></textarea>
+</div>
+<label class="flex items-center gap-3 cursor-pointer group w-fit">
+<input checked="" class="custom-checkbox size-5 rounded-md border-zinc-300 dark:border-zinc-600 focus:ring-primary text-primary" type="checkbox"/>
+<div class="flex flex-col">
+<span class="text-sm font-bold group-hover:text-primary transition-colors">Premium Gift Wrap (+₹20)</span>
+<span class="text-xs text-zinc-500">Hand-wrapped in artisanal recycled paper</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Glassmorphism Checkout Card -->
+<div class="fixed bottom-8 left-0 right-0 z-40 px-4 flex justify-center">
+<div class="frosted-glass bg-white/80 dark:bg-zinc-900/80 w-full max-w-[960px] p-6 rounded-3xl shadow-2xl border border-white/40 dark:border-zinc-700/50 flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1 grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">Subtotal</span>
+<span class="font-bold text-lg">₹3,450</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">Bundle Savings</span>
+<span class="font-bold text-accent-coral">-₹150</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">Gift Options</span>
+<span class="font-bold text-zinc-600 dark:text-zinc-300">+₹20</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-widest text-primary font-black mb-1">Grand Total</span>
+<span class="font-black text-2xl text-primary">₹3,320</span>
+</div>
+</div>
+<button class="w-full md:w-auto min-w-[240px] h-14 bg-primary text-white rounded-2xl font-extrabold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group">
+                    Proceed to Checkout
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

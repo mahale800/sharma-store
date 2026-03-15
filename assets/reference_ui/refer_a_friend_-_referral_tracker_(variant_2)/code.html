@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Refer a Friend | Sharma Store</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00899e",
+                        "accent-coral": "#F28C6A",
+                        "background-light": "#f9f7f6",
+                        "background-dark": "#1c1f22",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .notebook-dots {
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .dark .notebook-dots {
+            background-image: radial-gradient(#374151 1px, transparent 1px);
+        }
+        .frosted-paper {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .frosted-paper {
+            background: rgba(28, 31, 34, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .squircle {
+            border-radius: 2rem;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#101718] dark:text-white min-h-screen notebook-dots">
+<!-- Layout Container (Mobile-First focus on Desktop) -->
+<div class="flex flex-col items-center min-h-screen">
+<!-- Navigation Header -->
+<header class="w-full max-w-[480px] px-6 py-6 flex items-center justify-between sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<button class="flex items-center justify-center size-11 rounded-xl bg-white dark:bg-zinc-800 shadow-sm border border-black/5">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Refer &amp; Earn</h1>
+<button class="flex items-center justify-center size-11 rounded-xl bg-white dark:bg-zinc-800 shadow-sm border border-black/5">
+<span class="material-symbols-outlined text-primary">help_outline</span>
+</button>
+</header>
+<main class="w-full max-w-[480px] px-6 pb-12 flex flex-col gap-6">
+<!-- Hero Message -->
+<div class="flex flex-col gap-2 mt-4">
+<p class="text-4xl font-black leading-[1.1] tracking-tight text-primary">
+                    Spread the Love, <br/>
+<span class="text-accent-coral">Get Rewarded.</span>
+</p>
+<p class="text-[#5e878d] dark:text-zinc-400 text-base font-medium">
+                    Invite your inner circle and earn coins for every friend who shops.
+                </p>
+</div>
+<!-- Stats Card -->
+<div class="frosted-paper p-6 rounded-xl shadow-xl shadow-black/[0.03] flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<p class="text-xs font-bold uppercase tracking-widest text-[#5e878d]">Friends Joined</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-black text-primary leading-none">12</span>
+<span class="text-sm font-bold text-green-600 dark:text-green-400">+2 this week</span>
+</div>
+</div>
+<div class="flex flex-col gap-1 text-right">
+<p class="text-xs font-bold uppercase tracking-widest text-[#5e878d]">Total Coins</p>
+<div class="flex items-baseline justify-end gap-2">
+<span class="text-3xl font-black text-primary leading-none">1,200</span>
+</div>
+</div>
+</div>
+<!-- Progress Tracker -->
+<div class="flex flex-col gap-3 pt-4 border-t border-black/5 dark:border-white/5">
+<div class="flex justify-between items-end">
+<p class="text-sm font-bold">Gold Tier Progress</p>
+<p class="text-xs font-bold text-primary">60% Complete</p>
+</div>
+<div class="h-3 w-full bg-primary/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[60%]" style="box-shadow: 0 0 12px rgba(0,137,158,0.4)"></div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-coral text-lg">card_membership</span>
+<p class="text-xs font-medium text-[#5e878d] dark:text-zinc-400">Invite 3 more friends to unlock Gold benefits</p>
+</div>
+</div>
+</div>
+<!-- Referral Link Card -->
+<div class="frosted-paper p-5 rounded-xl shadow-lg border-2 border-primary/20 flex items-center justify-between group hover:border-primary transition-all cursor-pointer">
+<div class="flex flex-col gap-1">
+<p class="text-[10px] font-black uppercase tracking-widest text-primary/60">Your Referral Code</p>
+<p class="text-lg font-black tracking-widest text-[#101718] dark:text-white">SHARMA-FRIEND-2024</p>
+<p class="text-[11px] font-medium text-[#5e878d]">Tap to copy link</p>
+</div>
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined">content_copy</span>
+</div>
+</div>
+<!-- CTA Primary: WhatsApp -->
+<button class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white h-16 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-[#25D366]/20 transition-all active:scale-[0.98] group">
+<svg class="size-7 fill-current" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.659 1.437 5.634 1.437h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path>
+</svg>
+<span class="text-lg font-bold">Invite via WhatsApp</span>
+</button>
+<!-- Secondary CTA Options -->
+<div class="flex gap-4">
+<button class="flex-1 h-12 rounded-xl bg-white dark:bg-zinc-800 border border-black/5 dark:border-white/5 font-bold text-sm shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">share</span>
+                    Other Options
+                </button>
+<button class="flex-1 h-12 rounded-xl bg-white dark:bg-zinc-800 border border-black/5 dark:border-white/5 font-bold text-sm shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">list_alt</span>
+                    Rewards History
+                </button>
+</div>
+<!-- How It Works Section -->
+<div class="mt-4 flex flex-col gap-6">
+<h3 class="font-black text-xl tracking-tight">How it works</h3>
+<div class="grid grid-cols-1 gap-4">
+<!-- Step 1 -->
+<div class="flex items-start gap-4">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">send</span>
+</div>
+<div class="flex flex-col">
+<p class="font-bold text-sm">1. Share your link</p>
+<p class="text-xs text-[#5e878d] leading-relaxed">Send your unique code to friends and family through any social app.</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex items-start gap-4">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</div>
+<div class="flex flex-col">
+<p class="font-bold text-sm">2. They place an order</p>
+<p class="text-xs text-[#5e878d] leading-relaxed">When they use your link and make their first purchase of $20+.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex items-start gap-4">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">celebration</span>
+</div>
+<div class="flex flex-col">
+<p class="font-bold text-sm">3. You both get 100 Coins</p>
+<p class="text-xs text-[#5e878d] leading-relaxed">Coins are automatically added to both accounts as soon as order ships.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer T&C -->
+<div class="mt-8 text-center px-4">
+<p class="text-[11px] text-[#5e878d] leading-relaxed">
+                    By sharing your link, you agree to Sharma Store's <a class="underline font-bold text-primary" href="#">Referral Terms &amp; Conditions</a>. 
+                    Coins expire 12 months from the date of issuance.
+                </p>
+</div>
+<!-- Floating Decorative Element (Abstract) -->
+<div class="fixed -bottom-16 -right-16 size-48 bg-primary/5 rounded-full blur-3xl -z-10"></div>
+<div class="fixed -top-16 -left-16 size-64 bg-accent-coral/5 rounded-full blur-3xl -z-10"></div>
+</main>
+</div>
+</body></html>

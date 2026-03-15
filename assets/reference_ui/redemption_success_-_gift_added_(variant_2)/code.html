@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#17cfcf",
+                        "background-light": "#fafafa",
+                        "background-dark": "#22262a",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .frosted-paper {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .dark .frosted-paper {
+            background: rgba(34, 38, 42, 0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .squircle {
+            border-radius: 2.5rem;
+        }
+        .confetti-slow {
+            animation: bounce 3s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111818] dark:text-white transition-colors duration-300">
+<!-- Mock Background Content (The Store) -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f4f4] px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-[#111818] dark:text-white">
+<div class="size-4">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold">Sharma Store</h2>
+</div>
+</div>
+</header>
+<div class="p-10 grid grid-cols-3 gap-6">
+<div class="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+<div class="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+<div class="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+<div class="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+<div class="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+<div class="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/5 dark:bg-black/20 backdrop-blur-sm">
+<!-- Redemption Success Modal -->
+<div class="frosted-paper squircle w-full max-w-[500px] shadow-2xl overflow-hidden relative border">
+<!-- Decorative Elements (Confetti/Sparkles) -->
+<div class="absolute inset-0 pointer-events-none">
+<div class="absolute top-12 left-12 text-[#FFD700] opacity-60 confetti-slow">
+<span class="material-symbols-outlined text-3xl">auto_awesome</span>
+</div>
+<div class="absolute top-24 right-16 text-[#FF69B4] opacity-50 confetti-slow" style="animation-delay: 0.5s;">
+<span class="material-symbols-outlined text-2xl">star</span>
+</div>
+<div class="absolute bottom-32 left-20 text-primary opacity-40 confetti-slow" style="animation-delay: 1.2s;">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</div>
+<div class="absolute bottom-40 right-24 text-[#FFD700] opacity-50 confetti-slow" style="animation-delay: 0.8s;">
+<span class="material-symbols-outlined text-3xl">colors_spark</span>
+</div>
+</div>
+<!-- Close Button -->
+<button class="absolute top-6 right-6 text-[#111818]/40 dark:text-white/40 hover:text-[#111818] dark:hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+<!-- Main Content Container -->
+<div class="p-10 flex flex-col items-center text-center">
+<!-- Hero Image / Illustration -->
+<div class="relative w-full max-w-[280px] aspect-square mb-8">
+<!-- Glow effect -->
+<div class="absolute inset-0 bg-primary/20 blur-[60px] rounded-full"></div>
+<!-- The Gift Illustration (Sticker Pack) -->
+<div class="relative z-10 w-full h-full flex items-center justify-center">
+<div class="w-full h-full bg-center bg-no-repeat bg-contain transform hover:scale-105 transition-transform duration-500" data-alt="Illustration of a colorful sticker pack with holographic details" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQf_4hoPR-3IV1DReV9Jm89FDUKgIIAbOrIDIfvWiMbfo6NOLR2kljQxNJmVILXXmxE_DrWv6LsqHmW0-tBgNqQMleHcsT3hAUxGFXol2s4BbLNBz1GpdSghqnSfhat1rpQp434Emo6wpYLZq6AGK1kee003A4KGBBgr86dK72Y3L-FFsgcyu2SIeB9lw1krmLOrXjHj8g8Jy1bweMSYLDGpQNd1puSjvB3goulCu9BtE9KZBSPoP_-e1-Cg5-mJuzmJo41AmyWWg");'>
+</div>
+</div>
+</div>
+<!-- Text Content -->
+<div class="space-y-3 z-10">
+<h1 class="text-[#111818] dark:text-white text-[36px] font-extrabold leading-tight tracking-tight">
+                        It's Yours!
+                    </h1>
+<p class="text-[#111818]/70 dark:text-white/70 text-lg font-medium leading-relaxed max-w-[320px] mx-auto">
+                        Your free Sticker Pack has been successfully redeemed and added to your next order.
+                    </p>
+</div>
+<!-- Actions -->
+<div class="mt-10 w-full flex flex-col items-center gap-5 z-10">
+<button class="w-full bg-primary text-white py-4 px-8 rounded-xl font-bold text-lg shadow-lg shadow-primary/30 hover:shadow-primary/40 active:scale-95 transition-all">
+                        View My Rewards
+                    </button>
+<a class="text-primary font-bold hover:underline underline-offset-4 decoration-2 transition-all" href="#">
+                        Back to Store
+                    </a>
+</div>
+<!-- Mini Status Badge -->
+<div class="mt-8 flex items-center gap-2 px-4 py-2 bg-primary/10 dark:bg-primary/20 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-primary text-sm">local_shipping</span>
+<span class="text-primary text-xs font-bold uppercase tracking-widest">Ships with next order</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Refer a Friend - Sharma Store</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#f47b25",
+            "background-light": "#f8f7f5",
+            "background-dark": "#221710",
+            "accent-teal": "#93D6CC",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    .dot-grid {
+      background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .dark .dot-grid {
+      background-image: radial-gradient(#3d2b21 1px, transparent 1px);
+    }
+    .frosted-paper {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    .dark .frosted-paper {
+      background: rgba(34, 23, 16, 0.8);
+      border: 1px solid rgba(244, 123, 37, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen dot-grid transition-colors duration-300">
+<!-- Floating Navigation Pill -->
+<div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[800px]">
+<nav class="frosted-paper rounded-full px-6 py-3 flex items-center justify-between shadow-lg shadow-black/5">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary text-white rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">card_giftcard</span>
+</div>
+<span class="text-[#181411] dark:text-white font-bold text-lg tracking-tight">Sharma Store</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-semibold text-[#181411] dark:text-white/80 hover:text-primary transition-colors" href="#">Stationery</a>
+<a class="text-sm font-semibold text-[#181411] dark:text-white/80 hover:text-primary transition-colors" href="#">Toys</a>
+<a class="text-sm font-semibold text-[#181411] dark:text-white/80 hover:text-primary transition-colors" href="#">Gifts</a>
+</div>
+<div class="flex items-center gap-3">
+<button class="size-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-[#181411] dark:text-white">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border border-primary/20">
+<img class="w-full h-full object-cover" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIe6t-HufFvBcs69HxHL5W3qzbNIEV6gE-xJPncLpjtf9AhQe1IAz0sNBf-0ja8jDizoyTDXlzHq2QxQPkVSJv2uvVIE48Tj2gAwFcXJyN1oifVTRmKzIQ81D8-tTgwHiJhxK2xP7dnV8n_WW30JVV0mBTJVNJWpdh_kfg-CyOjxgqWJ7AqU90kZ8coqO5J3A_-6FTuZ6VSSyB920_QUCG_QQneYUZ1o0tbfbmWWq5nQZeweJotyFtP9ohbthnVQSVhwWXGo8CN7U"/>
+</div>
+</div>
+</nav>
+</div>
+<main class="pt-32 pb-16 px-4 flex flex-col items-center">
+<!-- Hero Illustration Section -->
+<div class="max-w-[600px] w-full mb-8 text-center">
+<div class="relative h-48 w-full flex items-center justify-center mb-6">
+<!-- Abstract "Friends Sharing Gift" Illustration placeholder with shapes -->
+<div class="absolute inset-0 flex items-center justify-center opacity-80">
+<div class="w-32 h-32 bg-accent-teal rounded-full blur-2xl translate-x-12 translate-y-4"></div>
+<div class="w-40 h-40 bg-primary/20 rounded-full blur-3xl -translate-x-12 -translate-y-4"></div>
+</div>
+<div class="relative z-10 flex items-end gap-2">
+<div class="w-16 h-24 bg-primary rounded-t-full border-4 border-white dark:border-background-dark shadow-xl"></div>
+<div class="w-20 h-20 bg-accent-teal rounded-xl shadow-lg flex items-center justify-center -mb-2 border-4 border-white dark:border-background-dark">
+<span class="material-symbols-outlined text-white text-4xl">redeem</span>
+</div>
+<div class="w-16 h-32 bg-orange-300 rounded-t-full border-4 border-white dark:border-background-dark shadow-xl"></div>
+</div>
+</div>
+<h1 class="text-4xl md:text-5xl font-extrabold text-[#181411] dark:text-white tracking-tight leading-tight mb-4">
+        Share the Joy <br class="hidden md:block"/> of Gifting
+      </h1>
+<p class="text-lg text-[#8a7260] dark:text-white/60 font-medium">
+        Give <span class="text-primary font-bold">₹100</span>, Get <span class="text-primary font-bold">₹100</span> in Sharma Coins
+      </p>
+</div>
+<!-- Main Referral Card (Frosted Paper) -->
+<div class="max-w-[600px] w-full frosted-paper rounded-xl p-8 md:p-10 shadow-2xl shadow-black/5 relative overflow-hidden group">
+<!-- Decorative background accent -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-accent-teal/10 rounded-full blur-2xl"></div>
+<div class="relative z-10 flex flex-col items-center">
+<p class="text-center text-[#181411] dark:text-white/90 text-base leading-relaxed mb-10 max-w-[420px]">
+          Invite a friend to Sharma Store. When they make their first purchase, you both get rewarded! It's our way of saying thanks for growing our community.
+        </p>
+<!-- Referral Code Box -->
+<div class="w-full flex flex-col gap-3 mb-10">
+<label class="text-xs font-bold uppercase tracking-widest text-[#8a7260] dark:text-white/40 ml-1">Your Unique Referral Code</label>
+<div class="flex items-center justify-between bg-primary p-1 rounded-xl shadow-[0_8px_20px_rgba(244,123,37,0.3)] hover:scale-[1.01] transition-transform cursor-pointer">
+<div class="px-6 py-4 flex flex-col">
+<span class="text-white text-2xl md:text-3xl font-black tracking-wider">SHARMA-FRIEND-24</span>
+</div>
+<div class="bg-white/20 hover:bg-white/30 text-white flex items-center justify-center rounded-lg px-6 py-4 mr-1 transition-colors">
+<span class="material-symbols-outlined mr-2">content_copy</span>
+<span class="font-bold text-sm">COPY</span>
+</div>
+</div>
+</div>
+<!-- Quick Share Grid -->
+<div class="w-full">
+<h3 class="text-sm font-bold text-[#181411] dark:text-white/80 mb-4 text-center">Quick Share with Friends</h3>
+<div class="grid grid-cols-3 gap-4">
+<button class="flex flex-col items-center gap-2 p-4 rounded-xl bg-background-light dark:bg-white/5 border border-black/5 dark:border-white/5 hover:border-primary/50 transition-all hover:bg-primary/5 group/btn">
+<div class="size-12 rounded-full bg-[#25D366]/10 flex items-center justify-center group-hover/btn:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[#25D366] text-3xl">chat</span>
+</div>
+<span class="text-xs font-bold text-[#181411] dark:text-white/70">WhatsApp</span>
+</button>
+<button class="flex flex-col items-center gap-2 p-4 rounded-xl bg-background-light dark:bg-white/5 border border-black/5 dark:border-white/5 hover:border-primary/50 transition-all hover:bg-primary/5 group/btn">
+<div class="size-12 rounded-full bg-[#0084FF]/10 flex items-center justify-center group-hover/btn:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[#0084FF] text-3xl">maps_ugc</span>
+</div>
+<span class="text-xs font-bold text-[#181411] dark:text-white/70">Messenger</span>
+</button>
+<button class="flex flex-col items-center gap-2 p-4 rounded-xl bg-background-light dark:bg-white/5 border border-black/5 dark:border-white/5 hover:border-primary/50 transition-all hover:bg-primary/5 group/btn">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center group-hover/btn:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">link</span>
+</div>
+<span class="text-xs font-bold text-[#181411] dark:text-white/70">Copy Link</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Track Rewards Section -->
+<div class="mt-12 flex flex-col items-center gap-6">
+<button class="bg-primary/10 hover:bg-primary/20 text-primary px-8 py-4 rounded-xl font-bold flex items-center gap-3 transition-all">
+<span class="material-symbols-outlined">analytics</span>
+        Track Your Rewards
+      </button>
+<p class="text-sm text-[#8a7260] dark:text-white/40">
+        View your <a class="underline underline-offset-4 decoration-primary/30 hover:text-primary transition-colors" href="#">earned rewards</a> and pending invites
+      </p>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] z-50">
+<div class="frosted-paper rounded-full px-4 py-2 flex items-center justify-around shadow-xl border-white/40">
+<button class="flex flex-col items-center p-2 text-[#8a7260] dark:text-white/60">
+<span class="material-symbols-outlined">home</span>
+</button>
+<button class="flex flex-col items-center p-2 text-[#8a7260] dark:text-white/60">
+<span class="material-symbols-outlined">category</span>
+</button>
+<button class="flex flex-col items-center p-3 bg-primary text-white rounded-full -mt-8 shadow-lg shadow-primary/40 border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined">redeem</span>
+</button>
+<button class="flex flex-col items-center p-2 text-[#8a7260] dark:text-white/60">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<button class="flex flex-col items-center p-2 text-[#8a7260] dark:text-white/60">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</div>
+<!-- Toast Notification (Simulated) -->
+<div class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-accent-teal text-[#181411] font-bold px-6 py-3 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 translate-y-4" id="toast">
+    Code Copied to Clipboard!
+  </div>
+</body></html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Confirmed - Sharma Store</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff8052",
+                        "background-light": "#fafafa",
+                        "background-dark": "#14181f",
+                    },
+                    fontFamily: {
+                        "display": ["Outfit", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .notebook-dots {
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .frosted-paper {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .frosted-paper {
+            background: rgba(20, 24, 31, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff8052;
+            top: -20px;
+            opacity: 0.7;
+        }
+        .instagram-gradient {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+        }
+        .story-preview {
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, #ff8052 0%, #ffbea3 100%);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181210] dark:text-white min-h-screen relative overflow-x-hidden notebook-dots">
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-2 frosted-paper rounded-full shadow-lg flex items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="size-6 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="font-bold tracking-tight">Sharma Store</span>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Stationery</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Toys</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Gifts</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+</button>
+<button class="p-2 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</button>
+</div>
+</nav>
+<div class="absolute inset-0 pointer-events-none overflow-hidden h-[50vh]">
+<div class="confetti-piece" style="left:10%; transform: rotate(45deg); background: #ff8052; top: 15%;"></div>
+<div class="confetti-piece" style="left:20%; transform: rotate(15deg); background: #FFC107; top: 25%;"></div>
+<div class="confetti-piece" style="left:70%; transform: rotate(85deg); background: #4fd1c5; top: 10%;"></div>
+<div class="confetti-piece" style="left:85%; transform: rotate(-30deg); background: #ff8052; top: 30%;"></div>
+<div class="confetti-piece" style="left:50%; transform: rotate(120deg); background: #FFC107; top: 5%;"></div>
+</div>
+<main class="relative z-10 pt-32 pb-20 px-4 flex flex-col items-center">
+<div class="flex flex-col items-center mb-10">
+<div class="size-24 rounded-full frosted-paper shadow-xl flex items-center justify-center mb-6 border-2 border-primary/20">
+<span class="material-symbols-outlined text-primary text-[48px] font-bold">check</span>
+</div>
+<h1 class="text-[#181210] dark:text-white tracking-tight text-[32px] md:text-[42px] font-extrabold leading-tight text-center pb-2">Order #12345 Confirmed!</h1>
+<p class="text-[#8d6a5e] dark:text-gray-400 text-lg font-medium leading-normal text-center">Thank you for shopping with us!</p>
+</div>
+<div class="max-w-[640px] w-full space-y-6">
+<div class="frosted-paper p-6 rounded-xl shadow-lg border-2 border-yellow-400/20 group hover:scale-[1.01] transition-transform cursor-default">
+<div class="flex items-center gap-4">
+<div class="size-14 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-white text-[32px]">monetization_on</span>
+</div>
+<div class="flex-1">
+<p class="text-xl font-extrabold text-[#181210] dark:text-white">Coins Earned Today: +150</p>
+<p class="text-[#8d6a5e] dark:text-gray-400 font-medium">You've been rewarded for your purchase!</p>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg transition-colors whitespace-nowrap">
+                    View Rewards
+                </button>
+</div>
+</div>
+<div class="frosted-paper rounded-xl shadow-md overflow-hidden">
+<div class="px-6 py-4 border-b border-[#f5f1f0] dark:border-gray-800">
+<h2 class="text-xl font-bold">Order Summary</h2>
+</div>
+<div class="p-4 space-y-3">
+<div class="flex items-center justify-between p-4 bg-white/40 dark:bg-gray-800/40 rounded-lg border border-primary/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gray-500">inventory_2</span>
+<span class="font-medium">Items</span>
+</div>
+<span class="font-bold">4 Stationery Products</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-white/40 dark:bg-gray-800/40 rounded-lg border border-primary/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gray-500">payments</span>
+<span class="font-medium">Total Amount</span>
+</div>
+<span class="font-bold">$45.00</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-white/40 dark:bg-gray-800/40 rounded-lg border border-primary/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gray-500">local_shipping</span>
+<span class="font-medium">Estimated Delivery</span>
+</div>
+<span class="font-bold text-primary">Oct 24 - Oct 26</span>
+</div>
+</div>
+</div>
+<div class="frosted-paper rounded-2xl p-8 shadow-xl border-t-2 border-white/50 relative overflow-hidden">
+<div class="flex flex-col md:flex-row gap-8 items-center">
+<div class="w-48 shrink-0 relative group">
+<div class="story-preview rounded-2xl overflow-hidden p-4 flex flex-col items-center justify-between border-4 border-white shadow-2xl transition-transform group-hover:rotate-1">
+<div class="w-full flex justify-between items-center mb-4">
+<div class="size-6 text-white">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="white"></path>
+<path d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819Z" fill="white"></path>
+</svg>
+</div>
+<span class="text-[8px] font-bold text-white uppercase tracking-widest">Sharma Store</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center gap-2">
+<div class="size-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center p-2">
+<span class="material-symbols-outlined text-white text-[48px]">brush</span>
+</div>
+<div class="bg-white px-3 py-1 rounded-full shadow-lg transform -rotate-3">
+<span class="text-[10px] font-black text-primary uppercase">Just Ordered!</span>
+</div>
+</div>
+<div class="w-full text-center">
+<p class="text-[10px] font-bold text-white mb-1">Stationery Haul ✨</p>
+<div class="w-full h-1 bg-white/30 rounded-full overflow-hidden">
+<div class="w-2/3 h-full bg-white"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 text-center md:text-left">
+<h3 class="text-2xl font-extrabold text-[#181210] dark:text-white mb-2">Share your joy!</h3>
+<p class="text-[#8d6a5e] dark:text-gray-400 font-medium mb-6">Let your friends know what you've picked up from Sharma Store.</p>
+<div class="flex flex-col gap-4">
+<button class="w-full instagram-gradient text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-3 shadow-lg hover:brightness-110 transition-all active:scale-95">
+<span class="material-symbols-outlined">add_to_photos</span>
+                            Share to Stories
+                        </button>
+<div class="flex items-center justify-center md:justify-start gap-4">
+<button class="size-12 rounded-full frosted-paper flex items-center justify-center text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all shadow-md">
+<svg class="size-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"></path></svg>
+</button>
+<button class="size-12 rounded-full frosted-paper flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2] hover:text-white transition-all shadow-md">
+<svg class="size-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-4 pt-4">
+<button class="w-full max-w-sm bg-primary hover:bg-primary/90 text-white text-lg font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95">
+                Track Order
+            </button>
+<a class="text-primary font-bold hover:underline underline-offset-4 transition-all" href="#">
+                Back to Home
+            </a>
+</div>
+</div>
+<div class="mt-16 flex items-center gap-2 opacity-50">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+<p class="text-xs uppercase tracking-widest font-bold">Handcrafted with care by Sharma Store</p>
+</div>
+</main>
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-gray-200 dark:border-gray-800 px-6 py-3 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px]">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">category</span>
+<span class="text-[10px]">Shop</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">check_circle</span>
+<span class="text-[10px]">Success</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px]">Saved</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px]">Profile</span>
+</button>
+</div>
+
+</body></html>

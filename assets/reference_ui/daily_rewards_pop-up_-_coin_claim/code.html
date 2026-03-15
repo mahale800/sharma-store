@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f27f0d",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221910",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .frosted-paper {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(242, 127, 13, 0.15);
+        }
+        .dark .frosted-paper {
+            background: rgba(34, 25, 16, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .dot-pattern {
+            background-image: radial-gradient(#d1d5db 0.8px, transparent 0.8px);
+            background-size: 16px 16px;
+        }
+        .dark .dot-pattern {
+            background-image: radial-gradient(#4b3d30 0.8px, transparent 0.8px);
+        }
+        .shimmer-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-effect::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0.4) 50%,
+                rgba(255, 255, 255, 0) 60%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181411] dark:text-white transition-colors duration-300">
+<!-- Background Content (Blurred Storefront) -->
+<div class="fixed inset-0 z-0 overflow-hidden flex flex-col blur-sm opacity-60">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f5f2f0] px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-[#181411] dark:text-white">
+<div class="size-4">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Sharma Store</h2>
+</div>
+</div>
+</header>
+<div class="grid grid-cols-2 gap-4 p-10">
+<div class="h-64 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+<div class="h-64 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Backdrop -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-[#181411]/40 backdrop-blur-md px-4">
+<!-- Frosted Paper Modal -->
+<div class="relative w-full max-w-[480px] rounded-xl overflow-hidden frosted-paper dot-pattern">
+<!-- Dismiss Button -->
+<button class="absolute top-4 right-4 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[#181411] dark:text-white">close</span>
+</button>
+<!-- Modal Content -->
+<div class="flex flex-col items-center p-8 pt-12">
+<!-- Hero Visual: 3D-Style Coin -->
+<div class="relative w-40 h-40 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full"></div>
+<!-- Coin Container -->
+<div class="relative w-32 h-32 rounded-full bg-gradient-to-tr from-[#E6B83D] via-[#FFD700] to-[#E6B83D] border-4 border-[#C89E30] shadow-[0_10px_30px_-5px_rgba(230,184,61,0.5)] flex items-center justify-center shimmer-effect">
+<span class="material-symbols-outlined text-white text-7xl select-none" style="font-variation-settings: 'FILL' 1, 'wght' 700;">monetization_on</span>
+<!-- Subtle Coin Detail -->
+<div class="absolute inset-2 border border-white/30 rounded-full"></div>
+</div>
+<!-- Particle Decoration -->
+<span class="material-symbols-outlined absolute top-2 right-4 text-primary opacity-60 text-xl" style="font-variation-settings: 'FILL' 1;">colors_spark</span>
+<span class="material-symbols-outlined absolute bottom-4 left-2 text-[#E6B83D] opacity-60 text-2xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<!-- Headline -->
+<h1 class="text-[#181411] dark:text-white text-3xl font-bold tracking-tight text-center pb-2">Daily Bonus Collected!</h1>
+<!-- Reward Chip -->
+<div class="my-4 flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary pl-6 pr-6 shadow-lg shadow-primary/20">
+<p class="text-white text-lg font-bold leading-normal">+5 Sharma Coins</p>
+</div>
+<!-- Encouragement Text -->
+<p class="text-[#181411] dark:text-gray-300 text-base font-normal leading-relaxed text-center px-6 mt-2">
+                    Keep it up! Your next streak bonus is only <span class="font-bold text-primary">2 days away</span>.
+                </p>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col gap-3 mt-8">
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 bg-primary text-white gap-2 text-base font-bold leading-normal tracking-wide shadow-lg shadow-primary/30 hover:scale-[1.02] transition-transform active:scale-[0.98]">
+                        Claim and Shop
+                        <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+<button class="flex w-full cursor-pointer items-center justify-center h-12 bg-transparent text-[#181411] dark:text-gray-400 text-sm font-semibold hover:text-primary transition-colors">
+                        View My Rewards
+                    </button>
+</div>
+<!-- Dot Accent Footer -->
+<div class="mt-6 flex gap-1">
+<div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+<div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+<div class="h-1.5 w-1.5 rounded-full bg-[#f5f2f0] dark:bg-gray-700"></div>
+<div class="h-1.5 w-1.5 rounded-full bg-[#f5f2f0] dark:bg-gray-700"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decorative Elements -->
+<div class="fixed bottom-10 right-10 z-0 opacity-20 pointer-events-none">
+<div class="w-64 h-64 rounded-full bg-primary blur-[100px]"></div>
+</div>
+<div class="fixed top-20 left-10 z-0 opacity-10 pointer-events-none">
+<div class="w-80 h-80 rounded-full bg-[#E6B83D] blur-[120px]"></div>
+</div>
+</body></html>

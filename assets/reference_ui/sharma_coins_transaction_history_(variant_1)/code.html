@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sharma Coins Transaction History</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Font: Manrope -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#1d6472",
+              "background-light": "#f8f7f7",
+              "background-dark": "#17191c",
+              "sharma-gold": "#C9A961",
+              "sharma-green": "#4DAB4D",
+              "sharma-red": "#C33342",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .dot-grid {
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .dark .dot-grid {
+            background-image: radial-gradient(#2d2d2d 1px, transparent 1px);
+        }
+        .frosted-glass {
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .frosted-glass {
+            background-color: rgba(23, 25, 28, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .squircle {
+            border-radius: 2rem;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#121617] dark:text-gray-100 min-h-screen dot-grid">
+<!-- Desktop Floating Pill Nav -->
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full frosted-glass shadow-lg flex items-center gap-8 border border-white/20">
+<div class="flex items-center gap-2">
+<div class="size-6 text-primary dark:text-primary/80">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="font-bold text-sm tracking-tight">Sharma Store</span>
+</div>
+<div class="h-4 w-[1px] bg-gray-300 dark:bg-gray-700"></div>
+<div class="flex gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Shop</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Gifts</a>
+<a class="text-sm font-medium text-primary underline underline-offset-4 decoration-2" href="#">Coins</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Profile</a>
+</div>
+</nav>
+<main class="max-w-[1000px] mx-auto px-6 pt-32 pb-20">
+<!-- Page Title -->
+<div class="flex flex-col gap-1 mb-8">
+<h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">Sharma Coins</h1>
+<p class="text-gray-500 dark:text-gray-400">Your premium reward ledger</p>
+</div>
+<!-- Balance Header Card -->
+<section class="relative group">
+<div class="absolute -inset-0.5 bg-gradient-to-r from-sharma-gold/30 to-primary/30 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+<div class="relative frosted-glass rounded-xl p-8 flex items-center justify-between shadow-sm overflow-hidden border border-white/40 dark:border-white/5">
+<div class="flex flex-col gap-2">
+<span class="text-sm font-semibold uppercase tracking-widest text-primary/70 dark:text-primary/90">Current Balance</span>
+<div class="flex items-baseline gap-2">
+<span class="text-6xl font-black text-gray-900 dark:text-white">2,450</span>
+<span class="text-2xl font-bold text-sharma-gold">SC</span>
+</div>
+<button class="mt-4 flex items-center gap-2 text-primary font-bold text-sm bg-primary/10 px-4 py-2 rounded-full hover:bg-primary/20 transition-all w-fit">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                        How to earn more
+                    </button>
+</div>
+<div class="relative h-48 w-48 flex items-center justify-center">
+<div class="absolute inset-0 bg-sharma-gold/10 rounded-full animate-pulse blur-3xl"></div>
+<div class="text-sharma-gold drop-shadow-2xl">
+<span class="material-symbols-outlined !text-[120px] leading-none" style="font-variation-settings: 'FILL' 1, 'wght' 400">monetization_on</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filters and List Header -->
+<div class="mt-12 mb-6 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<button class="px-5 py-2 rounded-full bg-primary text-white text-sm font-bold shadow-md shadow-primary/20">All</button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-semibold border border-gray-200 dark:border-gray-700 hover:border-primary transition-colors">Earned</button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-semibold border border-gray-200 dark:border-gray-700 hover:border-primary transition-colors">Spent</button>
+</div>
+<div class="flex items-center gap-2 text-gray-500 text-sm font-medium">
+<span class="material-symbols-outlined text-lg">calendar_month</span>
+<span>Oct 1 - Oct 31, 2023</span>
+</div>
+</div>
+<!-- Transaction List -->
+<div class="flex flex-col gap-3">
+<!-- Row 1: Earned -->
+<div class="group bg-white dark:bg-gray-800/50 p-5 squircle border border-gray-100 dark:border-gray-800 flex items-center justify-between hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+<div class="flex items-center gap-5">
+<div class="size-14 squircle bg-sharma-green/10 text-sharma-green flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">star_half</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">Product Review Reward</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm">Reviewed 'Vintage Fountain Pen Set'</p>
+<p class="text-gray-400 text-xs mt-1">Oct 24, 2023 • 02:45 PM</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-black text-sharma-green flex items-center gap-1 justify-end">
+<span class="material-symbols-outlined text-lg font-bold">north_east</span>
+                        +50 SC
+                    </span>
+<span class="text-[10px] uppercase font-bold tracking-tighter text-gray-400">Verified Activity</span>
+</div>
+</div>
+<!-- Row 2: Spent -->
+<div class="group bg-white dark:bg-gray-800/50 p-5 squircle border border-gray-100 dark:border-gray-800 flex items-center justify-between hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+<div class="flex items-center gap-5">
+<div class="size-14 squircle bg-sharma-red/10 text-sharma-red flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">shopping_bag</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">Order Purchase</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm">Applied discount on Order #44921</p>
+<p class="text-gray-400 text-xs mt-1">Oct 22, 2023 • 11:12 AM</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-black text-sharma-red flex items-center gap-1 justify-end">
+<span class="material-symbols-outlined text-lg font-bold">south_east</span>
+                        -200 SC
+                    </span>
+<span class="text-[10px] uppercase font-bold tracking-tighter text-gray-400">Checkout Usage</span>
+</div>
+</div>
+<!-- Row 3: Earned -->
+<div class="group bg-white dark:bg-gray-800/50 p-5 squircle border border-gray-100 dark:border-gray-800 flex items-center justify-between hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+<div class="flex items-center gap-5">
+<div class="size-14 squircle bg-sharma-green/10 text-sharma-green flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">campaign</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">Referral Bonus</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm">Friend 'Aarav K.' made their first purchase</p>
+<p class="text-gray-400 text-xs mt-1">Oct 20, 2023 • 09:30 AM</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-black text-sharma-green flex items-center gap-1 justify-end">
+<span class="material-symbols-outlined text-lg font-bold">north_east</span>
+                        +100 SC
+                    </span>
+<span class="text-[10px] uppercase font-bold tracking-tighter text-gray-400">Referral Link</span>
+</div>
+</div>
+<!-- Row 4: Earned -->
+<div class="group bg-white dark:bg-gray-800/50 p-5 squircle border border-gray-100 dark:border-gray-800 flex items-center justify-between hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+<div class="flex items-center gap-5">
+<div class="size-14 squircle bg-sharma-gold/10 text-sharma-gold flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">cake</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">Anniversary Gift</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm">One year since your first order!</p>
+<p class="text-gray-400 text-xs mt-1">Oct 15, 2023 • 12:00 AM</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-black text-sharma-green flex items-center gap-1 justify-end">
+<span class="material-symbols-outlined text-lg font-bold">north_east</span>
+                        +250 SC
+                    </span>
+<span class="text-[10px] uppercase font-bold tracking-tighter text-gray-400">System Reward</span>
+</div>
+</div>
+</div>
+<!-- Footer / Load More -->
+<div class="mt-10 flex flex-col items-center gap-6">
+<button class="flex items-center gap-2 text-gray-500 font-bold text-sm bg-gray-100 dark:bg-gray-800 px-6 py-3 rounded-xl hover:bg-gray-200 transition-all">
+                Load older transactions
+            </button>
+<div class="w-full h-[1px] bg-gray-200 dark:bg-gray-800 my-4"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+<div class="p-6 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/10 flex items-start gap-4">
+<div class="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-primary">redeem</span>
+</div>
+<div>
+<h4 class="font-bold text-gray-900 dark:text-white">Redeem on Checkout</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400">Use 100 SC for $1 off on any purchase above $20.</p>
+</div>
+</div>
+<div class="p-6 rounded-xl bg-sharma-gold/5 dark:bg-sharma-gold/10 border border-sharma-gold/10 flex items-start gap-4">
+<div class="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-sharma-gold">help</span>
+</div>
+<div>
+<h4 class="font-bold text-gray-900 dark:text-white">Missing Coins?</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400">Coins usually reflect within 24 hours of task completion.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Simple Mobile Bottom Nav (Hidden on Desktop) -->
+<div class="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-background-dark border-t border-gray-200 dark:border-gray-800 flex justify-around items-center md:hidden">
+<span class="material-symbols-outlined text-gray-400">home</span>
+<span class="material-symbols-outlined text-gray-400">search</span>
+<span class="material-symbols-outlined text-primary font-bold">monetization_on</span>
+<span class="material-symbols-outlined text-gray-400">shopping_cart</span>
+<span class="material-symbols-outlined text-gray-400">person</span>
+</div>
+</body></html>

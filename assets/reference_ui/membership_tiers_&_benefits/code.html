@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Membership Tiers &amp; Benefits | Sharma Store</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#cb9434",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#1f1b13",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .dark body {
+            background-image: radial-gradient(#333 1px, transparent 1px);
+        }
+        .frosted-paper {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+        .dark .frosted-paper {
+            background: rgba(31, 27, 19, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+        }
+        .squircle {
+            border-radius: 3rem;
+        }
+        .nav-pill {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .dark .nav-pill {
+            background: rgba(31, 27, 19, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-[#171512] dark:text-[#f4f3f1] font-display">
+<!-- Floating Navigation Pill -->
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full nav-pill flex items-center gap-8 shadow-sm">
+<div class="flex items-center gap-2">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="font-bold tracking-tight">Sharma Store</span>
+</div>
+<div class="hidden md:flex gap-6 text-sm font-medium opacity-70">
+<a class="hover:text-primary transition-colors" href="#">Shop</a>
+<a class="hover:text-primary transition-colors" href="#">Toys</a>
+<a class="hover:text-primary transition-colors" href="#">Gifts</a>
+<a class="hover:text-primary transition-colors text-primary opacity-100" href="#">Membership</a>
+</div>
+<div class="flex items-center gap-4 border-l border-gray-200 dark:border-gray-700 pl-6">
+<span class="material-symbols-outlined text-xl opacity-70 cursor-pointer">search</span>
+<div class="size-8 rounded-full bg-cover bg-center ring-2 ring-primary/20" data-alt="User profile avatar placeholder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD3xIEatcA5lQEbtroYNzDXRjRUa1TJgk11Sho8TqVrQfqKG58p41CiZn9m0gwSuRFdyBnnDzmeUi7ByHDYjvc_u_wCwWNuzCXJ6XOANR-XbjtHds71owVaa16W50GcRZtkwsn7SBQFAvJh1oS6nohHGc_uDH6Ob8XVHAAs88QALcJR5t-uZNOFZ3PrkDQGC_wGz9XffbIHqgwGOBQEztZ8s3J8WtifK1UsegowOH7F1rLRmz6k3-A80zq6ciggwJSE0E2Xsfg4fc8');"></div>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-6 pt-32 pb-20">
+<!-- Hero Heading -->
+<div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
+<div class="max-w-2xl">
+<h1 class="text-5xl md:text-6xl font-black tracking-tighter mb-4 text-[#171512] dark:text-white">
+                    Membership Tiers &amp; Benefits
+                </h1>
+<p class="text-lg text-[#837967] dark:text-[#a09a90] leading-relaxed">
+                    Elevate your creative journey with our exclusive rewards program. Each level unlocks new possibilities for your collection.
+                </p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-sm font-bold uppercase tracking-widest text-[#837967]">Active Balance</span>
+<div class="flex items-center gap-3 bg-white dark:bg-[#2a261e] px-6 py-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+<span class="text-2xl font-black text-primary">1,240</span>
+<span class="text-sm font-bold opacity-60">Coins</span>
+<button class="ml-2 bg-primary text-white text-xs px-3 py-1 rounded-full font-bold">REDEEM</button>
+</div>
+</div>
+</div>
+<!-- Progress Section -->
+<div class="mb-16 frosted-paper rounded-xl p-8 max-w-4xl mx-auto">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">insights</span>
+                    Your Progress
+                </h3>
+<span class="text-sm font-bold bg-primary/10 text-primary px-3 py-1 rounded-full">65% to Pencil Tier</span>
+</div>
+<div class="w-full h-4 bg-[#e4e1dd] dark:bg-gray-800 rounded-full overflow-hidden mb-4">
+<div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: 65%;"></div>
+</div>
+<p class="text-sm text-[#837967] dark:text-gray-400">
+                You're doing great! Spend another <strong>$135.00</strong> to reach the <span class="text-[#171512] dark:text-white font-bold italic underline decoration-primary">Pencil (Silver)</span> level.
+            </p>
+</div>
+<!-- Tiers Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Tier 1: Paper -->
+<div class="frosted-paper rounded-xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-2 duration-300">
+<div class="mb-8 p-6 bg-orange-100/30 dark:bg-orange-900/10 rounded-full">
+<div class="w-40 h-40 flex items-center justify-center text-8xl opacity-90 drop-shadow-2xl grayscale transition-all hover:grayscale-0">
+<span class="material-symbols-outlined !text-7xl text-[#a87c51]">sticky_note_2</span>
+</div>
+</div>
+<h2 class="text-2xl font-extrabold mb-2">Paper</h2>
+<span class="text-xs font-bold uppercase tracking-tighter text-[#a87c51] mb-6 bg-[#a87c51]/10 px-4 py-1 rounded-full border border-[#a87c51]/20">Bronze Member</span>
+<div class="w-full flex flex-col gap-4 mb-8 text-left">
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">token</span>
+<span>1x Coin Multiplier</span>
+</div>
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">local_shipping</span>
+<span>Standard Shipping</span>
+</div>
+<div class="flex items-center gap-4 text-sm font-medium opacity-50">
+<span class="material-symbols-outlined text-xl">lock</span>
+<span>Seasonal Newsletter</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl font-black uppercase tracking-widest text-sm border-2 border-[#171512] dark:border-white/20 bg-transparent text-[#171512] dark:text-white cursor-default">
+                    Current Tier
+                </button>
+</div>
+<!-- Tier 2: Pencil -->
+<div class="frosted-paper rounded-xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-2 duration-300 ring-2 ring-transparent hover:ring-primary/20">
+<div class="mb-8 p-6 bg-slate-100/50 dark:bg-slate-800/20 rounded-full relative">
+<div class="w-40 h-40 flex items-center justify-center text-8xl drop-shadow-2xl">
+<span class="material-symbols-outlined !text-7xl text-[#94a3b8]">edit_note</span>
+</div>
+</div>
+<h2 class="text-2xl font-extrabold mb-2">Pencil</h2>
+<span class="text-xs font-bold uppercase tracking-tighter text-[#64748b] mb-6 bg-[#64748b]/10 px-4 py-1 rounded-full border border-[#64748b]/20">Silver Member</span>
+<div class="w-full flex flex-col gap-4 mb-8 text-left">
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">token</span>
+<span>1.5x Coin Multiplier</span>
+</div>
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">verified</span>
+<span>Early Access to Sales</span>
+</div>
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">cake</span>
+<span>$5 Birthday Coupon</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl font-black uppercase tracking-widest text-sm bg-[#171512] dark:bg-[#f4f3f1] text-white dark:text-[#171512] hover:bg-primary transition-colors">
+                    Upgrade Now
+                </button>
+</div>
+<!-- Tier 3: Gold Pen -->
+<div class="frosted-paper rounded-xl p-8 flex flex-col items-center text-center transition-all hover:-translate-y-2 duration-300 relative overflow-hidden group">
+<!-- Most Popular Badge -->
+<div class="absolute top-0 right-0 bg-primary text-white text-[10px] font-black px-8 py-2 rotate-45 translate-x-6 translate-y-2 shadow-lg z-10">
+                    POPULAR
+                </div>
+<div class="mb-8 p-6 bg-yellow-100/40 dark:bg-yellow-900/10 rounded-full relative">
+<div class="w-40 h-40 flex items-center justify-center drop-shadow-2xl transition-transform group-hover:scale-110 duration-500">
+<span class="material-symbols-outlined !text-7xl text-primary">ink_pen</span>
+</div>
+<div class="absolute inset-0 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
+</div>
+<h2 class="text-2xl font-extrabold mb-2">Gold Pen</h2>
+<span class="text-xs font-bold uppercase tracking-tighter text-primary mb-6 bg-primary/10 px-4 py-1 rounded-full border border-primary/20">Gold Member</span>
+<div class="w-full flex flex-col gap-4 mb-8 text-left">
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">token</span>
+<span>2x Coin Multiplier</span>
+</div>
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">bolt</span>
+<span>Free Express Shipping</span>
+</div>
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">featured_seasonal_and_gifts</span>
+<span>Exclusive Artisan Gifts</span>
+</div>
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="material-symbols-outlined text-primary text-xl">redeem</span>
+<span>$20 Birthday Gift</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl font-black uppercase tracking-widest text-sm bg-primary text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:bg-[#b8852e] transition-all">
+                    Unlock Premium
+                </button>
+</div>
+</div>
+<!-- Footer Help -->
+<div class="mt-20 flex flex-col md:flex-row items-center justify-between border-t border-gray-200 dark:border-gray-800 pt-10 text-sm font-medium text-[#837967] gap-4">
+<div class="flex gap-8">
+<a class="hover:text-[#171512] dark:hover:text-white transition-colors" href="#">How to earn coins</a>
+<a class="hover:text-[#171512] dark:hover:text-white transition-colors" href="#">Tier Terms &amp; Conditions</a>
+<a class="hover:text-[#171512] dark:hover:text-white transition-colors" href="#">FAQ</a>
+</div>
+<div class="flex items-center gap-2">
+<span>Curated with care by</span>
+<span class="font-bold text-[#171512] dark:text-white">Sharma Store</span>
+</div>
+</div>
+</main>
+<!-- Floating Pill Desktop Navigation Footer -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex bg-[#171512] dark:bg-white px-8 py-4 rounded-full shadow-2xl items-center gap-10 text-white dark:text-[#171512] z-50">
+<a class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined text-xl">home</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined text-xl">shopping_basket</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Shop</span>
+</a>
+<div class="h-6 w-px bg-white/20 dark:bg-[#171512]/20"></div>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-xl">workspace_premium</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Rewards</span>
+</a>
+<a class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined text-xl">person</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Account</span>
+</a>
+</div>
+</body></html>

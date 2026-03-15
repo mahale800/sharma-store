@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Write a Review - Sharma Store</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff8052",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23140f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .dot-grid {
+            background-image: radial-gradient(#e6e6e6 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .dark .dot-grid {
+            background-image: radial-gradient(#3a2a24 1px, transparent 1px);
+        }
+        .frosted-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .frosted-glass {
+            background: rgba(35, 20, 15, 0.7);
+            border: 1px solid rgba(255, 128, 82, 0.1);
+        }
+        .squircle {
+            border-radius: 2rem;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen dot-grid transition-colors duration-300">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<!-- Navigation Header -->
+<header class="flex items-center justify-between px-6 py-4 lg:px-40 border-b border-primary/10 frosted-glass sticky top-0 z-50">
+<div class="flex items-center gap-4 text-background-dark dark:text-white">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Sharma Store</h2>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Stationery</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Toys</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Gifts</a>
+</nav>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-xl h-10 w-10 bg-white/50 dark:bg-white/10 text-background-dark dark:text-white hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+</button>
+<button class="flex items-center justify-center rounded-xl h-10 w-10 bg-white/50 dark:bg-white/10 text-background-dark dark:text-white hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col items-center py-10 px-4">
+<div class="max-w-[700px] w-full space-y-6">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 px-4 mb-2">
+<a class="text-primary text-sm font-medium" href="#">Home</a>
+<span class="text-primary/40 text-sm">/</span>
+<a class="text-primary text-sm font-medium" href="#">Past Orders</a>
+<span class="text-primary/40 text-sm">/</span>
+<span class="text-background-dark dark:text-white/60 text-sm font-medium">Write a Review</span>
+</div>
+<!-- Main Review Card -->
+<div class="bg-white dark:bg-white/5 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden p-8 border border-white/20">
+<!-- Product Info Section -->
+<div class="flex items-center gap-6 mb-10 pb-8 border-b border-primary/10">
+<div class="w-32 aspect-square bg-background-light dark:bg-white/10 rounded-lg overflow-hidden flex-shrink-0">
+<div class="w-full h-full bg-center bg-no-repeat bg-cover" data-alt="Handcrafted wooden educational toy for toddlers" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDcsFJdXKfsp0Pww1AsXRPKQ8_oJm5lPPU52fNy0nY9tGLnuikAHB1iOYX-hYT2dLcU9JpEAo1Wy0dntxCCYsvMMlhyZapv3Nnink-4qq1x_wYPDmpgv3gYHqjlSXzUYxmc2AWJSkxsvZg33VcnMdedJmkRn5e1nZDb3UXTCagVUOVj3Opjqvh_VBni0xNolJXOd2txmlfsS3D8wHumTxKlQqUBswzWzm0ZAv-3sp182TWJqJuk9r8IsE6yC2h3KH60rUYU9l3HE6M");'>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold uppercase tracking-widest text-primary mb-1">Stationery &amp; Toys</span>
+<h1 class="text-2xl font-bold text-background-dark dark:text-white leading-tight mb-2">Handcrafted Wooden Shape Sorter</h1>
+<p class="text-background-dark/60 dark:text-white/40 text-sm">Purchased on Oct 24, 2023</p>
+</div>
+</div>
+<!-- Rating Section -->
+<div class="text-center mb-10">
+<h3 class="text-xl font-bold text-background-dark dark:text-white mb-6">How would you rate this product?</h3>
+<div class="flex justify-center gap-3">
+<button class="group flex flex-col items-center gap-2 p-3 transition-transform hover:scale-110">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1">star</span>
+<span class="text-[10px] font-bold text-primary/60">TERRIBLE</span>
+</button>
+<button class="group flex flex-col items-center gap-2 p-3 transition-transform hover:scale-110">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1">star</span>
+<span class="text-[10px] font-bold text-primary/60">POOR</span>
+</button>
+<button class="group flex flex-col items-center gap-2 p-3 transition-transform hover:scale-110">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1">star</span>
+<span class="text-[10px] font-bold text-primary/60">AVERAGE</span>
+</button>
+<button class="group flex flex-col items-center gap-2 p-3 transition-transform hover:scale-110">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1">star</span>
+<span class="text-[10px] font-bold text-primary/60">GREAT</span>
+</button>
+<button class="group flex flex-col items-center gap-2 p-3 transition-transform hover:scale-110">
+<span class="material-symbols-outlined text-4xl text-primary/20 hover:text-primary transition-colors" style="font-variation-settings: 'FILL' 0">star</span>
+<span class="text-[10px] font-bold text-background-dark/30 dark:text-white/20">EXCELLENT</span>
+</button>
+</div>
+</div>
+<!-- Reward Banner (Frosted) -->
+<div class="frosted-glass rounded-lg p-5 flex items-center justify-between mb-8 border-dashed border-2 border-primary/30">
+<div class="flex items-center gap-4">
+<div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">toll</span>
+</div>
+<div>
+<p class="text-lg font-bold text-background-dark dark:text-white leading-none">Earn +25 Coins!</p>
+<p class="text-sm text-background-dark/60 dark:text-white/60 mt-1">Submit your first review for this item.</p>
+</div>
+</div>
+<div class="hidden sm:block">
+<span class="bg-primary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Active Bonus</span>
+</div>
+</div>
+<!-- Input Fields -->
+<div class="space-y-6">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-bold text-background-dark/70 dark:text-white/70 ml-1">Write your thoughts</label>
+<textarea class="w-full h-32 p-4 bg-background-light dark:bg-white/5 border-none rounded-lg focus:ring-2 focus:ring-primary/50 text-background-dark dark:text-white placeholder:text-background-dark/30 dark:placeholder:text-white/20" placeholder="What did you like or dislike? How was the quality?"></textarea>
+</div>
+<!-- Media Upload -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 p-4 border-2 border-dashed border-primary/20 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">add_a_photo</span>
+<div class="text-left">
+<p class="text-sm font-bold text-background-dark dark:text-white leading-none">Add Photos</p>
+<p class="text-[11px] text-primary font-bold mt-1">EARN +25 EXTRA COINS</p>
+</div>
+</button>
+<button class="flex items-center justify-center gap-3 p-4 border-2 border-dashed border-primary/20 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">video_call</span>
+<div class="text-left">
+<p class="text-sm font-bold text-background-dark dark:text-white leading-none">Add Video</p>
+<p class="text-[11px] text-primary font-bold mt-1">BONUS REWARDS</p>
+</div>
+</button>
+</div>
+</div>
+<!-- Final CTA -->
+<div class="mt-12 flex flex-col items-center">
+<button class="squircle w-full max-w-sm py-5 bg-primary text-white font-bold text-lg shadow-[0_10px_30px_rgba(255,128,82,0.4)] hover:shadow-[0_15px_40px_rgba(255,128,82,0.5)] transform hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3">
+<span>Submit &amp; Collect Coins</span>
+<span class="material-symbols-outlined">auto_awesome</span>
+</button>
+<p class="mt-4 text-[12px] text-background-dark/40 dark:text-white/30 text-center max-w-[300px]">
+                            By submitting, you agree to our Community Guidelines and Review Terms.
+                        </p>
+</div>
+</div>
+<!-- Desktop Floating Pill Nav (Fixed Bottom) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 frosted-glass p-2 rounded-full shadow-2xl border border-white/40 hidden lg:flex items-center gap-2">
+<button class="flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-bold text-sm">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+                        Review
+                    </button>
+<button class="flex items-center gap-2 px-6 py-3 rounded-full hover:bg-primary/10 text-background-dark dark:text-white font-bold text-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]">history</span>
+                        Orders
+                    </button>
+<button class="flex items-center gap-2 px-6 py-3 rounded-full hover:bg-primary/10 text-background-dark dark:text-white font-bold text-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]">stars</span>
+                        Rewards
+                    </button>
+<div class="w-[1px] h-6 bg-primary/20 mx-2"></div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary/10 text-background-dark dark:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer for Desktop context -->
+<footer class="lg:px-40 py-12 flex flex-col items-center gap-6 opacity-40">
+<div class="flex gap-10">
+<a class="text-xs font-bold uppercase tracking-widest text-background-dark dark:text-white" href="#">Help</a>
+<a class="text-xs font-bold uppercase tracking-widest text-background-dark dark:text-white" href="#">Shipping</a>
+<a class="text-xs font-bold uppercase tracking-widest text-background-dark dark:text-white" href="#">Returns</a>
+<a class="text-xs font-bold uppercase tracking-widest text-background-dark dark:text-white" href="#">Privacy</a>
+</div>
+<p class="text-[10px] text-center text-background-dark dark:text-white">© 2023 Sharma Store. All Rights Reserved. Stationery &amp; Toys Boutique.</p>
+</footer>
+</div>
+</body></html>
