@@ -26,9 +26,10 @@ export const useAnalytics = () => {
                 let revenue = 0;
                 let pending = 0;
                 let delivered = 0;
+                const statusCounts = { Pending: 0, Confirmed: 0, Processing: 0, Shipped: 0, Delivered: 0, Cancelled: 0 };
                 const uniqueCustomers = new Set();
-                const productSales = {}; // { pid: { name, qty, revenue } }
-                const salesByDate = {}; // { "Jan 25": 500 }
+                const productSales = {};
+                const salesByDate = {};
 
                 snapshot.docs.forEach(doc => {
                     const order = doc.data();
@@ -40,6 +41,7 @@ export const useAnalytics = () => {
                     }
                     if (order.status === 'Pending') pending++;
                     if (order.status === 'Delivered') delivered++;
+                    if (statusCounts[order.status] !== undefined) statusCounts[order.status]++;
                     if (order.userId) uniqueCustomers.add(order.userId);
 
                     // Chart Data (Group by Date)
@@ -84,6 +86,24 @@ export const useAnalytics = () => {
                     .sort((a, b) => b.unitsSold - a.unitsSold)
                     .slice(0, 5);
 
+                // Status Distribution for chart
+                const statusDistribution = Object.entries(statusCounts)
+                    .filter(([, count]) => count > 0)
+                    .map(([status, count]) => ({ name: status, value: count }));
+
+                // Recent Orders (first 5 from desc query)
+                const recentOrders = snapshot.docs.slice(0, 5).map(d => {
+                    const o = d.data();
+                    return {
+                        id: d.id,
+                        orderId: o.orderId || d.id.slice(0, 8),
+                        customer: o.address?.fullName || o.userEmail || 'Guest',
+                        total: Number(o.total) || 0,
+                        status: o.status || 'Pending',
+                        createdAt: o.createdAt
+                    };
+                });
+
                 setStats({
                     totalRevenue: revenue,
                     totalOrders: snapshot.size,
@@ -91,7 +111,9 @@ export const useAnalytics = () => {
                     deliveredOrders: delivered,
                     totalCustomers: uniqueCustomers.size,
                     monthlySales: chartData,
-                    topProducts
+                    topProducts,
+                    statusDistribution,
+                    recentOrders
                 });
 
             } catch (error) {

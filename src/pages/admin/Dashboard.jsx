@@ -7,6 +7,8 @@ import StatsCards from '../../components/admin/StatsCards';
 import SalesChart from '../../components/admin/SalesChart';
 import TopProductsTable from '../../components/admin/TopProductsTable';
 import SentimentCharts from '../../components/admin/SentimentCharts';
+import OrderStatusChart from '../../components/admin/OrderStatusChart';
+import RecentOrders from '../../components/admin/RecentOrders';
 import { Sparkles, RefreshCcw, TrendingUp, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { usePerformance } from '../../hooks/usePerformance';
@@ -181,6 +183,12 @@ const Dashboard = () => {
                 </div>
                 <TopProductsTable products={stats?.topProducts || []} />
             </Card>
+
+            {/* Recent Orders + Order Status */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <RecentOrders orders={stats?.recentOrders || []} isLoading={analyticsLoading} />
+                <OrderStatusChart data={stats?.statusDistribution || []} isLoading={analyticsLoading} />
+            </div>
         </div >
     );
 };
