@@ -67,13 +67,9 @@ const Dashboard = () => {
     }, [feedback]);
 
 
-    if (analyticsLoading || feedbackLoading) {
-        return (
-            <div className="flex bg-white/50 items-center justify-center min-h-[60vh] rounded-3xl">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-200 border-t-orange-600"></div>
-            </div>
-        );
-    }
+    // Let the components handle the loading state themselves to avoid a blank layout
+    // We only wait for initial analytics load completely if we really must, 
+    // but throwing a skeleton is better.
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-20">
@@ -140,12 +136,12 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Sales Chart */}
                 <div className="lg:col-span-2 xl:col-span-2">
-                    <SalesChart data={stats?.monthlySales || []} />
+                    <SalesChart data={stats?.monthlySales || []} isLoading={analyticsLoading} />
                 </div>
 
                 {/* Top Products Chart */}
                 <div className="lg:col-span-1 xl:col-span-1 h-full">
-                    <TopProductsChart products={stats?.topProducts || []} />
+                    <TopProductsChart products={stats?.topProducts || []} isLoading={analyticsLoading} />
                 </div>
             </div>
 

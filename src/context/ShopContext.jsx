@@ -12,7 +12,16 @@ export const ShopProvider = ({ children }) => {
     // 2. Filter State - "selectedCategory" as requested
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState("featured");
+
+    // Debounce search query
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     // 3. Output State
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -43,8 +52,8 @@ export const ShopProvider = ({ children }) => {
         let result = [...allProducts];
 
         // Search
-        if (searchQuery) {
-            const q = searchQuery.toLowerCase();
+        if (debouncedSearchQuery) {
+            const q = debouncedSearchQuery.toLowerCase();
             result = result.filter(item =>
                 item.name?.toLowerCase().includes(q) ||
                 item.category?.toLowerCase().includes(q)
@@ -69,7 +78,7 @@ export const ShopProvider = ({ children }) => {
 
 
         setFilteredProducts(result);
-    }, [allProducts, selectedCategory, searchQuery, sortBy]);
+    }, [allProducts, selectedCategory, debouncedSearchQuery, sortBy]);
 
     // 6. Derived Categories List
     const categories = useMemo(() => {

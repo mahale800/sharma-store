@@ -1,12 +1,18 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
-const SalesChart = ({ data }) => {
+const SalesChart = ({ data, isLoading }) => {
     return (
         <div className="bg-white/70 backdrop-blur-lg p-6 rounded-3xl border border-white/50 shadow-sm h-[400px]">
             <h3 className="text-xl font-bold text-gray-900 mb-6">Sales Overview</h3>
 
-            {(!data || data.length === 0) ? (
+            {isLoading ? (
+                <div className="h-full w-full flex items-end justify-between pb-10 pt-10 gap-2">
+                    {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                        <div key={i} className="w-full bg-orange-100 rounded-t-lg animate-pulse" style={{ height: `${(i * 17) % 60 + 20}%` }}></div>
+                    ))}
+                </div>
+            ) : (!data || data.length === 0) ? (
                 <div className="h-full flex items-center justify-center text-gray-400 font-medium">
                     No sales data available yet.
                 </div>

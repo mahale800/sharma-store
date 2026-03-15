@@ -102,9 +102,11 @@ const AppRoutes = () => {
 
       {/* --- Checkout Flow (Standalone Layout) --- */}
       <Route path="/checkout" element={
-        <ProtectedRoute>
-          <CheckoutLayout />
-        </ProtectedRoute>
+        <GlobalErrorBoundary>
+          <ProtectedRoute>
+            <CheckoutLayout />
+          </ProtectedRoute>
+        </GlobalErrorBoundary>
       }>
         <Route index element={<Navigate to="address" replace />} />
         <Route path="address" element={<Address />} />
