@@ -36,7 +36,8 @@ const RecommendationRow = ({ source, currentProduct }) => {
                             <img
                                 src={product.image || product.imageUrl || 'https://placehold.co/200'}
                                 alt={product.name}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                loading="lazy"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                             {product.discount > 0 && (
                                 <span className="absolute top-2 left-2 bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">
@@ -56,7 +57,7 @@ const RecommendationRow = ({ source, currentProduct }) => {
                                 <span className="font-black text-gray-900">₹{product.price}</span>
                                 <button
                                     onClick={() => addToCart(product)}
-                                    className="p-2 bg-gray-900 text-white rounded-lg hover:bg-orange-600 active:scale-90 transition-all shadow-lg shadow-gray-200"
+                                    className="p-2 bg-gray-900 text-white rounded-lg hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-gray-200"
                                 >
                                     <ShoppingCart size={16} />
                                 </button>

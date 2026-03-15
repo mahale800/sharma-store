@@ -7,9 +7,11 @@ import { useWishlist } from '../context/WishlistContext';
 import { usePerformance } from '../hooks/usePerformance';
 import Button from './Button';
 
+import Card from './common/Card';
+
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
-    const { addToCart } = useCart();
+    const { addToCart, clearCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
     const isWishlisted = isInWishlist(product.id);
 
@@ -30,12 +32,18 @@ const ProductCard = ({ product }) => {
 
     const handleBuyNow = (e) => {
         e.stopPropagation();
+
+        if (!product) return;
+
         if (!currentUser) {
             alert("Please log in to proceed with purchase.");
             navigate('/login');
             return;
         }
-        navigate('/checkout', { state: { directBuyProduct: { ...product, quantity: 1 } } });
+        // Unified Flow: Clear cart, add item, go to address
+        clearCart();
+        addToCart(product);
+        navigate('/checkout/address');
     };
 
     const handleWishlist = (e) => {
@@ -46,7 +54,9 @@ const ProductCard = ({ product }) => {
     const { shouldAnimate } = usePerformance();
 
     return (
-        <div
+        <Card
+            padded={false}
+            hoverable={shouldAnimate}
             onClick={() => {
                 if (product?.id) {
                     navigate(`/product/${product.id}`);
@@ -54,14 +64,15 @@ const ProductCard = ({ product }) => {
                     console.error("Product ID missing in ProductCard:", product);
                 }
             }}
-            className={`group bg-white rounded-3xl overflow-hidden shadow-sm transition-all duration-300 cursor-pointer flex flex-col h-full border border-gray-100 relative gpu-accelerated ${shouldAnimate ? 'hover:shadow-xl hover:shadow-orange-500/10' : ''}`}
+            className={`group h-full flex flex-col relative overflow-hidden bg-white rounded-3xl border-gray-100 ${shouldAnimate ? 'hover:shadow-xl hover:shadow-orange-500/10' : ''}`}
         >
             {/* Image Area */}
             <div className="relative aspect-square bg-gray-50 w-full overflow-hidden">
                 <img
                     src={imgSrc}
                     alt={product.name}
-                    className={`w-full h-full object-cover transition-transform duration-700 ${shouldAnimate ? 'group-hover:scale-110' : ''}`}
+                    loading="lazy"
+                    className={`w-full h-full object-cover transition-transform duration-300 ${shouldAnimate ? 'group-hover:scale-110' : ''}`}
                     onError={() => setImgSrc('https://placehold.co/400x400?text=No+Image')}
                 />
 
@@ -98,9 +109,9 @@ const ProductCard = ({ product }) => {
                     <div className="transition-all duration-300 ease-out transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 lg:block hidden">
                         <Button
                             variant="secondary"
-                            size="md"
+                            size="icon"
                             onClick={handleAddToCart}
-                            className="px-0 w-12 !min-w-[48px] !p-0 aspect-square rounded-full flex items-center justify-center bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-none hover:shadow-none"
+                            className="bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-none border-0"
                         >
                             <ShoppingCart size={18} />
                         </Button>
@@ -109,9 +120,9 @@ const ProductCard = ({ product }) => {
                     <div className="lg:hidden block">
                         <Button
                             variant="secondary"
-                            size="md"
+                            size="icon"
                             onClick={handleAddToCart}
-                            className="px-0 w-12 !min-w-[48px] !p-0 aspect-square rounded-full flex items-center justify-center bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-none hover:shadow-none"
+                            className="bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-none border-0"
                         >
                             <ShoppingCart size={18} />
                         </Button>
@@ -121,14 +132,14 @@ const ProductCard = ({ product }) => {
                         variant="primary"
                         size="md"
                         onClick={handleBuyNow}
-                        className="w-full rounded-full shadow-lg shadow-orange-500/20 group-hover:shadow-orange-500/40 transition-all"
+                        className="w-full rounded-full shadow-lg shadow-orange-500/20 group-hover:shadow-orange-500/40 transition-all font-black"
                     >
                         <Zap size={18} className="mr-1" fill="currentColor" />
                         Buy Now
                     </Button>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 };
 

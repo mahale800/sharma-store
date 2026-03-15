@@ -9,18 +9,6 @@ const GrowthDashboard = () => {
     const { getEngagementStats, loading } = useEngagement();
     const [metrics, setMetrics] = useState(null);
 
-    useEffect(() => {
-        // In a real app, this would fetch specific Growth API endpoints.
-        // For now, we derive from engagement stats + mock some investor data to illustrate the UI.
-        const fetchData = async () => {
-            const data = await getEngagementStats(30); // 30 Days for growth
-            if (data) {
-                setMetrics(processGrowthMetrics(data));
-            }
-        };
-        fetchData();
-    }, []);
-
     const processGrowthMetrics = (data) => {
         // Safe access to deep properties
         const sessions = data?.metrics?.ai?.sessions || 0;
@@ -38,6 +26,18 @@ const GrowthDashboard = () => {
             ]
         };
     };
+
+    useEffect(() => {
+        // In a real app, this would fetch specific Growth API endpoints.
+        // For now, we derive from engagement stats + mock some investor data to illustrate the UI.
+        const fetchData = async () => {
+            const data = await getEngagementStats(30); // 30 Days for growth
+            if (data) {
+                setMetrics(processGrowthMetrics(data));
+            }
+        };
+        fetchData();
+    }, []);
 
     if (!metrics) return <div className="p-12 text-center text-gray-400">Loading Growth Engine...</div>;
 

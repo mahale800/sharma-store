@@ -7,13 +7,13 @@ import { useAuth } from '../context/AuthContext';
 
 const TrackOrder = () => {
     const { orderId: paramOrderId } = useParams();
+    const { currentUser } = useAuth();
     const [searchParams, setSearchParams] = useState({ orderId: '', email: '' });
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const location = useLocation();
-    const [urlParams] = useSearchParams();
-    const [searched, setSearched] = useState(false);
+    const [urlParams, setUrlParams] = useSearchParams();
 
     // Auto-fill and Search from URL or State
     useEffect(() => {
@@ -24,7 +24,8 @@ const TrackOrder = () => {
 
         // Priority: Route Param > Query Param > State
         const effectiveOrderId = paramOrderId || queryOrderId || stateOrderId;
-        const effectiveEmail = queryEmail || stateEmail;
+        // Priority: Param > State > CurrentUser
+        const effectiveEmail = queryEmail || stateEmail || currentUser?.email;
 
         if (effectiveOrderId) {
             // Update inputs even if we auto-fetch
@@ -35,16 +36,15 @@ const TrackOrder = () => {
 
             // Auto-fetch if:
             // 1. We have both ID and Email
-            // 2. We have ID and User is Logged In
-            // 3. We have ID from route param (likely a direct link)
-            if (effectiveEmail || currentUser || paramOrderId) {
+            // 2. We have ID and User is Logged In (we can check userId match)
+            if (effectiveEmail || currentUser) {
                 fetchOrder(effectiveOrderId, effectiveEmail);
             }
         }
-    }, [location.state, urlParams, currentUser, paramOrderId]);
+    }, [location.state, urlParams, currentUser, paramOrderId, fetchOrder]);
 
     // Independent Fetcher to allow useEffect to call it
-    const fetchOrder = async (oid, uemail) => {
+    const fetchOrder = React.useCallback(async (oid, uemail) => {
         setLoading(true);
         setError(null);
         try {
@@ -67,11 +67,18 @@ const TrackOrder = () => {
 
             if (docSnap && docSnap.exists()) {
                 const data = docSnap.data();
+
+                // AUTH CHECK:
+                // 1. If Logged In & User ID matches -> Allow
+                // 2. Else -> Require Email Match
+                const isOwner = currentUser && data.userId === currentUser.uid;
                 const orderEmail = (data.userEmail || data.shippingAddress?.email || data.email || '').toLowerCase();
-                if (orderEmail === uemail.toLowerCase()) {
+                const searchEmail = (uemail || '').toLowerCase();
+
+                if (isOwner || (searchEmail && orderEmail === searchEmail)) {
                     setOrder({ id: docSnap.id, ...data });
                 } else {
-                    setError("Order found, but email does not match.");
+                    setError("Order found, but you are not authorized to view it. Verification failed.");
                 }
             } else {
                 setError("Order not found.");
@@ -81,41 +88,41 @@ const TrackOrder = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentUser]);
 
     // Trigger Fetch if params are present on mount
     useEffect(() => {
         const oid = urlParams.get('orderId') || location.state?.orderId;
         const email = urlParams.get('email') || location.state?.email;
 
-        if (oid && email) {
-            setSearchParams({ orderId: oid, email: email });
-            fetchOrder(oid, email);
+        if (oid && (email || currentUser)) {
+            // Re-run logic will be handled by the main useEffect above due to deps
+            // checking currentUser there is safer.
         }
-    }, []); // Run once on mount (reload/nav)
-
-    const [searchParamsState, setSearchParamsState] = useSearchParams();
+    }, [urlParams, location.state, currentUser]); // Run once on mount (reload/nav)
 
     const handleSearch = async (e) => {
         if (e) e.preventDefault();
         setError(null);
         setOrder(null);
         setLoading(true);
-        setSearched(true);
 
         const orderIdToSearch = searchParams.orderId;
         const emailToSearch = searchParams.email;
 
         // Update URL to make it shareable/persistent if triggered manually
-        setSearchParamsState({ orderId: orderIdToSearch, email: emailToSearch });
+        setUrlParams({ orderId: orderIdToSearch, email: emailToSearch });
 
         try {
             // Trim and clean input
             const orderId = orderIdToSearch.trim();
             const email = emailToSearch.trim().toLowerCase();
 
-            if (!orderId || !email) {
-                throw new Error("Please enter both Order ID and Email.");
+            if (!orderId) {
+                throw new Error("Please enter an Order ID.");
+            }
+            if (!email && !currentUser) {
+                throw new Error("Please enter Email Address.");
             }
 
             // 1. Try finding by matching 'orderId' field (New readable ID)
@@ -139,13 +146,14 @@ const TrackOrder = () => {
 
             if (docSnap && docSnap.exists()) {
                 const data = docSnap.data();
-                // Verify Email Match (Case insensitive check)
+
+                const isOwner = currentUser && data.userId === currentUser.uid;
                 const orderEmail = (data.userEmail || data.shippingAddress?.email || data.email || '').toLowerCase();
 
-                if (orderEmail === email) {
+                if (isOwner || (email && orderEmail === email)) {
                     setOrder({ id: docSnap.id, ...data });
                 } else {
-                    setError("Order found, but email does not match.");
+                    setError("Order found, but you are not authorized to view it.");
                 }
             } else {
                 setError("Order not found. Please check the ID.");
@@ -159,8 +167,9 @@ const TrackOrder = () => {
 
     // Helper for Status Steps
     const getStatusStep = (status) => {
-        const statusMap = { 'Pending': 0, 'Processing': 1, 'Shipped': 2, 'Delivered': 3, 'Cancelled': -1 };
-        return statusMap[status] !== undefined ? statusMap[status] : 0;
+        const s = (status || '').toLowerCase();
+        const statusMap = { 'pending': 0, 'placed': 0, 'processing': 1, 'shipped': 2, 'delivered': 3, 'cancelled': -1 };
+        return statusMap[s] !== undefined ? statusMap[s] : 0;
     };
 
     const steps = [
@@ -171,7 +180,7 @@ const TrackOrder = () => {
     ];
 
     return (
-        <div className="min-h-screen pt-32 pb-20 px-4 md:px-8 bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+        <div className="w-full pb-8 bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
             <div className="max-w-3xl mx-auto">
 
                 <div className="text-center mb-10">

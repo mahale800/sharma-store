@@ -11,6 +11,7 @@ export const useAnalytics = () => {
         totalOrders: 0,
         pendingOrders: 0,
         deliveredOrders: 0,
+        totalCustomers: 0,
         monthlySales: [],
         topProducts: []
     });
@@ -25,6 +26,7 @@ export const useAnalytics = () => {
                 let revenue = 0;
                 let pending = 0;
                 let delivered = 0;
+                const uniqueCustomers = new Set();
                 const productSales = {}; // { pid: { name, qty, revenue } }
                 const salesByDate = {}; // { "Jan 25": 500 }
 
@@ -38,6 +40,7 @@ export const useAnalytics = () => {
                     }
                     if (order.status === 'Pending') pending++;
                     if (order.status === 'Delivered') delivered++;
+                    if (order.userId) uniqueCustomers.add(order.userId);
 
                     // Chart Data (Group by Date)
                     let date;
@@ -86,6 +89,7 @@ export const useAnalytics = () => {
                     totalOrders: snapshot.size,
                     pendingOrders: pending,
                     deliveredOrders: delivered,
+                    totalCustomers: uniqueCustomers.size,
                     monthlySales: chartData,
                     topProducts
                 });

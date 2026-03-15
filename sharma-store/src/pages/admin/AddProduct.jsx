@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Save, Loader2, Link as LinkIcon, Upload, Image as ImageIcon, Trash2, Tag, IndianRupee, Layers, FileText } from 'lucide-react';
+import Button from '../../components/Button';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
@@ -62,9 +63,14 @@ const AddProduct = () => {
 
             {/* Header */}
             <div className="flex items-center gap-4">
-                <button onClick={() => navigate('/admin/products')} className="p-3 bg-white hover:bg-gray-50 rounded-2xl shadow-sm text-gray-500 hover:text-gray-900 transition-all">
+                <Button
+                    variant="white"
+                    size="icon"
+                    onClick={() => navigate('/admin/products')}
+                    className="shadow-sm text-gray-500 hover:text-gray-900"
+                >
                     <ArrowLeft size={24} />
-                </button>
+                </Button>
                 <div>
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight">{isEditMode ? 'Edit Product' : 'New Product'}</h1>
                 </div>
@@ -159,10 +165,16 @@ const AddProduct = () => {
                     </div>
 
                     {/* Action Button */}
-                    <button type="submit" disabled={loading} className={`w-full py-4 text-white font-bold text-lg rounded-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 ${isEditMode ? 'bg-blue-600 shadow-blue-200' : 'bg-green-500 shadow-green-200'}`}>
-                        {loading ? <Loader2 className="animate-spin" /> : <Save />}
+                    {/* Action Button */}
+                    <Button
+                        type="submit"
+                        isLoading={loading}
+                        disabled={loading}
+                        className={`w-full h-14 text-lg shadow-xl ${isEditMode ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-200' : 'bg-green-500 hover:bg-green-600 shadow-green-200'} text-white border-none`}
+                    >
+                        {!loading && <Save className="mr-2" />}
                         {isEditMode ? 'Update Product' : 'Save New Product'}
-                    </button>
+                    </Button>
 
                 </div>
             </form>

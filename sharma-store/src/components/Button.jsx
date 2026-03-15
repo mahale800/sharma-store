@@ -3,38 +3,55 @@ import { Loader2 } from 'lucide-react';
 
 const Button = ({
     children,
-    variant = 'primary',
-    size = 'md',
-    isLoading = false,
-    disabled,
+    variant = 'primary', // primary, secondary, outline, ghost, danger
+    size = 'md', // sm, md, lg, icon
     className = '',
+    isLoading = false,
+    disabled = false,
+    onClick,
+    type = 'button',
     ...props
 }) => {
 
-    const baseStyles = "inline-flex items-center justify-center font-outfit font-bold rounded-xl transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 gpu-accelerated";
+    // Base styles
+    const baseStyles = "relative inline-flex items-center justify-center font-bold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 select-none";
 
+    // Variants
     const variants = {
-        primary: "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 glow-hover",
-        secondary: "bg-gray-900 hover:bg-gray-800 text-white shadow-lg shadow-gray-900/20",
-        outline: "border-2 border-gray-200 hover:border-orange-500 text-gray-700 hover:text-orange-500 bg-transparent",
-        ghost: "bg-transparent hover:bg-orange-50 text-gray-600 hover:text-orange-600",
-        danger: "bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30"
+        primary: "bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 border border-transparent focus:ring-orange-500",
+        secondary: "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm focus:ring-gray-200",
+        outline: "bg-transparent border-2 border-orange-600 text-orange-600 hover:bg-orange-50 focus:ring-orange-500",
+        ghost: "bg-transparent text-gray-600 hover:text-orange-600 hover:bg-orange-50 border border-transparent focus:ring-gray-200",
+        danger: "bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500/30 border border-transparent focus:ring-red-500",
+        white: "bg-white text-gray-900 shadow-md hover:bg-gray-50 border border-transparent"
     };
 
+    // Sizes
     const sizes = {
-        sm: "px-3 py-1.5 text-xs",
-        md: "px-5 py-2.5 text-sm",
-        lg: "px-8 py-3 text-base w-full sm:w-auto"
+        sm: "h-9 px-4 text-xs",
+        md: "h-11 px-6 text-sm",
+        lg: "h-14 px-8 text-base",
+        icon: "h-11 w-11 p-0",
+        "icon-sm": "h-9 w-9 p-0",
+        "icon-lg": "h-14 w-14 p-0"
     };
 
     return (
         <button
+            type={type}
             className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+            onClick={onClick}
             disabled={disabled || isLoading}
             {...props}
         >
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {children}
+            {isLoading ? (
+                <>
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                    <span>Loading...</span>
+                </>
+            ) : (
+                children
+            )}
         </button>
     );
 };

@@ -1,11 +1,62 @@
-import Groq from "groq-sdk";
+console.log("OpenRouter key at runtime:", import.meta.env.VITE_OPENROUTER_API_KEY ? "Present" : "Missing");
 
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
-const groq = new Groq({
-    apiKey: GROQ_API_KEY,
-    dangerouslyAllowBrowser: true // Required for client-side usage
-});
+// Internal utility to call OpenRouter API
+async function callAI(messages, temperature = 0.5, max_tokens = 500) {
+    if (!API_KEY) {
+        console.warn("OpenRouter API key missing. AI features disabled.");
+        return null;
+    }
+
+    try {
+        let response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${API_KEY}`,
+                "HTTP-Referer": window.location.origin,
+                "X-Title": "Sharma Store",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "openai/gpt-4o-mini",
+                messages,
+                temperature,
+                max_tokens
+            })
+        });
+
+        if (!response.ok) {
+            console.warn("Primary AI model failed, attempting fallback...");
+            response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${API_KEY}`,
+                    "HTTP-Referer": window.location.origin,
+                    "X-Title": "Sharma Store",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: "deepseek/deepseek-chat",
+                    messages,
+                    temperature,
+                    max_tokens
+                })
+            });
+        }
+
+        if (!response.ok) {
+            console.error("OpenRouter API Error on Both Models:", response.status, response.statusText);
+            return null;
+        }
+
+        const data = await response.json();
+        return data?.choices?.[0]?.message?.content || null;
+    } catch (error) {
+        console.error("AI error:", error);
+        return null;
+    }
+}
 
 const SYSTEM_PROMPT = `
 You are Sharma Store’s intelligent assistant.
@@ -17,31 +68,15 @@ Do not promise actions or delivery timelines.
 `;
 
 export const getChatResponse = async (history) => {
-    if (!GROQ_API_KEY) {
-        throw new Error("Missing Groq API Key");
-    }
+    const response = await callAI([
+        { role: "system", content: SYSTEM_PROMPT },
+        ...history
+    ], 0.7, 200);
 
-    try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [
-                { role: "system", content: SYSTEM_PROMPT },
-                ...history
-            ],
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.7,
-            max_tokens: 200,
-        });
-
-        return chatCompletion.choices[0]?.message?.content || "I'm having trouble thinking right now. Please try again.";
-    } catch (error) {
-        console.error("AI Service Error:", error);
-        throw error;
-    }
+    return response || "I'm having trouble thinking right now. Please try again.";
 };
 
 export const getRecommendations = async (context, products) => {
-    if (!GROQ_API_KEY) return [];
-
     // Create a simplified list for the AI to save tokens
     const productList = products.map(p => `- ${p.name} (ID: ${p.id}, Category: ${p.category})`).join('\n');
 
@@ -60,29 +95,19 @@ export const getRecommendations = async (context, products) => {
     Example: ["id1", "id2", "id3"]
     `;
 
-    try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: "user", content: RECO_PROMPT }],
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.5,
-            max_tokens: 100,
-        });
+    const response = await callAI([{ role: "user", content: RECO_PROMPT }], 0.5, 100);
 
-        const content = chatCompletion.choices[0]?.message?.content;
-        const jsonMatch = content.match(/\[.*\]/s);
-
+    if (response) {
+        const jsonMatch = response.match(/\[.*\]/s);
         if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
+            try { return JSON.parse(jsonMatch[0]); } catch { /* empty */ }
         }
-        return [];
-    } catch (error) {
-        console.error("AI Recommendation Error:", error);
-        return [];
     }
+    return [];
 };
 
 export const analyzeFeedback = async (feedbackList) => {
-    if (!GROQ_API_KEY || feedbackList.length === 0) return null;
+    if (feedbackList.length === 0) return null;
 
     const feedbackText = feedbackList.map(f => `- [${f.type}] ${f.category}: ${f.message}`).join('\n');
 
@@ -103,29 +128,19 @@ export const analyzeFeedback = async (feedbackList) => {
     }
     `;
 
-    try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: "user", content: ANALYSIS_PROMPT }],
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.5,
-            max_tokens: 300,
-        });
+    const response = await callAI([{ role: "user", content: ANALYSIS_PROMPT }], 0.5, 300);
 
-        const content = chatCompletion.choices[0]?.message?.content;
-        const jsonMatch = content.match(/\{[\s\S]*\}/); // Find JSON object
-
+    if (response) {
+        const jsonMatch = response.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
+            try { return JSON.parse(jsonMatch[0]); } catch { /* empty */ }
         }
-        return null;
-    } catch (error) {
-        console.error("AI Analysis Error:", error);
-        return null;
     }
+    return null;
 };
 
 export const generateRoadmap = async (feedbackList) => {
-    if (!GROQ_API_KEY || feedbackList.length === 0) return [];
+    if (feedbackList.length === 0) return [];
 
     const feedbackText = feedbackList.map(f => `- [${f.type}] ${f.message} (${f.page})`).join('\n');
 
@@ -153,29 +168,19 @@ export const generateRoadmap = async (feedbackList) => {
     ]
     `;
 
-    try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: "user", content: ROADMAP_PROMPT }],
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.4,
-            max_tokens: 600,
-        });
+    const response = await callAI([{ role: "user", content: ROADMAP_PROMPT }], 0.4, 600);
 
-        const content = chatCompletion.choices[0]?.message?.content;
-        const jsonMatch = content.match(/\[[\s\S]*\]/);
-
+    if (response) {
+        const jsonMatch = response.match(/\[[\s\S]*\]/);
         if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
+            try { return JSON.parse(jsonMatch[0]); } catch { /* empty */ }
         }
-        return [];
-    } catch (error) {
-        console.error("AI Roadmap Generation Error:", error);
-        return [];
     }
+    return [];
 };
 
 export const analyzeSentimentBatch = async (feedbackList) => {
-    if (!GROQ_API_KEY || feedbackList.length === 0) return {};
+    if (feedbackList.length === 0) return {};
 
     const feedbackText = feedbackList.map(f => `ID: ${f.id} | Type: ${f.type} | Message: ${f.message}`).join('\n');
 
@@ -198,29 +203,19 @@ export const analyzeSentimentBatch = async (feedbackList) => {
     }
     `;
 
-    try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: "user", content: SENTIMENT_PROMPT }],
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.3,
-            max_tokens: 1000,
-        });
+    const response = await callAI([{ role: "user", content: SENTIMENT_PROMPT }], 0.3, 1000);
 
-        const content = chatCompletion.choices[0]?.message?.content;
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-
+    if (response) {
+        const jsonMatch = response.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
+            try { return JSON.parse(jsonMatch[0]); } catch { /* empty */ }
         }
-        return {};
-    } catch (error) {
-        console.error("AI Sentiment Analysis Error:", error);
-        return {};
     }
+    return {};
 };
 
 export const generateBusinessInsights = async (feedbackList, stats) => {
-    if (!GROQ_API_KEY || feedbackList.length === 0) return [];
+    if (feedbackList.length === 0) return [];
 
     const feedbackSummary = feedbackList.map(f => `[${f.sentiment}] ${f.type}: ${f.message}`).join('\n').slice(0, 2000);
     const analyticsContext = `
@@ -252,30 +247,18 @@ export const generateBusinessInsights = async (feedbackList, stats) => {
     ]
     `;
 
-    try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: "user", content: INSIGHTS_PROMPT }],
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.5,
-            max_tokens: 500,
-        });
+    const response = await callAI([{ role: "user", content: INSIGHTS_PROMPT }], 0.5, 500);
 
-        const content = chatCompletion.choices[0]?.message?.content;
-        const jsonMatch = content.match(/\[[\s\S]*\]/);
-
+    if (response) {
+        const jsonMatch = response.match(/\[[\s\S]*\]/);
         if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
+            try { return JSON.parse(jsonMatch[0]); } catch { /* empty */ }
         }
-        return [];
-    } catch (error) {
-        console.error("AI Business Insights Error:", error);
-        return [];
     }
+    return [];
 };
 
 export const generateNotificationCopy = async (rawMessage, tone) => {
-    if (!GROQ_API_KEY) return rawMessage; // Fallback
-
     const TONE_PROMPTS = {
         'Professional': "Make this notification concise, helpful, and professional.",
         'Friendly': "Make this notification warm, inviting, and use an emoji.",
@@ -291,25 +274,11 @@ export const generateNotificationCopy = async (rawMessage, tone) => {
     Constraint: Keep it under 20 words. No quotes.
     `;
 
-    try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: "user", content: prompt }],
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.7,
-            max_tokens: 50,
-        });
-
-        return chatCompletion.choices[0]?.message?.content?.replace(/^"|"$/g, '') || rawMessage;
-    } catch (error) {
-        console.error("AI Notification Gen Error:", error);
-        return rawMessage;
-    }
+    const response = await callAI([{ role: "user", content: prompt }], 0.7, 50);
+    return response?.replace(/^"|"$/g, '') || rawMessage;
 };
 
 export const generateEngagementInsights = async (metrics) => {
-    if (!GROQ_API_KEY) return [];
-
-    // Safe fallback for metrics structure
     const safeMetrics = {
         notificationsValue: metrics?.notifications?.clicked || 0,
         aiSessions: metrics?.ai?.sessions || 0,
@@ -333,19 +302,13 @@ export const generateEngagementInsights = async (metrics) => {
     ]
     `;
 
-    try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: "user", content: PROMPT }],
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.6,
-            max_tokens: 300,
-        });
+    const response = await callAI([{ role: "user", content: PROMPT }], 0.6, 300);
 
-        const content = chatCompletion.choices[0]?.message?.content;
-        const jsonMatch = content.match(/\[[\s\S]*\]/);
-        return jsonMatch ? JSON.parse(jsonMatch[0]) : [];
-    } catch (error) {
-        console.error("AI Engagement Insights Error:", error);
-        return [];
+    if (response) {
+        const jsonMatch = response.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+            try { return JSON.parse(jsonMatch[0]); } catch (e) { }
+        }
     }
+    return [];
 };

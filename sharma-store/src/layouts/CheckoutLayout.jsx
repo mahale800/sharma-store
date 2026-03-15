@@ -16,7 +16,7 @@ const CheckoutLayout = () => {
     const steps = [
         { path: 'cart', label: 'Cart', icon: ShoppingBag, disabled: false },
         { path: 'address', label: 'Address', icon: MapPin, disabled: false },
-        { path: 'payment', label: 'Payment', icon: CreditCard, disabled: pathname !== '/checkout/payment' && pathname !== '/order-success' }
+        { path: 'payment', label: 'Payment', icon: CreditCard, disabled: !pathname.includes('payment') && !pathname.includes('success') }
     ];
 
     const currentStepIndex = steps.findIndex(s => pathname.includes(s.path)) || (pathname.includes('/cart') ? 0 : 1);

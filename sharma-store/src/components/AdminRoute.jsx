@@ -20,12 +20,11 @@ const AdminRoute = () => {
                 const userDocRef = doc(db, "users", currentUser.uid);
                 const userSnapshot = await getDoc(userDocRef);
 
-                // TEMPORARY BYPASS: Allow anyone to be admin for development
-                if (userSnapshot.exists()) {
+                // STRICT SECURITY: Only allow actual admins
+                if (userSnapshot.exists() && userSnapshot.data().role === 'admin') {
                     setIsAdmin(true);
                 } else {
-                    // Fallback for new users who might not have a doc yet
-                    setIsAdmin(true);
+                    setIsAdmin(false);
                 }
             } catch (error) {
                 console.error("Error verifying admin role:", error);
@@ -90,32 +89,8 @@ const AdminRoute = () => {
     }
 
     if (!isAdmin) {
-        return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
-                <ShieldAlert size={64} className="text-red-500 mb-4" />
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-                <p className="text-gray-500 mb-6 max-w-md">
-                    You do not have permission to view this page. This area is restricted to administrators only.
-                </p>
-                <div className="flex gap-4">
-                    <button
-                        onClick={async () => {
-                            await logout();
-                            navigate('/login');
-                        }}
-                        className="px-6 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all rounded-lg font-medium"
-                    >
-                        Log Out
-                    </button>
-                    <button
-                        onClick={() => navigate('/')}
-                        className="flex items-center gap-2 px-6 py-2 bg-gray-900 text-white hover:bg-gray-800 transition-all rounded-lg font-bold"
-                    >
-                        <Home size={18} /> Go Home
-                    </button>
-                </div>
-            </div>
-        );
+        // As requested: Redirect unauthorized users to / instead of showing the Access Denied page
+        return <Navigate to="/" replace />;
     }
 
     return <Outlet />;

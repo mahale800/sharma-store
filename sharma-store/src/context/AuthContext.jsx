@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     // Google Sign In
-    const googleSignIn = async () => {
+    const loginWithGoogle = async () => {
         // Do NOT set global loading here
         try {
             await signInWithPopup(auth, googleProvider);
@@ -146,7 +146,7 @@ export const AuthProvider = ({ children }) => {
         currentUser,
         signupWithEmail,
         loginWithEmail,
-        googleSignIn,
+        loginWithGoogle,
         logout,
         resetPassword,
         loading

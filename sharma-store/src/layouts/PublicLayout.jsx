@@ -23,7 +23,7 @@ const PublicLayout = () => {
                 <ChatBot />
             </div>
 
-            <div className="min-h-screen flex flex-col">
+            <div className="min-h-screen flex flex-col pt-28 md:pt-32 pb-20 md:pb-0">
                 <AnimatePresence mode="wait">
                     {/* Key on Routes usually works better, but here we wrap Outlet.
                         To make AnimatePresence work with Outlet, the Outlet's content must differ.

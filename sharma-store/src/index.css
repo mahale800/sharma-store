@@ -8,7 +8,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Outfit', sans-serif, system-ui;
   background-color: #f8fafc;
   /* Slate-50 */
   background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
@@ -39,9 +39,8 @@ body {
 
 /* Tactile Buttons */
 button {
-  /* @apply cursor-pointer active:scale-95 transition-transform duration-100; */
   cursor: pointer;
-  transition: transform 100ms;
+  transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:active {
@@ -217,6 +216,45 @@ button:active {
   }
 }
 
-.animate-bounce-short {
-  animation: bounceShort 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+/* --- PRINT STYLES --- */
+@media print {
+  @page {
+    size: auto;
+    margin: 0mm;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  /* Hide everything by default if not strictly part of print view */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Only show content inside print:block containers and the container itself */
+  .print\:block,
+  .print\:block * {
+    visibility: visible;
+  }
+
+  .print\:block {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  /* Hide scrollbars and specific UI elements explicitly just in case */
+  .no-print,
+  nav,
+  footer,
+  button {
+    display: none !important;
+  }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import StatsCard from './StatsCard';
-import { DollarSign, ShoppingBag, Package, MessageSquare } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users } from 'lucide-react';
 
 const StatsCards = ({ stats, feedbackKPIs }) => {
     return (
@@ -24,9 +24,9 @@ const StatsCards = ({ stats, feedbackKPIs }) => {
                 color="bg-orange-500 shadow-orange-500/30"
             />
             <StatsCard
-                title="User Sentiment"
-                value={`${100 - (feedbackKPIs?.negativePct || 0)}% +Ve`}
-                icon={MessageSquare}
+                title="Total Customers"
+                value={stats?.totalCustomers || 0}
+                icon={Users}
                 color="bg-purple-500 shadow-purple-500/30"
             />
         </div>

@@ -55,7 +55,7 @@ ${orderData.address.city}, ${orderData.address.state} - ${orderData.address.pinc
         `.trim();
 
         // 4. Send Message (Simulation / API Stub)
-        await simulateWhatsAppAPI(settings.whatsappNumber, message);
+        await simulateWhatsAppAPI();
 
     } catch (error) {
         // Fail silently so we don't block the user flow
@@ -66,7 +66,7 @@ ${orderData.address.city}, ${orderData.address.state} - ${orderData.address.pinc
 /**
  * Simulates the HTTP call to your backend/WhatsApp Cloud API
  */
-const simulateWhatsAppAPI = async (phoneNumber, message) => {
+const simulateWhatsAppAPI = async () => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve({ success: true });

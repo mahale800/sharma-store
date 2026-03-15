@@ -5,108 +5,123 @@ const Invoice = ({ order, user }) => {
     if (!order) return null;
 
     return (
-        <div className="bg-white text-black p-8 max-w-[210mm] mx-auto min-h-[297mm] relative leading-normal">
+        <div className="bg-white text-black p-10 max-w-[210mm] mx-auto min-h-[297mm] relative leading-relaxed font-sans print:w-full print:max-w-none print:min-h-0 print:p-8">
+            {/* Watermark/Background decoration for premium feel (Screen only) */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gray-50 via-transparent to-transparent -z-10 rounded-bl-[100px] print:hidden"></div>
+
             {/* Header */}
-            <div className="flex justify-between items-start border-b-2 border-gray-800 pb-6 mb-6">
+            <div className="flex justify-between items-start border-b border-gray-900 pb-8 mb-8">
                 <div>
-                    <div className="scale-75 origin-top-left -mb-2">
+                    <div className="scale-90 origin-top-left -mb-1">
                         <Logo variant="full" />
                     </div>
-                    <div className="text-xs font-medium text-gray-600 mt-2 space-y-0.5">
+                    <div className="text-xs font-medium text-gray-500 mt-4 space-y-1">
+                        <p className="font-bold text-gray-900">Sharma Store</p>
                         <p>123, Stationery Lane, Art District</p>
                         <p>New Delhi, India - 110001</p>
-                        <p>support@sharmastore.com</p>
-                        <p>+91 98765 43210</p>
+                        <p>support@sharmastore.com • +91 98765 43210</p>
                     </div>
                 </div>
                 <div className="text-right">
-                    <h1 className="text-4xl font-extrabold text-gray-900 uppercase tracking-widest">INVOICE</h1>
-                    <div className="mt-2 text-sm text-gray-900 space-y-1">
-                        <p className="font-bold"># {order.orderId || order.id}</p>
-                        <p>{order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : new Date(order.createdAt).toLocaleDateString()}</p>
+                    <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase opacity-10">INVOICE</h1>
+                    <div className="mt-[-2rem] relative z-10">
+                        <p className="text-lg font-bold text-gray-900 mb-1">Recipe # {order.orderId || order.id}</p>
+                        <p className="text-sm text-gray-500">Date: {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date(order.createdAt).toLocaleDateString('en-IN')}</p>
                     </div>
                 </div>
             </div>
 
-            {/* Bill To / Ship To */}
-            <div className="grid grid-cols-2 gap-8 mb-8">
-                <div>
-                    <h3 className="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2">Billed To</h3>
-                    <div className="text-sm font-semibold text-gray-800">
-                        <p className="text-base text-black mb-1">{user?.displayName || order.address?.fullName || 'Customer'}</p>
-                        <p>{order.address?.streetAddress || order.address?.addressLine1}</p>
+            {/* Bill To / Ship To Grid */}
+            <div className="grid grid-cols-2 gap-12 mb-10">
+                <div className="space-y-1">
+                    <h3 className="text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-3">Billed To</h3>
+                    <p className="font-bold text-gray-900 text-lg">{order.address?.fullName || user?.displayName || 'Guest Customer'}</p>
+                    <div className="text-sm text-gray-600 leading-snug">
+                        <p>{order.address?.addressLine1 || order.address?.streetAddress}</p>
                         <p>{order.address?.city}, {order.address?.state}</p>
                         <p>{order.address?.pincode}</p>
-                        <p className="mt-1 font-bold">{order.address?.phoneNumber}</p>
-                        <p className="text-xs text-gray-600">{order.userEmail || user?.email}</p>
+                    </div>
+                    <div className="pt-2">
+                        <p className="text-sm font-medium text-gray-900">Ph: {order.address?.phoneNumber}</p>
+                        <p className="text-sm text-gray-500">{order.userEmail || user?.email}</p>
                     </div>
                 </div>
-                <div className="text-right">
-                    <h3 className="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2">Payment Details</h3>
-                    <div className="text-sm font-semibold text-gray-800">
-                        <p className="mb-1">Method: <span className="uppercase">{order.paymentMethod || 'Online'}</span></p>
-                        <p>Trans ID: {order.transactionId || 'N/A'}</p>
-                        <div className="mt-4 inline-block px-3 py-1 border border-black rounded text-xs font-bold uppercase">
+
+                <div className="space-y-6 text-right">
+                    <div>
+                        <h3 className="text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-3">Payment Info</h3>
+                        <p className="text-sm font-medium text-gray-900"><span className="text-gray-500">Method:</span> <span className="capitalize">{order.paymentMethod || 'Online'}</span></p>
+                        <p className="text-sm font-medium text-gray-900"><span className="text-gray-500">Trans ID:</span> {order.transactionId || '—'}</p>
+                    </div>
+                    <div>
+                        <h3 className="text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-3">Order Status</h3>
+                        <span className={`inline-block px-3 py-1 rounded border ${order.status === 'Delivered' ? 'border-green-200 bg-green-50 text-green-700' : 'border-gray-200 bg-gray-50 text-gray-700'} text-xs font-bold uppercase tracking-wide`}>
                             {order.status || 'Confirmed'}
-                        </div>
+                        </span>
                     </div>
                 </div>
             </div>
 
             {/* Items Table */}
-            <div className="mb-8">
+            <div className="mb-10">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="border-b-2 border-gray-800">
-                            <th className="py-2 text-xs font-bold uppercase text-gray-600">Item Name</th>
-                            <th className="py-2 text-xs font-bold uppercase text-gray-600 text-center">Qty</th>
-                            <th className="py-2 text-xs font-bold uppercase text-gray-600 text-right">Unit Price</th>
-                            <th className="py-2 text-xs font-bold uppercase text-gray-600 text-right">Total</th>
+                        <tr className="border-b-2 border-gray-900">
+                            <th className="py-3 text-[10px] font-bold uppercase text-gray-500 tracking-wider w-1/2">Item Description</th>
+                            <th className="py-3 text-[10px] font-bold uppercase text-gray-500 tracking-wider text-center">Qty</th>
+                            <th className="py-3 text-[10px] font-bold uppercase text-gray-500 tracking-wider text-right">Unit Price</th>
+                            <th className="py-3 text-[10px] font-bold uppercase text-gray-500 tracking-wider text-right">Amount</th>
                         </tr>
                     </thead>
                     <tbody className="text-sm">
                         {order.items?.map((item, idx) => (
-                            <tr key={idx} className="border-b border-gray-200">
-                                <td className="py-3 pr-4">
+                            <tr key={idx} className="border-b border-gray-100 last:border-0">
+                                <td className="py-4 pr-4 align-top">
                                     <p className="font-bold text-gray-900">{item.name}</p>
-                                    <p className="text-xs text-gray-500">{item.variant || 'Standard'}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{item.variant || 'Standard Edition'}</p>
                                 </td>
-                                <td className="py-3 text-center font-medium">{item.quantity}</td>
-                                <td className="py-3 text-right font-medium">₹{item.price}</td>
-                                <td className="py-3 text-right font-bold">₹{item.price * item.quantity}</td>
+                                <td className="py-4 text-center font-medium text-gray-700 align-top">{item.quantity}</td>
+                                <td className="py-4 text-right font-medium text-gray-700 align-top">₹{item.price}</td>
+                                <td className="py-4 text-right font-bold text-gray-900 align-top">₹{item.price * item.quantity}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
 
-            {/* Totals */}
-            <div className="flex justify-end mb-12">
-                <div className="w-1/2 max-w-xs space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span className="font-medium text-gray-600">Subtotal</span>
-                        <span className="font-bold">₹{order.total}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                        <span className="font-medium text-gray-600">Shipping</span>
-                        <span className="font-bold text-gray-900">Free</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                        <span className="font-medium text-gray-600">Tax (Incl.)</span>
-                        <span className="font-bold text-gray-900">₹0.00</span>
-                    </div>
-                    <div className="border-t-2 border-gray-800 pt-2 flex justify-between text-lg font-black mt-2">
-                        <span>Total</span>
-                        <span>₹{order.total}</span>
+            {/* Totals Section */}
+            <div className="flex justify-end mb-20">
+                <div className="w-full max-w-xs bg-gray-50 p-6 rounded-lg print:bg-transparent print:p-0">
+                    <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                            <span className="font-medium text-gray-500">Subtotal</span>
+                            <span className="font-bold text-gray-900">₹{order.total}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                            <span className="font-medium text-gray-500">Shipping</span>
+                            <span className="font-bold text-green-600">Free</span>
+                        </div>
+                        <div className="h-px bg-gray-200 my-2"></div>
+                        <div className="flex justify-between items-end">
+                            <span className="font-black text-gray-900 text-lg">Total</span>
+                            <span className="font-black text-gray-900 text-2xl">₹{order.total}</span>
+                        </div>
+                        <p className="text-[10px] text-right text-gray-400 mt-2">Inclusive of all taxes</p>
                     </div>
                 </div>
             </div>
 
-            {/* Footer */}
-            <div className="absolute bottom-10 left-8 right-8 text-center border-t border-gray-200 pt-6">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Thank you for shopping with Sharma Store</p>
-                <p className="text-[10px] text-gray-400">This is a computer-generated invoice and does not require a physical signature.</p>
-                <p className="text-[10px] text-gray-400 mt-1">Visit us at www.sharmastore.com</p>
+            {/* Footer - Fixed at bottom not required, let it flow naturally for better variable height handling, 
+               but we can use absolute bottom for that "single page" feel if we know it fits.
+               Let's use margin-top auto to push it down if there's space, or just standard flow.
+            */}
+            <div className="border-t-2 border-gray-900 pt-6 text-center">
+                <p className="text-sm font-bold text-gray-900 mb-1">Thank you for your business!</p>
+                <div className="text-[10px] text-gray-500 uppercase tracking-wide space-x-4">
+                    <span>www.sharmastore.com</span>
+                    <span>•</span>
+                    <span>support@sharmastore.com</span>
+                </div>
             </div>
         </div>
     );

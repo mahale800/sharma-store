@@ -34,7 +34,11 @@ const StreakWarningBanner = ({ onClaimClick }) => {
                     }
                 }
             } catch (error) {
-                console.error("Warning check failed", error);
+                if (error.code === 'permission-denied') {
+                    console.warn("Streak check skipped (rules not deployed).");
+                } else {
+                    console.error("Warning check failed", error);
+                }
             }
         };
 

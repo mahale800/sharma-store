@@ -53,8 +53,8 @@ const Home = () => {
     return (
         <>
             {/* Main Content */}
-            <div className="min-h-screen pt-32 pb-24 bg-slate-50 font-sans page-enter relative z-0">
-                <main className="max-w-[1300px] mx-auto px-4 sm:px-6 md:px-12">
+            <div className="w-full pb-8 bg-slate-50 font-sans page-enter relative z-0">
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
 
                     {/* Bento Grid Hero Layout */}
                     {!searchQuery && (selectedCategory === "All" || selectedCategory === "all") && (
@@ -185,7 +185,7 @@ const Home = () => {
                                 initial="hidden"
                                 whileInView="show"
                                 viewport={{ once: true }}
-                                className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8"
+                                className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"
                             >
                                 {filteredProducts.map((product) => (
                                     <motion.div key={product.id} variants={itemVariants} className="h-full">

@@ -1,0 +1,138 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -----------------------------
+    // AUTH HELPER FUNCTIONS
+    // -----------------------------
+    function isLoggedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isLoggedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    function isOwner(userId) {
+      return isLoggedIn() && request.auth.uid == userId;
+    }
+
+    // -----------------------------
+    // USERS COLLECTION & LOYALTY
+    // -----------------------------
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      // CAUTION: "update" allows users to modify their own coins (Client-side logic limitation)
+      // Ideally this should be server-side only.
+      allow update: if isOwner(userId) || isAdmin();
+      allow create: if isLoggedIn() && request.auth.uid == userId;
+    }
+
+    // -----------------------------
+    // PRODUCTS COLLECTION
+    // -----------------------------
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // -----------------------------
+    // ORDERS COLLECTION
+    // -----------------------------
+    match /orders/{orderId} {
+      allow create: if isLoggedIn();
+
+      // Get allows fetching a specific order by its exact random ID (secure enough for Guest Tracking)
+      allow get: if true;
+      
+      // List locks down broad queries to the specific user or an admin
+      allow list: if isLoggedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // -----------------------------
+    // ROADMAP COLLECTION
+    // -----------------------------
+    match /roadmap/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // -----------------------------
+    // SETTINGS COLLECTION
+    // -----------------------------
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // -----------------------------
+    // FEEDBACK COLLECTION
+    // -----------------------------
+    match /feedback/{feedbackId} {
+      allow create: if true; // Allow public/anonymous feedback
+      allow read, update, delete: if isAdmin();
+    }
+
+    // -----------------------------
+    // ANALYTICS COLLECTION
+    // -----------------------------
+    match /analytics_events/{eventId} {
+      allow create: if true; // Allow public/anonymous logging
+      allow read, update, delete: if isAdmin();
+    }
+
+    // -----------------------------
+    // USER CARTS
+    // -----------------------------
+    match /userCarts/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    // -----------------------------
+    // NOTIFICATION PREFERENCES
+    // -----------------------------
+    match /notificationPreferences/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    // -----------------------------
+    // NOTIFICATIONS
+    // -----------------------------
+    match /notifications/{notifId} {
+      allow read, update, delete: if isLoggedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isLoggedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // -----------------------------
+    // WISHLIST COLLECTION (Future Use)
+    // -----------------------------
+    // Currently using localStorage, but rule prepared for future migration
+    match /wishlists/{docId} {
+      allow read, write: if isLoggedIn()
+        && request.auth.uid == resource.data.userId;
+    }
+
+    // -----------------------------
+    // REVIEWS COLLECTION (Future Use)
+    // -----------------------------
+    // Currently using mock data, but rule prepared
+    match /productReviews/{reviewId} {
+      allow read: if true;
+      allow create: if isLoggedIn();
+      allow update, delete: if isLoggedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // -----------------------------
+    // COUPONS COLLECTION (Future Use)
+    // -----------------------------
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

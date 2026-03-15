@@ -12,16 +12,16 @@ const AdminFeedback = () => {
     const [insights, setInsights] = useState(null);
     const [sentimentLoading, setSentimentLoading] = useState(false);
 
-    useEffect(() => {
-        fetchFeedback();
-    }, []);
-
-    const fetchFeedback = async () => {
+    const fetchFeedback = React.useCallback(async () => {
         setLoading(true);
         const data = await getFeedback();
         setFeedbackList(data);
         setLoading(false);
-    };
+    }, [getFeedback]);
+
+    useEffect(() => {
+        fetchFeedback();
+    }, [fetchFeedback]);
 
     const handleBatchSentiment = async () => {
         setSentimentLoading(true);

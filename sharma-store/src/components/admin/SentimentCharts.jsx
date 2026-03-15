@@ -39,13 +39,13 @@ const SentimentCharts = ({ feedbackList = [] }) => {
     if (pieData.length === 0) return null;
 
     return (
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 ${shouldAnimate ? 'animate-in fade-in duration-500' : ''}`}>
+        <div className={`flex flex-col gap-6 h-full ${shouldAnimate ? 'animate-in fade-in duration-500' : ''}`}>
 
             {/* Pie Chart: Overall Sentiment */}
-            <div className="bg-white/50 backdrop-blur-xl border border-white/60 rounded-3xl p-6 shadow-sm">
+            <div className="bg-white/50 backdrop-blur-xl border border-white/60 rounded-3xl p-6 shadow-sm flex-1 min-h-[300px]">
                 <h3 className="font-bold text-gray-800 mb-4">Overall Sentiment</h3>
-                <div className="h-[250px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                <div className="h-[220px] w-full">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                         <PieChart>
                             <Pie
                                 data={pieData}
@@ -70,10 +70,10 @@ const SentimentCharts = ({ feedbackList = [] }) => {
             </div>
 
             {/* Bar Chart: Sentiment by Page */}
-            <div className="bg-white/50 backdrop-blur-xl border border-white/60 rounded-3xl p-6 shadow-sm">
+            <div className="bg-white/50 backdrop-blur-xl border border-white/60 rounded-3xl p-6 shadow-sm flex-1 min-h-[300px]">
                 <h3 className="font-bold text-gray-800 mb-4">Sentiment by Page</h3>
-                <div className="h-[250px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                <div className="h-[220px] w-full">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                         <BarChart
                             data={barData}
                             layout="vertical"

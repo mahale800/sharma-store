@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
+import React from 'react';
+// removed unused firebase imports
 import ProductCard from '../components/ProductCard';
 import { Search } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { motion } from 'framer-motion';
+import Button from '../components/Button';
 
 const Shop = () => {
     const {
@@ -31,8 +31,8 @@ const Shop = () => {
     };
 
     return (
-        <div className="min-h-screen pt-28 pb-24 bg-slate-50 font-sans page-enter">
-            <div className="max-w-[1300px] mx-auto px-4 sm:px-6 md:px-12">
+        <div className="w-full pb-8 bg-slate-50 font-sans page-enter">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
 
                 {/* Header Section */}
                 <div className="mb-8">
@@ -104,7 +104,7 @@ const Shop = () => {
                         variants={containerVariants}
                         initial="hidden"
                         animate="show"
-                        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8"
+                        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"
                     >
                         {filteredProducts.map((product) => (
                             <motion.div key={product.id} variants={itemVariants} className="h-full">
@@ -119,12 +119,15 @@ const Shop = () => {
                         </div>
                         <h2 className="text-xl font-bold text-gray-900 mb-2">No products found</h2>
                         <p className="text-gray-500">Try adjusting your search or filters.</p>
-                        <button
-                            onClick={resetFilters}
-                            className="mt-6 px-6 py-2 bg-orange-600 text-white font-bold rounded-xl shadow-lg hover:bg-orange-700 transition-colors"
-                        >
-                            Clear Filters
-                        </button>
+                        <div className="mt-6">
+                            <Button
+                                variant="primary"
+                                onClick={resetFilters}
+                                className="px-6 py-2 rounded-xl shadow-lg hover:shadow-orange-500/40"
+                            >
+                                Clear Filters
+                            </Button>
+                        </div>
                     </div>
                 )}
 

@@ -3,188 +3,348 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { db } from '../../firebase/firebase';
-import { collection, addDoc } from 'firebase/firestore';
-import { ShieldCheck, Loader2, Edit2, MapPin, Banknote, QrCode, Lock } from 'lucide-react';
+import { collection, addDoc, doc, updateDoc, increment, arrayUnion } from 'firebase/firestore';
+import { ShieldCheck, Loader2, Edit2, MapPin, Banknote, QrCode, Lock, CreditCard, ChevronRight, Wallet, CheckCircle } from 'lucide-react';
+import Button from '../../components/Button';
 import { sendOrderNotification } from '../../services/whatsappService';
 import { generateOrderId } from '../../utils/orderUtils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Payment = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const { currentUser } = useAuth();
+    const { cartItems, getCartTotal, clearCart } = useCart();
 
-    // Strict Auth Gate: Reduce flicker
-    useEffect(() => {
-        if (!currentUser) {
-            navigate('/login');
-        }
-    }, [currentUser, navigate]);
-    const { cartItems, cartTotal, clearCart } = useCart();
+    // Data Setup
+    const orderItems = cartItems;
+    const totalAmount = getCartTotal();
 
     // State
     const [loading, setLoading] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState('cod');
-    const [shippingAddress, setShippingAddress] = useState(null);
+    const [processingStep, setProcessingStep] = useState(null); // 'connecting', 'verifying', 'approving'
+    const [paymentMethod, setPaymentMethod] = useState('card'); // card, upi, wallet, cod
+    const [shippingAddress, setShippingAddress] = useState(() => JSON.parse(localStorage.getItem('sharma-shipping-address')));
 
-    // Get Data
-    const directBuyProduct = location.state?.directBuyProduct;
-    const orderItems = directBuyProduct ? [{ ...directBuyProduct, quantity: 1 }] : cartItems;
-    const totalAmount = directBuyProduct ? directBuyProduct.price : cartTotal;
+    // Form States
+    const [cardData, setCardData] = useState({ number: '', name: '', expiry: '', cvv: '' });
+    const [upiId, setUpiId] = useState('');
+    const [walletProvider, setWalletProvider] = useState('paytm');
 
+    // Auth & Data Check
     useEffect(() => {
-        // Redirect if no data
-        if (!directBuyProduct && cartItems.length === 0) {
+        if (!currentUser) { navigate('/login'); return; }
+
+        if (cartItems.length === 0) {
             navigate('/cart');
             return;
         }
 
-        // Load Address
         const savedAddr = localStorage.getItem('sharma-shipping-address');
-        if (!savedAddr) {
-            navigate('/checkout/address');
-        } else {
-            setShippingAddress(JSON.parse(savedAddr));
+        if (!savedAddr) navigate('/checkout/address');
+    }, [currentUser, navigate, cartItems]);
+
+    // Helpers
+    const formatCardNumber = (val) => {
+        return val.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19);
+    };
+
+    const handleCardChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'number') setCardData(prev => ({ ...prev, [name]: formatCardNumber(value) }));
+        else if (name === 'expiry') {
+            let v = value.replace(/\D/g, '');
+            if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
+            setCardData(prev => ({ ...prev, [name]: v.slice(0, 5) }));
         }
-    }, [navigate, directBuyProduct, cartItems]);
+        else if (name === 'cvv') setCardData(prev => ({ ...prev, [name]: value.replace(/\D/g, '').slice(0, 3) }));
+        else setCardData(prev => ({ ...prev, [name]: value }));
+    };
 
-    const handlePlaceOrder = async () => {
-        setLoading(true);
-
+    const processOrder = async () => {
         try {
-            // Fake Payment Delay
-            if (paymentMethod === 'online') {
-                await new Promise(r => setTimeout(r, 2000));
-            }
-
-            // Generate a random transaction ID for realism
-            // Generate a random transaction ID for realism
-            const transactionId = paymentMethod === 'online'
+            // Generate IDs
+            const readableOrderId = generateOrderId();
+            const transactionId = paymentMethod !== 'cod'
                 ? 'TXN' + Math.random().toString(36).substr(2, 9).toUpperCase()
                 : null;
 
-            // Generate Readable Order ID (imported from utils)
-            const readableOrderId = generateOrderId();
-
             const orderData = {
                 orderId: readableOrderId,
-                userId: currentUser.uid, // Strict: No guest
-                userEmail: currentUser.email || shippingAddress.email, // Fallback to form email if auth email missing (rare)
+                userId: currentUser.uid,
+                userEmail: currentUser.email || shippingAddress.email,
                 address: shippingAddress,
                 items: orderItems,
                 total: totalAmount,
                 status: 'Pending',
-                paymentMethod: paymentMethod === 'online' ? 'Online (UPI/QR)' : 'Cash on Delivery',
-                isPaid: paymentMethod === 'online',
+                paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : paymentMethod.toUpperCase(),
+                isPaid: paymentMethod !== 'cod',
                 transactionId: transactionId,
-                source: directBuyProduct ? 'Direct Buy' : 'Cart Checkout',
+                source: 'Cart Checkout',
                 createdAt: new Date()
             };
 
             const docRef = await addDoc(collection(db, "orders"), orderData);
 
-            // Trigger WhatsApp Notification (Non-blocking)
+            // Award Coins
+            const coinsEarned = Math.floor(totalAmount / 10); // 10% Reward
+            if (coinsEarned > 0) {
+                const userRef = doc(db, 'users', currentUser.uid);
+                const newTx = {
+                    id: Date.now(),
+                    title: `Reward for Order #${readableOrderId}`,
+                    amount: coinsEarned,
+                    type: 'credit',
+                    date: new Date().toISOString()
+                };
+                updateDoc(userRef, {
+                    coins: increment(coinsEarned),
+                    loyaltyHistory: arrayUnion(newTx)
+                }).catch(e => console.error("Coin award failed", e));
+            }
+
+            // WhatsApp
             sendOrderNotification({ ...orderData, id: docRef.id });
 
-            if (!directBuyProduct) clearCart();
+            clearCart();
 
             navigate('/order-success', {
                 state: {
-                    orderId: readableOrderId, // Pass readable ID
-                    docId: docRef.id,         // Pass internal Doc ID
+                    orderId: readableOrderId,
+                    docId: docRef.id,
                     items: orderItems,
                     total: totalAmount,
                     customerName: shippingAddress.fullName
                 }
             });
-
         } catch (error) {
             console.error("Order failed", error);
             alert("Order processing failed. Please try again.");
             setLoading(false);
+            setProcessingStep(null);
+        }
+    };
+
+    const handlePay = async () => {
+        // Basic Validation
+        if (paymentMethod === 'card' && (cardData.number.length < 19 || !cardData.cvv || !cardData.expiry)) {
+            alert("Please enter valid card details."); return;
+        }
+        if (paymentMethod === 'upi' && !upiId.includes('@')) {
+            alert("Please enter a valid UPI ID."); return;
+        }
+
+        setLoading(true);
+
+        if (paymentMethod === 'cod') {
+            await new Promise(r => setTimeout(r, 1000)); // Minimal delay for COD
+            await processOrder();
+        } else {
+            // Simulation Sequence
+            setProcessingStep('connecting');
+            await new Promise(r => setTimeout(r, 1500));
+
+            setProcessingStep('verifying');
+            await new Promise(r => setTimeout(r, 1500));
+
+            setProcessingStep('approving');
+            await new Promise(r => setTimeout(r, 1000));
+
+            await processOrder();
         }
     };
 
     if (!shippingAddress) return null;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 relative">
 
-            {/* 1. Review Address */}
-            <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-start justify-between">
-                <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500">
-                        <MapPin size={20} />
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-gray-900">Delivering to</h3>
-                        <p className="text-sm font-medium text-gray-500 line-clamp-1">
-                            {shippingAddress.addressLine1}, {shippingAddress.city}
-                        </p>
-                        <p className="text-xs font-bold text-gray-400 mt-1">{shippingAddress.fullName} • {shippingAddress.phoneNumber}</p>
-                    </div>
-                </div>
-                <Link to="/checkout/address" className="p-2 text-primary hover:bg-orange-50 rounded-xl transition-colors">
-                    <Edit2 size={18} />
-                </Link>
-            </div>
-
-            {/* 2. Order Summary */}
-            <div className="bg-gray-50 p-5 rounded-3xl border border-gray-100">
-                <div className="space-y-3 mb-4">
-                    {orderItems.map((item, i) => (
-                        <div key={i} className="flex gap-4">
-                            <div className="w-12 h-12 bg-white rounded-xl border border-gray-200 overflow-hidden flex-shrink-0">
-                                <img src={item.image || item.imageUrl || 'https://placehold.co/100'} className="w-full h-full object-cover" alt="" />
+            {/* --- Processing Overlay --- */}
+            <AnimatePresence>
+                {processingStep && (
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[60] bg-white/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center"
+                    >
+                        <div className="w-24 h-24 relative mb-8">
+                            <motion.div
+                                animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                                className="w-full h-full border-4 border-gray-100 border-t-orange-500 rounded-full"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <ShieldCheck size={32} className="text-orange-500" />
                             </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-gray-900 truncate">{item.name}</p>
-                                <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
-                            </div>
-                            <p className="font-bold text-gray-900">₹{item.price * item.quantity}</p>
                         </div>
-                    ))}
+
+                        <h2 className="text-2xl font-black text-gray-900 mb-2">Processing Secure Payment</h2>
+                        <motion.p
+                            key={processingStep}
+                            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                            className="text-gray-500 font-medium"
+                        >
+                            {processingStep === 'connecting' && "Connecting to bank gateway..."}
+                            {processingStep === 'verifying' && "Verifying secure credentials..."}
+                            {processingStep === 'approving' && "Transaction approved! Finalizing..."}
+                        </motion.p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
+            {/* 1. Order Summary Header */}
+            <div className="bg-gray-900 text-white p-6 rounded-[2rem] shadow-xl shadow-gray-200">
+                <div className="flex justify-between items-start mb-4">
+                    <div>
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Total to Pay</p>
+                        <h1 className="text-4xl font-black tracking-tighter">₹{totalAmount}</h1>
+                    </div>
+                    <div className="bg-white/10 p-2 rounded-xl backdrop-blur-sm">
+                        <Lock size={20} className="text-green-400" />
+                    </div>
                 </div>
-                <div className="flex justify-between items-center pt-4 border-t border-gray-200 border-dashed">
-                    <span className="font-bold text-gray-600">Total Amount</span>
-                    <span className="text-2xl font-black text-gray-900">₹{totalAmount}</span>
+                <div className="flex items-center gap-2 text-xs font-medium text-gray-400 bg-white/5 py-2 px-3 rounded-lg w-fit">
+                    <ShieldCheck size={14} /> 256-bit SSL Encrypted
                 </div>
             </div>
 
-            {/* 3. Payment Method */}
-            <div className="space-y-3">
-                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Payment Method</h3>
+            {/* 2. Payment Method Tabs */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-gray-100 p-2 rounded-2xl">
+                {[
+                    { id: 'card', icon: CreditCard, label: 'Card' },
+                    { id: 'upi', icon: QrCode, label: 'UPI' },
+                    { id: 'wallet', icon: Wallet, label: 'Wallet' },
+                    { id: 'cod', icon: Banknote, label: 'COD' },
+                ].map(m => (
+                    <button
+                        key={m.id}
+                        onClick={() => setPaymentMethod(m.id)}
+                        className={`flex flex-col items-center justify-center gap-2 py-3.5 rounded-xl transition-all ${paymentMethod === m.id
+                            ? 'bg-white shadow-sm text-gray-900 font-bold ring-1 ring-black/5'
+                            : 'text-gray-500 hover:bg-white/50 hover:text-gray-700'
+                            }`}
+                    >
+                        <m.icon size={22} className={paymentMethod === m.id ? 'text-orange-500' : 'text-gray-400'} strokeWidth={paymentMethod === m.id ? 2.5 : 2} />
+                        <span className="text-[11px] font-bold uppercase tracking-wide">{m.label}</span>
+                    </button>
+                ))}
+            </div>
 
-                <label className={`flex items-center gap-4 p-4 border rounded-2xl cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-green-500 bg-green-50/50 shadow-sm' : 'border-gray-200 bg-white hover:border-gray-300'}`}>
-                    <input type="radio" name="pay" value="cod" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="w-5 h-5 accent-green-600" />
-                    <div className="flex-1">
-                        <div className="font-bold text-gray-900 flex items-center gap-2"><Banknote size={18} /> Cash on Delivery</div>
-                    </div>
-                </label>
+            {/* 3. Method Specific Forms */}
+            <div className="frosted-paper p-6 rounded-[2rem] border border-white/60 shadow-sm min-h-[300px]">
 
-                <label className={`flex items-center gap-4 p-4 border rounded-2xl cursor-pointer transition-all ${paymentMethod === 'online' ? 'border-blue-500 bg-blue-50/50 shadow-sm' : 'border-gray-200 bg-white hover:border-gray-300'}`}>
-                    <input type="radio" name="pay" value="online" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} className="w-5 h-5 accent-blue-600" />
-                    <div className="flex-1">
-                        <div className="font-bold text-gray-900 flex items-center gap-2"><QrCode size={18} /> Online / UPI</div>
-                    </div>
-                </label>
+                {paymentMethod === 'card' && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                        <h3 className="font-bold text-gray-900">Enter Card Details</h3>
+                        <div className="relative">
+                            <CreditCard className="absolute left-4 top-3.5 text-gray-400" size={20} />
+                            <input
+                                name="number" value={cardData.number} onChange={handleCardChange}
+                                type="text" placeholder="0000 0000 0000 0000" maxLength="19"
+                                className="w-full pl-12 pr-4 py-3 bg-white border border-gray-100 rounded-xl font-mono text-gray-800 outline-none focus:border-orange-500 transition-colors"
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <input
+                                name="expiry" value={cardData.expiry} onChange={handleCardChange}
+                                type="text" placeholder="MM/YY" maxLength="5"
+                                className="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl font-mono text-gray-800 outline-none focus:border-orange-500 transition-colors text-center"
+                            />
+                            <input
+                                name="cvv" value={cardData.cvv} onChange={handleCardChange}
+                                type="password" placeholder="CVV" maxLength="3"
+                                className="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl font-mono text-gray-800 outline-none focus:border-orange-500 transition-colors text-center"
+                            />
+                        </div>
+                        <input
+                            name="name" value={cardData.name} onChange={handleCardChange}
+                            type="text" placeholder="Card Holder Name"
+                            className="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl font-bold text-gray-800 outline-none focus:border-orange-500 transition-colors"
+                        />
+                    </motion.div>
+                )}
+
+                {paymentMethod === 'upi' && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                        <h3 className="font-bold text-gray-900">UPI Payment</h3>
+
+                        <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
+                            {['gpay', 'phonepe', 'paytm', 'bhim'].map(app => (
+                                <div key={app} className="w-16 h-16 bg-white border border-gray-100 rounded-2xl flex items-center justify-center shrink-0 cursor-pointer hover:border-orange-500 transition-colors">
+                                    <span className="text-[10px] font-bold uppercase text-gray-400">{app}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="relative">
+                            <div className="absolute left-4 top-3.5 text-gray-400 font-bold text-xs">ID</div>
+                            <input
+                                value={upiId} onChange={e => setUpiId(e.target.value)}
+                                type="text" placeholder="username@upi"
+                                className="w-full pl-10 pr-20 py-3 bg-white border border-gray-100 rounded-xl font-bold text-gray-800 outline-none focus:border-orange-500 transition-colors"
+                            />
+                            <button className="absolute right-2 top-2 px-3 py-1.5 bg-orange-100 text-orange-600 text-xs font-bold rounded-lg hover:bg-orange-200">Verify</button>
+                        </div>
+
+                        <div className="p-4 bg-orange-50 rounded-2xl flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-900 border border-gray-200">
+                                <QrCode size={20} />
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-gray-900">Scan QR Code</p>
+                                <p className="text-[10px] text-gray-500">Use any UPI app to scan</p>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+
+                {paymentMethod === 'wallet' && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+                        <h3 className="font-bold text-gray-900 mb-4">Select Wallet</h3>
+                        {['Paytm Wallet', 'Amazon Pay Balance', 'PhonePe Wallet'].map(w => (
+                            <div
+                                key={w}
+                                onClick={() => setWalletProvider(w)}
+                                className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${walletProvider === w ? 'border-orange-500 bg-orange-50' : 'border-gray-100 bg-white hover:border-gray-200'
+                                    }`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                                        <Wallet size={16} className="text-gray-500" />
+                                    </div>
+                                    <span className="font-bold text-sm text-gray-900">{w}</span>
+                                </div>
+                                {walletProvider === w && <CheckCircle size={18} className="text-orange-500" />}
+                            </div>
+                        ))}
+                    </motion.div>
+                )}
+
+                {paymentMethod === 'cod' && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center justify-center text-center py-6">
+                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-4">
+                            <Banknote size={40} />
+                        </div>
+                        <h3 className="font-black text-gray-900 text-xl mb-2">Cash on Delivery</h3>
+                        <p className="text-sm text-gray-500 max-w-xs mx-auto mb-6">
+                            Pay in cash when our delivery partner arrives at your doorstep.
+                        </p>
+                        <div className="bg-yellow-50 text-yellow-700 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+                            <ShieldCheck size={14} /> Additional verification may be required
+                        </div>
+                    </motion.div>
+                )}
+
             </div>
 
             {/* 4. Pay Button */}
-            <button
-                onClick={handlePlaceOrder}
-                disabled={loading || !navigator.onLine}
-                className={`w-full py-4 text-white font-bold text-lg rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 
-                    ${loading || !navigator.onLine ? 'opacity-80 scale-[0.98] cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'} 
-                    ${paymentMethod === 'online' ? 'bg-blue-600 shadow-blue-200' : 'bg-gray-900 shadow-gray-200'}
-                    ${!navigator.onLine ? 'grayscale' : ''}`}
+            <Button
+                onClick={handlePay}
+                isLoading={loading}
+                disabled={loading}
+                className="w-full h-14 text-lg shadow-xl shadow-gray-200 bg-gray-900 text-white hover:bg-black"
             >
-                {loading ? <Loader2 className="animate-spin" /> : <ShieldCheck size={20} />}
-                {loading ? 'Processing...' : !navigator.onLine ? 'Offline - Cannot Order' : `Pay ₹${totalAmount}`}
-            </button>
-
-            <div className="flex justify-center items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                <Lock size={10} /> 100% Secure Checkout
-            </div>
+                {!loading && <ShieldCheck size={20} className="mr-2" />}
+                {paymentMethod === 'cod' ? 'Place Order' : `Pay ₹${totalAmount}`}
+            </Button>
 
         </div>
     );

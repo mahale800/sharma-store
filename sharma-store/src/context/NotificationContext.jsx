@@ -6,7 +6,12 @@ import { CartContext } from './CartContext';
 import { WishlistContext } from './WishlistContext';
 import { useEngagement } from '../hooks/useEngagement';
 import { doc, onSnapshot, updateDoc, setDoc, arrayUnion } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
+import { db, messaging, functions } from '../firebase/firebase';
+import { onMessage } from 'firebase/messaging';
+import { httpsCallable } from 'firebase/functions';
+import { showBrowserNotification } from '../utils/showNotification';
+import { requestFcmToken } from '../firebase/messaging';
+import { collection, query, where, orderBy, limit, addDoc, getDocs, writeBatch } from 'firebase/firestore';
 
 const NotificationContext = createContext();
 
@@ -18,9 +23,17 @@ export const NotificationProvider = ({ children }) => {
     const { logEvent } = useEngagement();
 
     // Default States
-    const defaultPreferences = { enabled: true, tone: 'Professional', sound: true };
+    const defaultPreferences = {
+        userId: currentUser?.uid,
+        orderUpdates: true,
+        marketing: true,
+        loyalty: true,
+        cartReminders: true
+    };
     const [preferences, setPreferences] = useState(defaultPreferences);
     const [notifications, setNotifications] = useState([]);
+    const [fcmToken, setFcmToken] = useState(null);
+    const [permissionStatus, setPermissionStatus] = useState(Notification.permission);
 
     // Daily Limit Tracker ({ date: 'YYYY-MM-DD', count: 0 })
     const [dailyCount, setDailyCount] = useState(() => {
@@ -40,32 +53,50 @@ export const NotificationProvider = ({ children }) => {
         }
 
         // USER MODE: Sync with Firestore
-        const userRef = doc(db, 'users', currentUser.uid);
-
-        const unsubscribe = onSnapshot(userRef, async (docSnap) => {
+        // 1. Listen to User Preferences
+        const prefsRef = doc(db, 'notificationPreferences', currentUser.uid);
+        const prefsUnsubscribe = onSnapshot(prefsRef, (docSnap) => {
             if (docSnap.exists()) {
-                const data = docSnap.data();
-
-                // Load Preferences
-                if (data.preferences) {
-                    setPreferences(prev => ({ ...prev, ...data.preferences })); // Merge to keep defaults
-                }
-
-                // Load Notifications (stored in subcollection or field? field is easier for small lists)
-                // For scalability, a subcollection is better, but for this "Status Bar" style, a field array is fine (capped at 50).
-                if (data.notifications) {
-                    setNotifications(data.notifications);
-                }
+                setPreferences(prev => ({ ...prev, ...docSnap.data() }));
             } else {
                 // Initialize defaults if missing
-                await setDoc(userRef, {
-                    preferences: defaultPreferences,
-                    notifications: []
-                }, { merge: true });
+                setDoc(prefsRef, defaultPreferences, { merge: true });
+            }
+        }, (error) => {
+            if (error.code === 'permission-denied') {
+                console.warn("Notification prefs access denied. Using defaults.");
+            } else {
+                console.error("Error fetching notification prefs:", error);
             }
         });
 
-        return () => unsubscribe();
+        // 2. Listen to User Notifications from 'notifications' collection
+        const notifQuery = query(
+            collection(db, 'notifications'),
+            where('userId', '==', currentUser.uid),
+            orderBy('timestamp', 'desc'),
+            limit(50)
+        );
+
+        const notifUnsubscribe = onSnapshot(notifQuery, (snapshot) => {
+            const fetchedNotifs = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setNotifications(fetchedNotifs);
+        }, (error) => {
+            if (error.code === 'permission-denied') {
+                console.warn("Notifications access denied. Using empty list.");
+                setNotifications([]);
+            } else {
+                console.error("Error fetching notifications:", error);
+            }
+        });
+
+        return () => {
+            prefsUnsubscribe();
+            notifUnsubscribe();
+        };
     }, [currentUser]);
 
     // Save to LocalStorage (Guest) or Firestore (User)
@@ -91,30 +122,22 @@ export const NotificationProvider = ({ children }) => {
         return dailyCount.count < 5;
     };
 
-    // Smart Triggers (Cart / Wishlist)
-    const { cartCount, cartTotal } = useContext(CartContext);
-    const { wishlistCount } = useContext(WishlistContext);
-
-    useEffect(() => {
-        if (cartCount > 0) {
-            const timer = setTimeout(() => {
-                addNotification('engagement', `You have ${cartCount} items (₹${cartTotal}) waiting in your cart.`);
-            }, 10000);
-            return () => clearTimeout(timer);
-        }
-    }, [cartCount]);
-
-    useEffect(() => {
-        if (wishlistCount > 0) {
-            const timer = setTimeout(() => {
-                addNotification('engagement', `Your wishlist has ${wishlistCount} items. Don't let them go out of stock!`);
-            }, 15000);
-            return () => clearTimeout(timer);
-        }
-    }, [wishlistCount]);
-
+    // Notification logic
     const addNotification = async (type, rawMessage, force = false) => {
-        if (!preferences.enabled && !force) return;
+        // Flat Preference Check
+        // Type map: 'order' -> orderUpdates, 'marketing' -> marketing, 'loyalty' -> loyalty, 'cart' -> cartReminders
+        const typeMap = {
+            'order': 'orderUpdates',
+            'marketing': 'marketing',
+            'loyalty': 'loyalty',
+            'cart': 'cartReminders'
+        };
+
+        const prefKey = typeMap[type];
+        if (prefKey && preferences[prefKey] === false && !force) {
+            return;
+        }
+
         if (isLowPowerMode && type !== 'order') return;
 
         let finalMessage = rawMessage;
@@ -149,18 +172,56 @@ export const NotificationProvider = ({ children }) => {
 
         // Persist
         if (currentUser) {
-            const userRef = doc(db, 'users', currentUser.uid);
-            updateDoc(userRef, {
-                notifications: arrayUnion(newNotif)
-            }).catch(e => console.error("Failed to sync notif", e));
+            addDoc(collection(db, 'notifications'), {
+                userId: currentUser.uid,
+                type,
+                title: 'Sharma Store',
+                body: finalMessage,
+                read: false,
+                createdAt: new Date().toISOString(),
+                tone: toneUsed,
+                meta: {} // Optional meta field
+            }).catch(e => console.error("Failed to add notification", e));
         }
 
         // Analytics & Sound
         logEvent('notification_sent', 'notification', { type, tone: toneUsed });
         if (preferences.sound && !isLowPowerMode) {
             // Play sound logic here
+            // const audio = new Audio('/notification.mp3'); audio.play();
+        }
+
+        // TRIGGER BROWSER NOTIFICATION (Native)
+        // Only if it's an engagement/order alert and permissions are granted
+        // We skip this if it was a 'forced' foreground message to avoid double toast + system notif if desired,
+        // but user requested "Notifications appear outside the tab".
+        if (permissionStatus === 'granted' && preferences.enabled) {
+            showBrowserNotification('Sharma Store', finalMessage);
         }
     };
+
+    // Smart Triggers (Cart / Wishlist)
+    const { cartCount, cartTotal } = useContext(CartContext);
+    const { wishlistCount } = useContext(WishlistContext);
+
+    useEffect(() => {
+        if (cartCount > 0) {
+            const timer = setTimeout(() => {
+                addNotification('engagement', `You have ${cartCount} items (₹${cartTotal}) waiting in your cart.`);
+            }, 10000);
+            return () => clearTimeout(timer);
+        }
+    }, [cartCount, cartTotal]);
+
+    useEffect(() => {
+        if (wishlistCount > 0) {
+            const timer = setTimeout(() => {
+                addNotification('engagement', `Your wishlist has ${wishlistCount} items. Don't let them go out of stock!`);
+            }, 15000);
+            return () => clearTimeout(timer);
+        }
+    }, [wishlistCount]);
+
 
     const markAsRead = async (id) => {
         // Optimistic
@@ -168,8 +229,8 @@ export const NotificationProvider = ({ children }) => {
         setNotifications(updatedNotifs);
 
         if (currentUser) {
-            const userRef = doc(db, 'users', currentUser.uid);
-            await updateDoc(userRef, { notifications: updatedNotifs });
+            const notifRef = doc(db, 'notifications', id);
+            await updateDoc(notifRef, { read: true });
         }
     };
 
@@ -178,16 +239,29 @@ export const NotificationProvider = ({ children }) => {
         setNotifications(updatedNotifs);
 
         if (currentUser) {
-            const userRef = doc(db, 'users', currentUser.uid);
-            await updateDoc(userRef, { notifications: updatedNotifs });
+            const batch = writeBatch(db);
+            notifications.forEach(n => {
+                if (!n.read) {
+                    const ref = doc(db, 'notifications', n.id);
+                    batch.update(ref, { read: true });
+                }
+            });
+            await batch.commit();
         }
     };
 
     const clearAll = async () => {
         setNotifications([]);
         if (currentUser) {
-            const userRef = doc(db, 'users', currentUser.uid);
-            await updateDoc(userRef, { notifications: [] });
+            // Deleting collection documents is expensive/complex client-side in bulk
+            // For now, let's just mark deleted or actually delete batch.
+            // A simple "clear" usually means "delete all".
+            const batch = writeBatch(db);
+            notifications.forEach(n => {
+                const ref = doc(db, 'notifications', n.id);
+                batch.delete(ref);
+            });
+            await batch.commit();
         }
     };
 
@@ -196,12 +270,78 @@ export const NotificationProvider = ({ children }) => {
         setPreferences(updated);
 
         if (currentUser) {
-            const userRef = doc(db, 'users', currentUser.uid);
-            // Updating nested field using dot notation needs carefulness with updateDoc
-            // Assuming preferences is a map field
-            await updateDoc(userRef, { preferences: updated });
+            const prefsRef = doc(db, 'notificationPreferences', currentUser.uid);
+            await setDoc(prefsRef, updated, { merge: true });
         }
     };
+
+    // --- FCM LOGIC ---
+    const requestPermission = async () => {
+        if (!currentUser) return; // Only save token if logged in (or handle guest tokens separately)
+
+        const token = await requestFcmToken(currentUser.uid);
+        setPermissionStatus(Notification.permission);
+        if (token) {
+            setFcmToken(token);
+        }
+        return token;
+    };
+
+    const triggerMarketing = async () => {
+        if (!currentUser) return;
+        try {
+            const trigger = httpsCallable(functions, 'triggerDailyMarketing');
+            await trigger();
+            addNotification('announcement', 'Marketing campaign triggered!', true);
+        } catch (error) {
+            console.error(error);
+            addNotification('alert', 'Failed to trigger campaign.', true);
+        }
+    };
+
+    const triggerAbandonedCart = async () => {
+        if (!currentUser) return;
+        try {
+            const trigger = httpsCallable(functions, 'triggerAbandonedCart');
+            await trigger();
+            // addNotification('announcement', 'Abandoned cart check triggered!', true); 
+            // Don't show toast, let the real push come through if meaningful
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const sendTestNotification = async () => {
+        if (!currentUser) return;
+        try {
+            const sendTest = httpsCallable(functions, 'sendTestNotification');
+            const result = await sendTest({ userId: currentUser.uid });
+            addNotification('announcement', 'Test notification sent! Check your other tabs/devices.', true);
+        } catch (error) {
+            console.error("Failed to send test notification:", error);
+            // Fallback to local
+            showBrowserNotification('Sharma Store', 'Local Test: This is a fallback notification.');
+            addNotification('alert', 'Cloud test failed. Sent local fallback.', true);
+        }
+    };
+
+    // Listen for Foreground Messages (FCM)
+    useEffect(() => {
+        if (permissionStatus === 'granted') {
+            const unsubscribe = onMessage(messaging, (payload) => {
+                const title = payload.notification?.title || 'New Update';
+                const body = payload.notification?.body || 'You have a new message.';
+
+                // 1. Show In-App Toast
+                addNotification(
+                    'announcement',
+                    body,
+                    true // force
+                );
+            });
+            return () => unsubscribe();
+        }
+    }, [permissionStatus]);
 
     const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -214,7 +354,13 @@ export const NotificationProvider = ({ children }) => {
             markAsRead,
             markAllAsRead,
             clearAll,
-            updatePreferences
+            updatePreferences,
+            requestPermission,
+            permissionStatus,
+            fcmToken,
+            sendTestNotification,
+            triggerMarketing,
+            triggerAbandonedCart
         }}>
             {children}
         </NotificationContext.Provider>

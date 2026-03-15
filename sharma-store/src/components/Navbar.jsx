@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, ShoppingCart, User, Coins, Search, X, Package } from 'lucide-react';
+import { Home, ShoppingCart, User, Coins, Search, X } from 'lucide-react';
 import { useLoyalty } from '../context/LoyaltyContext';
 import { useCart } from '../context/CartContext';
 import { useShop } from '../context/ShopContext';
@@ -48,14 +48,14 @@ const Navbar = () => {
                         </Link>
 
                         <div className="flex items-center gap-2 bg-gray-100/50 p-1 rounded-xl border border-gray-200/50">
-                            {['/', '/products', '/my-orders', '/track-order', '/profile'].map(path => (
+                            {['/', '/products', '/account'].map(path => (
                                 <Link
                                     key={path}
                                     to={path}
                                     onClick={resetFilters} // Reset filters when navigating via menu
                                     className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${isActive(path) ? 'bg-white shadow-lg shadow-orange-500/20 text-orange-600 scale-105' : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'}`}
                                 >
-                                    {path === '/' ? 'Home' : path === '/products' ? 'Shop' : path === '/my-orders' ? 'Orders' : path === '/track-order' ? 'Track' : 'Account'}
+                                    {path === '/' ? 'Home' : path === '/products' ? 'Shop' : 'Account'}
                                 </Link>
                             ))}
                         </div>
@@ -106,17 +106,17 @@ const Navbar = () => {
             </nav>
 
             {/* Mobile Header (Top) */}
-            < nav className="fixed top-0 left-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 md:hidden px-4 py-3 pb-2 print:hidden" >
+            <nav className="fixed top-0 left-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 md:hidden px-4 py-3 pb-2 print:hidden">
                 <div className="flex items-center justify-between mb-2">
                     {/* Brand Logo - UNIFIED STYLE (Same on Mobile & Laptop) */}
-                    <Link to="/" className="group">
+                    <Link to="/" className="group" onClick={handleLogoClick}>
                         <Logo variant="full" size="sm" />
                     </Link>
 
                     <div className="flex items-center gap-2">
                         <div className="bg-gradient-to-r from-orange-50 to-orange-100 text-primary px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-orange-200/50">
                             <Coins className="size-3.5 fill-primary text-primary" strokeWidth={2.5} />
-                            <span className="text-xs font-black">{coins}</span>
+                            <span className="text-xs font-black">{coins.toLocaleString()}</span>
                         </div>
                         <NotificationBell />
                     </div>
@@ -132,7 +132,7 @@ const Navbar = () => {
                                 placeholder="What are you looking for?"
                                 value={searchQuery}
                                 onChange={handleSearch}
-                                className="w-full pl-4 pr-10 py-2.5 bg-gray-100 rounded-xl outline-none font-bold text-sm text-gray-900"
+                                className="w-full pl-4 pr-10 py-2.5 bg-gray-100 rounded-xl outline-none font-bold text-base text-gray-900 placeholder:text-sm"
                             />
                             <button onClick={() => setShowSearch(false)} className="absolute right-6 top-[60px] text-gray-400">
                                 <X size={18} />
@@ -140,16 +140,16 @@ const Navbar = () => {
                         </div>
                     )
                 }
-            </nav >
+            </nav>
 
             {/* Mobile Bottom Navigation Bar (Fixed) - Hidden on specific pages */}
             {
                 !['/cart', '/checkout'].includes(location.pathname) && !location.pathname.startsWith('/product/') && (
                     <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 md:hidden pb-safe print:hidden">
-                        <div className="flex items-center justify-around relative px-2 py-1 h-16">
+                        <div className="grid grid-cols-4 items-center justify-around relative px-2 py-1 h-16">
 
                             {/* Home */}
-                            <Link to="/" className={`flex flex-col items-center justify-center w-16 gap-1 transition-all duration-300 ${isActive('/') ? 'text-orange-600 -translate-y-1' : 'text-gray-400 hover:text-gray-600'}`}>
+                            <Link to="/" className={`flex flex-col items-center justify-center w-full gap-1 transition-all duration-300 ${isActive('/') ? 'text-orange-600 -translate-y-1' : 'text-gray-400 hover:text-gray-600'}`}>
                                 <Home className={`size-6 transition-transform duration-300 ${isActive('/') ? 'scale-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]' : ''}`} strokeWidth={isActive('/') ? 3 : 2} />
                                 <span className={`text-[10px] font-bold transition-opacity ${isActive('/') ? 'opacity-100' : 'opacity-80'}`}>Home</span>
                             </Link>
@@ -157,14 +157,14 @@ const Navbar = () => {
                             {/* Search Toggle */}
                             <button
                                 onClick={() => setShowSearch(!showSearch)}
-                                className={`flex flex-col items-center justify-center w-16 gap-1 transition-all duration-300 ${showSearch ? 'text-orange-600 -translate-y-1' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`flex flex-col items-center justify-center w-full gap-1 transition-all duration-300 ${showSearch ? 'text-orange-600 -translate-y-1' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <Search className={`size-6 transition-transform duration-300 ${showSearch ? 'scale-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]' : ''}`} strokeWidth={showSearch ? 3 : 2} />
                                 <span className="text-[10px] font-bold">Search</span>
                             </button>
 
                             {/* Floating Cart Button */}
-                            <div className="relative -top-6 group">
+                            <div className="relative -top-6 group flex justify-center">
                                 <Link
                                     to="/cart"
                                     className="w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-orange-500/40 border-4 border-white transform transition-transform duration-300 hover:scale-110 active:scale-95 animate-breathe gpu-accelerated"
@@ -178,16 +178,10 @@ const Navbar = () => {
                                 </Link>
                             </div>
 
-                            {/* Orders */}
-                            <Link to="/my-orders" className={`flex flex-col items-center justify-center w-16 gap-1 transition-all duration-300 ${isActive('/my-orders') ? 'text-orange-600 -translate-y-1' : 'text-gray-400 hover:text-gray-600'}`}>
-                                <Package className={`size-6 transition-transform duration-300 ${isActive('/my-orders') ? 'scale-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]' : ''}`} strokeWidth={isActive('/my-orders') ? 3 : 2} />
-                                <span className="text-[10px] font-bold">Orders</span>
-                            </Link>
-
-                            {/* Profile */}
-                            <Link to="/profile" className={`flex flex-col items-center justify-center w-16 gap-1 transition-all duration-300 ${isActive('/profile') ? 'text-orange-600 -translate-y-1' : 'text-gray-400 hover:text-gray-600'}`}>
-                                <User className={`size-6 transition-transform duration-300 ${isActive('/profile') ? 'scale-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]' : ''}`} strokeWidth={isActive('/profile') ? 3 : 2} />
-                                <span className="text-[10px] font-bold">Profile</span>
+                            {/* Account */}
+                            <Link to="/account" className={`flex flex-col items-center justify-center w-full gap-1 transition-all duration-300 ${isActive('/account') ? 'text-orange-600 -translate-y-1' : 'text-gray-400 hover:text-gray-600'}`}>
+                                <User className={`size-6 transition-transform duration-300 ${isActive('/account') ? 'scale-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]' : ''}`} strokeWidth={isActive('/account') ? 3 : 2} />
+                                <span className="text-[10px] font-bold">Account</span>
                             </Link>
 
                         </div>

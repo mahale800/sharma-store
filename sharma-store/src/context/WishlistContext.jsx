@@ -49,14 +49,14 @@ export const WishlistProvider = ({ children }) => {
         }
     };
 
-    const value = React.useMemo(() => ({
+    const value = {
         wishlistItems,
         addToWishlist,
         removeFromWishlist,
         isInWishlist,
         toggleWishlist,
         wishlistCount: wishlistItems.length
-    }), [wishlistItems]);
+    };
 
     return (
         <WishlistContext.Provider value={value}>

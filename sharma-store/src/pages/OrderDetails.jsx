@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, query, collection, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { ArrowLeft, Printer, MapPin, CreditCard } from 'lucide-react';
 import Logo from '../components/common/Logo';
@@ -16,32 +16,32 @@ const OrderDetails = () => {
 
     useEffect(() => {
         const fetchOrder = async () => {
+            setLoading(true);
             try {
                 // 1. Try fetching by ID (Document ID) strategy 
-                // Since we store readable ID as a field, but URL might use readable ID
-                // We typically need to query by field if it's not the doc ID.
-                // However, for simplicity, MyOrders passes the 'id' (doc ID) or we query.
-                // Let's assume we are passed the meaningful ID to query or Doc ID.
-                // For robustness: We will implement the Hybrid Fetch (Doc ID or Field).
-
-                // Optimized: Try Doc Ref first (fastest)
                 const docRef = doc(db, "orders", orderId);
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
                     setOrder({ id: docSnap.id, ...docSnap.data() });
                 } else {
-                    // Fallback: Query by orderId field (if URL used readable ID)
-                    // Note: We'll stick to Doc ID in URL for direct/easy access if possible,
-                    // but users might type the readable one. 
-                    // For this task, let's assume valid Firestore Doc ID is passed in URL usually,
-                    // or we'd need the Query logic repeated.
-                    // To be safe, let's just fail if not found for now to keep it simple,
-                    // OR import the query logic. Let's start with Doc ID assumption as per Router.
-                    setOrder(null);
+                    // 2. Fallback: Query by 'orderId' field (Readable ID)
+                    const q = query(
+                        collection(db, "orders"),
+                        where("orderId", "==", orderId)
+                    );
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        const orderDoc = querySnapshot.docs[0];
+                        setOrder({ id: orderDoc.id, ...orderDoc.data() });
+                    } else {
+                        setOrder(null);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching order:", error);
+                setOrder(null);
             } finally {
                 setLoading(false);
             }
@@ -64,7 +64,7 @@ const OrderDetails = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-32 pb-20 px-4 md:px-8 print:bg-white print:pt-0 print:pb-0 print:p-0">
+        <div className="min-h-screen bg-gray-50 pb-20 px-4 md:px-8 print:bg-white print:pt-0 print:pb-0 print:p-0">
             <div className="max-w-4xl mx-auto">
 
                 {/* Header Actions (Hidden on Print) */}

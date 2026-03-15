@@ -11,16 +11,16 @@ const AdminRoadmap = () => {
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
+    const loadData = React.useCallback(async () => {
         setLoading(true);
         const data = await fetchRoadmap();
         setRoadmap(data);
         setLoading(false);
-    };
+    }, [fetchRoadmap]);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     const handleGenerate = async () => {
         setGenerating(true);

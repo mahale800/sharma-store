@@ -3,8 +3,10 @@ import { useLoyalty } from '../context/LoyaltyContext';
 import { Sparkles, Gift, Tag, Lock, CheckCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
+import Card from '../components/common/Card';
 
-const Redeem = () => {
+const Redeem = ({ isComponent }) => {
     const { coins, redeemCoins } = useLoyalty();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -30,24 +32,26 @@ const Redeem = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-24 pt-24 px-4 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
-            <div className="max-w-[1000px] mx-auto">
+        <div className={isComponent ? "w-full" : "w-full bg-slate-50 pb-8 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"}>
+            <div className={isComponent ? "max-w-6xl mx-auto" : "max-w-6xl mx-auto px-4 md:px-8 pt-6"}>
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                        <Link to="/profile" className="p-3 bg-white rounded-xl hover:bg-gray-50 transition-colors shadow-sm text-gray-600">
-                            <ArrowLeft size={20} />
-                        </Link>
-                        <div>
-                            <h1 className="text-3xl font-black text-gray-900 tracking-tight">Redeem Coins</h1>
-                            <p className="text-sm font-bold text-gray-500">Spend your hard-earned Sharma Coins</p>
+                {!isComponent && (
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-4">
+                            <Link to="/account" className="p-3 bg-white rounded-xl hover:bg-gray-50 transition-colors shadow-sm text-gray-600">
+                                <ArrowLeft size={20} />
+                            </Link>
+                            <div>
+                                <h1 className="text-3xl font-black text-gray-900 tracking-tight">Redeem Coins</h1>
+                                <p className="text-sm font-bold text-gray-500">Spend your hard-earned Sharma Coins</p>
+                            </div>
+                        </div>
+                        <div className="bg-white px-4 py-2 rounded-xl flex items-center gap-2 border border-blue-100 shadow-sm">
+                            <Sparkles className="text-primary size-5" fill="currentColor" />
+                            <span className="font-black text-lg text-primary">{coins.toLocaleString()}</span>
                         </div>
                     </div>
-                    <div className="bg-white px-4 py-2 rounded-xl flex items-center gap-2 border border-blue-100 shadow-sm">
-                        <Sparkles className="text-primary size-5" fill="currentColor" />
-                        <span className="font-black text-lg text-primary">{coins.toLocaleString()}</span>
-                    </div>
-                </div>
+                )}
 
                 {/* Exclusive Rewards Section */}
                 <div className="mb-12">
@@ -73,16 +77,14 @@ const Redeem = () => {
                                         <span className="text-primary font-black text-lg flex items-center gap-1">
                                             {item.cost} <span className="text-xs font-bold text-gray-400">Coins</span>
                                         </span>
-                                        <button
+                                        <Button
                                             onClick={() => handleRedeem(item)}
                                             disabled={coins < item.cost || loading}
-                                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${coins >= item.cost
-                                                    ? 'bg-gray-900 text-white hover:bg-black shadow-lg shadow-gray-200'
-                                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                }`}
+                                            variant={coins >= item.cost ? 'primary' : 'gray'}
+                                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-lg ${coins < item.cost ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none' : 'bg-gray-900 hover:bg-black text-white'}`}
                                         >
                                             {coins >= item.cost ? 'Claim' : 'Need More'}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +99,7 @@ const Redeem = () => {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {rewards.filter(r => r.type === 'voucher').map(item => (
-                            <div key={item.id} className="bg-white rounded-2xl p-6 border-2 border-dashed border-gray-200 relative overflow-hidden group hover:border-blue-200 transition-colors">
+                            <Card key={item.id} className="bg-white rounded-3xl p-6 border-2 border-dashed border-gray-200 relative overflow-hidden group hover:border-blue-200 transition-colors shadow-none hover:shadow-sm">
                                 <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-50 rounded-full border border-gray-200"></div>
                                 <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-50 rounded-full border border-gray-200"></div>
 
@@ -111,17 +113,17 @@ const Redeem = () => {
                                 <h3 className="font-bold text-gray-900 text-lg mb-2">{item.title}</h3>
                                 <p className="text-xs text-gray-500 font-medium mb-6">Valid on all orders above ₹999. One time use only.</p>
 
-                                <button
+                                <Button
                                     onClick={() => handleRedeem(item)}
                                     disabled={coins < item.cost || loading}
                                     className={`w-full py-3 rounded-xl font-bold transition-all ${coins >= item.cost
-                                            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
-                                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                        ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
+                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
                                         }`}
                                 >
                                     Redeem Voucher
-                                </button>
-                            </div>
+                                </Button>
+                            </Card>
                         ))}
                     </div>
                 </div>

@@ -14,6 +14,7 @@ export const LoyaltyProvider = ({ children }) => {
     const [tier, setTier] = useState('Silver'); // Silver, Gold, Platinum
     const [history, setHistory] = useState([]);
     const [streak, setStreak] = useState(0);
+    const [highestStreak, setHighestStreak] = useState(0);
     const [lastClaimDate, setLastClaimDate] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -37,6 +38,7 @@ export const LoyaltyProvider = ({ children }) => {
                 setCoins(data.coins || 0);
                 setHistory(data.loyaltyHistory || []);
                 setStreak(data.currentStreak || 0);
+                setHighestStreak(data.highestStreak || 0);
                 setLastClaimDate(data.lastClaimDate || null);
 
                 // Tier logic based on simple thresholds
@@ -50,7 +52,18 @@ export const LoyaltyProvider = ({ children }) => {
             }
             setLoading(false);
         }, (error) => {
-            console.error("Loyalty context error:", error);
+            if (error.code === 'permission-denied') {
+                console.warn("Loyalty data access denied (rules not deployed?). Using default values.");
+            } else {
+                console.error("Loyalty context error:", error);
+            }
+            // Fallback to defaults
+            setCoins(0);
+            setTier('Silver');
+            setHistory([]);
+            setStreak(0);
+            setHighestStreak(0);
+            setLastClaimDate(null);
             setLoading(false);
         });
 
@@ -108,10 +121,10 @@ export const LoyaltyProvider = ({ children }) => {
     const getEffectiveStreak = () => {
         if (!lastClaimDate) return 0;
 
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toLocaleDateString('en-CA');
         const yesterdayDate = new Date();
         yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-        const yesterday = yesterdayDate.toISOString().split('T')[0];
+        const yesterday = yesterdayDate.toLocaleDateString('en-CA');
 
         if (lastClaimDate === today) return streak; // Already claimed today
         if (lastClaimDate === yesterday) return streak; // Streak intact
@@ -120,7 +133,7 @@ export const LoyaltyProvider = ({ children }) => {
 
     const checkCanClaim = () => {
         if (!currentUser) return false;
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toLocaleDateString('en-CA');
         return lastClaimDate !== today;
     };
 
@@ -131,7 +144,7 @@ export const LoyaltyProvider = ({ children }) => {
         if (!checkCanClaim()) return false;
 
         try {
-            const today = new Date().toISOString().split('T')[0];
+            const today = new Date().toLocaleDateString('en-CA');
             const effectiveStreak = getEffectiveStreak();
 
             // If we are claiming, logic is:
@@ -145,13 +158,14 @@ export const LoyaltyProvider = ({ children }) => {
             const rewardAmount = getRewardForStreak(newStreak);
             const tierReached = getCurrentTier(newStreak);
 
+            const newHighestStreak = Math.max(highestStreak, newStreak);
             const userRef = doc(db, 'users', currentUser.uid);
 
             await updateDoc(userRef, {
                 currentStreak: newStreak,
                 lastClaimDate: today,
                 totalRewardsClaimed: increment(1),
-                highestStreak: increment(newStreak > (userRef.highestStreak || 0) ? 1 : 0), // Note: Firestore can't read-mod-write atomic easily like this for max, but sufficient for now
+                highestStreak: newHighestStreak,
                 tierReached: tierReached.name
             });
 

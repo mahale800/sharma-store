@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { ShoppingCart, Zap, Heart, ShieldCheck, Truck, RefreshCw, Banknote, Star, Minus, Plus, Store, Gift, MessageCircle, ChevronRight, Share2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import { motion } from 'framer-motion';
 import RecommendationRow from '../components/RecommendationRow';
 import ReviewList from '../components/ReviewList';
+import RecentlyViewed from '../components/RecentlyViewed';
+import Button from '../components/Button';
+import Card from '../components/common/Card';
+
+// Helper for dynamic delivery date
+const getDeliveryDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 2); // 2 days from now
+    return date.toLocaleDateString("en-IN", { weekday: 'short', day: 'numeric', month: 'short' });
+};
 
 const ProductDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { addToCart } = useCart();
+    const location = useLocation();
+    const { addToCart, clearCart } = useCart();
+    const { currentUser } = useAuth();
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     const [product, setProduct] = useState(null);
@@ -37,7 +50,7 @@ const ProductDetails = () => {
                     setProduct(data);
                     setActiveImage(data.image || data.imageUrl || data.img || 'https://placehold.co/600x600?text=No+Image');
                 } else {
-                    console.log("No such product!");
+                    // console.log("No such product!");
                 }
             } catch (error) {
                 console.error("Error fetching product:", error);
@@ -51,7 +64,17 @@ const ProductDetails = () => {
     }, [id]);
 
     const handleBuyNow = () => {
-        navigate('/checkout', { state: { directBuyProduct: { ...product, quantity: qty, isGift } } });
+        if (!product) return;
+
+        if (!currentUser) {
+            alert("Please log in to proceed with purchase.");
+            navigate('/login', { state: { from: location } });
+            return;
+        }
+
+        clearCart();
+        addToCart({ ...product, isGift }, qty);
+        navigate('/checkout/address');
     };
 
     const handleWhatsApp = () => {
@@ -73,7 +96,7 @@ const ProductDetails = () => {
     if (loading) return <div className="min-h-screen bg-white flex items-center justify-center"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
 
     if (!product) return (
-        <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
+        <div className="w-full bg-white flex flex-col items-center justify-center p-8 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h2>
             <button onClick={() => navigate('/')} className="px-6 py-3 bg-primary text-white rounded-xl font-bold">Go Home</button>
         </div>
@@ -88,9 +111,9 @@ const ProductDetails = () => {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-32 md:pb-20 page-enter pt-20"
+                className="w-full bg-slate-50 font-sans text-gray-900 pb-8 page-enter"
             >
-                <main className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 py-6">
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
 
                     {/* 1. Breadcrumb & Actions */}
                     <div className="flex items-center justify-between mb-6">
@@ -101,9 +124,9 @@ const ProductDetails = () => {
                             <ChevronRight size={14} />
                             <span className="text-gray-400 truncate max-w-[150px]">{product.name}</span>
                         </nav>
-                        <button className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors">
+                        <Button variant="ghost" size="icon-sm" className="rounded-full hover:bg-gray-100 text-gray-500">
                             <Share2 size={20} />
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
@@ -144,7 +167,7 @@ const ProductDetails = () => {
                             </div>
 
                             {/* Price Block */}
-                            <div className="bg-white p-6 rounded-2xl border border-gray-100 mb-6 shadow-sm">
+                            <Card className="mb-6 rounded-2xl border-gray-100">
                                 <div className="flex items-baseline gap-3 mb-2">
                                     <span className="text-4xl font-black text-gray-900 tracking-tight">₹{product.price}</span>
                                     <span className="text-lg text-gray-400 line-through decoration-2">₹{mrp}</span>
@@ -163,36 +186,45 @@ const ProductDetails = () => {
                                         Currently Unavailable
                                     </p>
                                 )}
-                            </div>
+                            </Card>
 
                             {/* Desktop Actions Block */}
                             <div className="hidden md:grid grid-cols-[140px_1fr_1fr] gap-4 mb-8">
                                 {/* Qty Selector */}
                                 <div className="flex items-center justify-between bg-gray-100 rounded-xl px-2 h-14">
-                                    <button onClick={() => handleQtyChange(-1)} disabled={qty <= 1} className="w-10 h-10 flex items-center justify-center hover:bg-white rounded-lg transition-colors disabled:opacity-30"><Minus size={18} /></button>
+                                    <Button variant="ghost" size="icon-md" onClick={() => handleQtyChange(-1)} disabled={qty <= 1} className="w-10 h-10 rounded-lg hover:bg-white disabled:opacity-30"><Minus size={18} /></Button>
                                     <span className="font-bold text-lg">{qty}</span>
-                                    <button onClick={() => handleQtyChange(1)} disabled={qty >= 10} className="w-10 h-10 flex items-center justify-center hover:bg-white rounded-lg transition-colors disabled:opacity-30"><Plus size={18} /></button>
+                                    <Button variant="ghost" size="icon-md" onClick={() => handleQtyChange(1)} disabled={qty >= 10} className="w-10 h-10 rounded-lg hover:bg-white disabled:opacity-30"><Plus size={18} /></Button>
                                 </div>
 
-                                <button
-                                    onClick={() => addToCart({ ...product, isGift }, qty)}
-                                    className="h-14 bg-white border-2 border-gray-900 text-gray-900 rounded-xl font-bold hover:bg-gray-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-lg"
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => {
+                                        if (!currentUser) {
+                                            alert("Please log in to add items to your cart.");
+                                            navigate('/login', { state: { from: location } });
+                                            return;
+                                        }
+                                        addToCart({ ...product, isGift }, qty);
+                                    }}
+                                    className="h-14 rounded-xl text-lg gap-2"
                                 >
                                     <ShoppingCart size={20} /> Add to Cart
-                                </button>
+                                </Button>
 
-                                <button
+                                <Button
+                                    variant="primary"
                                     onClick={handleBuyNow}
-                                    className="h-14 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 active:scale-[0.98] transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 text-lg"
+                                    className="h-14 rounded-xl text-lg gap-2 shadow-lg shadow-orange-500/30"
                                 >
                                     <Zap size={20} fill="currentColor" /> Buy Now
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Quick Trust Info */}
                             <div className="grid grid-cols-4 gap-2 mb-8 border-b border-gray-200 pb-8">
                                 {[
-                                    { icon: Truck, label: "Fast Delivery", sub: "in 2 days" },
+                                    { icon: Truck, label: "Fast Delivery", sub: `Get it by ${getDeliveryDate()}` },
                                     { icon: ShieldCheck, label: "Genuine", sub: "100% Verified" },
                                     { icon: RefreshCw, label: "Easy Return", sub: "7 Days" },
                                     { icon: Banknote, label: "COD", sub: "Available" }
@@ -265,6 +297,7 @@ const ProductDetails = () => {
                     </div>
 
                     <div className="mt-20">
+                        <RecentlyViewed currentProductId={product.id} />
                         <RecommendationRow source="product" currentProduct={product} />
                     </div>
                 </main>
@@ -274,25 +307,34 @@ const ProductDetails = () => {
             <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-3 pb-safe z-50 md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
                 <div className="flex gap-3 h-12">
                     {/* WhatsApp/Chat - Small */}
-                    <button onClick={handleWhatsApp} className="w-12 h-full rounded-lg bg-green-50 text-green-600 border border-green-100 flex items-center justify-center active:scale-95 transition-transform shrink-0">
+                    <Button onClick={handleWhatsApp} variant="white" className="w-12 h-full rounded-lg bg-green-50 text-green-600 border border-green-100 p-0 flex items-center justify-center shrink-0 shadow-none hover:bg-green-100">
                         <MessageCircle size={24} />
-                    </button>
+                    </Button>
 
                     {/* Add to Cart - Secondary */}
-                    <button
-                        onClick={() => addToCart({ ...product, isGift }, qty)}
-                        className="flex-1 bg-white text-gray-900 border border-gray-300 rounded-lg font-bold text-sm active:scale-95 transition-transform flex items-center justify-center"
+                    <Button
+                        variant="secondary"
+                        onClick={() => {
+                            if (!currentUser) {
+                                alert("Please log in to add items to your cart.");
+                                navigate('/login', { state: { from: location } });
+                                return;
+                            }
+                            addToCart({ ...product, isGift }, qty);
+                        }}
+                        className="flex-1 rounded-lg text-sm"
                     >
                         Add to Cart
-                    </button>
+                    </Button>
 
                     {/* Buy Now - Primary & Prominent */}
-                    <button
+                    <Button
+                        variant="primary"
                         onClick={handleBuyNow}
-                        className="flex-1 bg-orange-500 text-white rounded-lg font-bold text-sm active:scale-95 transition-transform shadow-lg shadow-orange-500/30 flex items-center justify-center gap-1"
+                        className="flex-1 rounded-lg text-sm gap-1 shadow-lg shadow-orange-500/30"
                     >
                         <Zap size={16} fill="currentColor" /> Buy Now
-                    </button>
+                    </Button>
                 </div>
             </div>
         </>

@@ -11,10 +11,6 @@ const EngagementAnalytics = () => {
     const [aiInsights, setAiInsights] = useState([]);
     const [insightLoading, setInsightLoading] = useState(false);
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
     const loadData = async () => {
         const data = await getEngagementStats(7); // Last 7 days
         if (data) {
@@ -27,6 +23,10 @@ const EngagementAnalytics = () => {
             });
         }
     };
+
+    useEffect(() => {
+        loadData();
+    }, []);
 
     if (loading || !stats) return <div className="h-64 flex items-center justify-center"><Loader2 className="animate-spin text-orange-500" /></div>;
 

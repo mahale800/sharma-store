@@ -107,10 +107,10 @@ const OrderSuccess = () => {
             <div className="flex flex-col md:flex-row gap-4 w-full max-w-md">
                 {currentUser ? (
                     <Link
-                        to="/my-orders"
+                        to={orderId ? `/order/${orderId}` : "/my-orders"}
                         className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-gray-200 text-gray-900 font-bold rounded-2xl hover:bg-gray-50 transition-all active:scale-95"
                     >
-                        <ShoppingBag size={20} /> View Orders
+                        <ShoppingBag size={20} /> View Order Details
                     </Link>
                 ) : (
                     <Link

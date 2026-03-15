@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { Mail, Lock, Eye, EyeOff, User, Loader2, CheckCircle, Smartphone, MessageSquare, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 import Logo from '../components/common/Logo';
+import Button from '../components/Button';
 
 const Login = () => {
-    const { loginWithEmail, signupWithEmail, googleSignIn, resetPassword, currentUser } = useAuth();
+    const { loginWithEmail, signupWithEmail, loginWithGoogle, resetPassword, currentUser } = useAuth();
     const navigate = useNavigate();
+
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
+    const previousState = location.state?.from?.state || {};
 
     useEffect(() => {
         if (currentUser) {
-            navigate('/');
+            navigate(from, { state: previousState, replace: true });
         }
-    }, [currentUser, navigate]);
+    }, [currentUser, navigate, from, previousState]);
 
     // Mode: 'email' or 'phone'
     const [authMethod, setAuthMethod] = useState('email');
@@ -37,6 +42,7 @@ const Login = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
+        confirmPassword: '',
         fullName: ''
     });
 
@@ -58,6 +64,7 @@ const Login = () => {
         setIsLogin(!isLogin);
         setError('');
         setSuccessMessage('');
+        setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
     };
 
     const mapAuthError = (err) => {
@@ -112,7 +119,7 @@ const Login = () => {
         setLoading(true);
         try {
             await confirmObj.confirm(otp);
-            navigate('/');
+            // Navigation handled by useEffect
         } catch {
             setError("Incorrect OTP.");
         } finally {
@@ -125,6 +132,13 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
+
+        if (!isLogin && formData.password !== formData.confirmPassword) {
+            setError("Passwords do not match.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const res = isLogin
                 ? await loginWithEmail(formData.email, formData.password)
@@ -144,8 +158,10 @@ const Login = () => {
         setLoading(true);
         setError('');
         try {
-            const res = await googleSignIn();
-            if (res.success) navigate('/');
+            const res = await loginWithGoogle();
+            if (res.success) {
+                // Navigation handled by useEffect
+            }
             else setError(mapAuthError(res.error));
         } catch (e) {
             setError("Google sign-in failed.");
@@ -158,7 +174,7 @@ const Login = () => {
     const handleResetPassword = async (e) => {
         e.preventDefault();
         if (!resetEmail) {
-            setError("Please enter your email to reset password.");
+            setError("Please enter a valid email.");
             return;
         }
         setLoading(true);
@@ -179,9 +195,26 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex font-sans bg-white">
-            {/* Left Side - Brand Visual (Desktop Only) */}
-            <div className="hidden lg:flex lg:w-1/2 bg-slate-900 relative flex-col justify-center items-center overflow-hidden">
+        <div className="min-h-screen flex flex-col lg:flex-row font-sans bg-slate-50 relative">
+            {/* Back Button */}
+            {/* Back Button */}
+            <button
+                onClick={() => {
+                    // Smart Back: If previous state exists, go back. Otherwise go Home.
+                    if (location.key !== "default" && window.history.state && window.history.state.idx > 0) {
+                        navigate(-1);
+                    } else {
+                        navigate('/');
+                    }
+                }}
+                className="absolute top-4 left-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-md flex items-center justify-center hover:scale-105 transition-all text-slate-700 hover:text-orange-600"
+                aria-label="Go back or Home"
+            >
+                <ArrowLeft size={20} />
+            </button>
+
+            {/* Left Side - Brand Visual */}
+            <div className="w-full lg:w-1/2 lg:min-h-screen bg-slate-900 relative flex flex-col justify-center items-center overflow-hidden py-12 lg:py-0">
                 {/* Background Effects */}
                 <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-600/20 to-indigo-900/40"></div>
@@ -189,89 +222,105 @@ const Login = () => {
                 <div className="absolute top-[-20%] right-[-20%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-3xl"></div>
 
                 {/* Brand Visual */}
-                <div className="relative z-10 p-12 text-center max-w-xl mx-auto">
-                    <div className="mb-8 flex justify-center transform hover:scale-105 transition-transform duration-500">
+                <div className="relative z-10 px-6 lg:p-12 text-center max-w-xl mx-auto">
+                    <div className="mb-6 lg:mb-8 flex justify-center transform hover:scale-105 transition-transform duration-500">
                         <Logo variant="icon" size="2xl" color="white" />
                     </div>
-                    <h1 className="text-5xl font-black text-white tracking-tight mb-6 font-['Outfit'] drop-shadow-sm">
+                    <h1 className="text-3xl lg:text-5xl font-black text-white tracking-tight mb-4 lg:mb-6 font-['Outfit'] drop-shadow-sm">
                         Sharma Store
                     </h1>
-                    <p className="text-slate-300 text-lg leading-relaxed font-medium">
+                    <p className="text-slate-300 text-base lg:text-lg leading-relaxed font-medium max-w-sm lg:max-w-none mx-auto">
                         Fueling your creativity with premium stationery. <br className="hidden xl:block" />
-                        Join our community of creators today.
+                        Join our community today.
                     </p>
 
                     {/* Testimonial / Social Proof */}
-                    <div className="mt-12 flex items-center justify-center gap-2 text-white/60 text-sm font-bold uppercase tracking-widest">
-                        <div className="flex -space-x-2">
-                            {[1, 2, 3].map(i => (
-                                <div key={i} className="w-8 h-8 rounded-full bg-slate-700 border-2 border-slate-900 flex items-center justify-center text-[8px] overflow-hidden">
-                                    <User size={12} className="text-slate-400" />
+                    <div className="mt-8 lg:mt-12 flex flex-col items-center gap-4">
+                        <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-bold uppercase tracking-widest">
+                            <div className="flex -space-x-2">
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} className="w-8 h-8 rounded-full bg-slate-700 border-2 border-slate-900 flex items-center justify-center text-[8px] overflow-hidden">
+                                        <User size={12} className="text-slate-400" />
+                                    </div>
+                                ))}
+                            </div>
+                            <span className="ml-2">Trusted by 10k+ Users</span>
+                        </div>
+
+                        {/* Trust Badges */}
+                        <div className="flex gap-6 mt-4 opacity-60">
+                            {[
+                                { icon: Lock, text: "Secure Login" },
+                                { icon: CheckCircle, text: "Fast Checkout" },
+                                { icon: User, text: "Verified Reviews" }
+                            ].map((badge, idx) => (
+                                <div key={idx} className="flex flex-col items-center gap-1 group cursor-default">
+                                    <div className="p-2 rounded-full bg-white/10 group-hover:bg-white/20 transition-colors">
+                                        <badge.icon size={16} className="text-white" />
+                                    </div>
+                                    <span className="text-[10px] uppercase font-bold text-white tracking-wider">{badge.text}</span>
                                 </div>
                             ))}
                         </div>
-                        <span className="ml-2">Trusted by 10k+ Creators</span>
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="absolute bottom-8 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                <div className="absolute bottom-8 text-slate-500 text-xs font-bold uppercase tracking-widest hidden lg:block">
                     &copy; {new Date().getFullYear()} Sharma Store.
                 </div>
             </div>
 
             {/* Right Side - Form Container */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-start items-center p-6 pt-32 sm:pt-40 lg:p-12 lg:pt-36 bg-white relative">
+            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 lg:p-12 bg-white relative shadow-2xl lg:shadow-none z-20 -mt-6 lg:mt-0 rounded-t-3xl lg:rounded-none">
                 {/* Mobile Background Pattern */}
                 <div className="absolute inset-0 lg:hidden opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
 
-                <div className="max-w-[420px] w-full space-y-8 relative z-10">
+                <div className="max-w-[420px] w-full space-y-8 relative z-10 pt-4 lg:pt-0">
                     {/* Header */}
                     <div className="text-center lg:text-left">
-                        {/* Mobile Logo */}
-                        <div className="lg:hidden flex justify-center mb-8">
-                            <Logo variant="full" size="xl" />
-                        </div>
 
                         <h2 className="text-3xl font-black text-slate-900 tracking-tight font-['Outfit']">
                             {showForgotPassword ? 'Reset Password' : (isLogin ? 'Welcome Back' : 'Create Account')}
                         </h2>
-                        <p className="mt-3 text-slate-500 font-medium text-base">
+                        <p className="mt-2 text-slate-500 font-medium text-base">
                             {showForgotPassword
                                 ? 'Enter your email to receive reset instructions.'
-                                : (!isLogin && 'Join us to unlock exclusive deals and rewards.')
+                                : (!isLogin ? 'Join us to unlock exclusive deals and rewards.' : 'Please enter your details to sign in.')
                             }
                         </p>
                     </div>
 
                     {/* Google Sign In */}
                     {!showForgotPassword && (
-                        /* Auth Method Toggle */
-                        <div className="flex bg-slate-50 p-1.5 rounded-xl border border-slate-200 mb-6">
-                            {['email', 'phone'].map((method) => (
-                                <button
-                                    key={method}
-                                    onClick={() => { setAuthMethod(method); setError(''); }}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-lg transition-all ${authMethod === method
-                                        ? 'bg-white text-orange-600 shadow-sm ring-1 ring-black/5'
-                                        : 'text-slate-400 hover:text-slate-600'
-                                        }`}
-                                >
-                                    {method === 'email' ? <Mail size={18} /> : <Smartphone size={18} />}
-                                    <span className="capitalize">{method}</span>
-                                </button>
-                            ))}
+                        <div className="space-y-6">
+                            {/* Auth Method Toggle */}
+                            <div className="flex bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                                {['email', 'phone'].map((method) => (
+                                    <button
+                                        key={method}
+                                        onClick={() => { setAuthMethod(method); setError(''); }}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-lg transition-all ${authMethod === method
+                                            ? 'bg-white text-orange-600 shadow-sm ring-1 ring-black/5'
+                                            : 'text-slate-400 hover:text-slate-600'
+                                            }`}
+                                    >
+                                        {method === 'email' ? <Mail size={18} /> : <Smartphone size={18} />}
+                                        <span className="capitalize">{method}</span>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     )}
 
                     {/* Messages */}
                     {error && (
-                        <div className="p-4 bg-red-50 text-red-600 text-sm font-medium rounded-xl flex items-start gap-3 border border-red-100 animate-in fade-in slide-in-from-top-1">
+                        <div className="p-4 bg-red-50 text-red-600 text-sm font-medium rounded-xl flex items-start gap-3 border border-red-100 animate-in">
                             <AlertCircle className="shrink-0 mt-0.5" size={18} /> <span>{error}</span>
                         </div>
                     )}
                     {successMessage && (
-                        <div className="p-4 bg-green-50 text-green-700 text-sm font-medium rounded-xl flex items-start gap-3 border border-green-100 animate-in fade-in slide-in-from-top-1">
+                        <div className="p-4 bg-green-50 text-green-700 text-sm font-medium rounded-xl flex items-start gap-3 border border-green-100 animate-in">
                             <CheckCircle className="shrink-0 mt-0.5" size={18} /> <span>{successMessage}</span>
                         </div>
                     )}
@@ -294,13 +343,13 @@ const Login = () => {
                                 </div>
                             </div>
                             <div className="flex flex-col gap-3">
-                                <button
+                                <Button
                                     type="submit"
-                                    disabled={loading}
-                                    className="w-full h-12 bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:bg-orange-700 transition-all flex items-center justify-center gap-2"
+                                    isLoading={loading}
+                                    className="w-full h-12 shadow-lg shadow-orange-500/30"
                                 >
-                                    {loading ? <Loader2 className="animate-spin" /> : 'Send Reset Link'}
-                                </button>
+                                    Send Reset Link
+                                </Button>
                                 <button
                                     type="button"
                                     onClick={() => { setShowForgotPassword(false); setError(''); setSuccessMessage(''); }}
@@ -313,9 +362,9 @@ const Login = () => {
                     ) : (
                         <>
                             {authMethod === 'email' ? (
-                                <form onSubmit={handleEmailSubmit} className="space-y-5">
+                                <form onSubmit={handleEmailSubmit} className="space-y-4">
                                     {!isLogin && (
-                                        <div className="space-y-1.5">
+                                        <div className="space-y-1.5 animate-in">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wide ml-1">Full Name</label>
                                             <div className="relative group">
                                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors" size={20} />
@@ -325,6 +374,7 @@ const Login = () => {
                                                     required
                                                     value={formData.fullName}
                                                     onChange={handleChange}
+                                                    autoComplete="name"
                                                     className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all placeholder:text-slate-300"
                                                     placeholder="John Doe"
                                                 />
@@ -342,6 +392,7 @@ const Login = () => {
                                                 required
                                                 value={formData.email}
                                                 onChange={handleChange}
+                                                autoComplete="email"
                                                 className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all placeholder:text-slate-300"
                                                 placeholder="you@example.com"
                                             />
@@ -369,6 +420,7 @@ const Login = () => {
                                                 required
                                                 value={formData.password}
                                                 onChange={handleChange}
+                                                autoComplete={isLogin ? "current-password" : "new-password"}
                                                 className="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all placeholder:text-slate-300"
                                                 placeholder="••••••••"
                                             />
@@ -378,20 +430,35 @@ const Login = () => {
                                         </div>
                                     </div>
 
-                                    <button
+                                    {!isLogin && (
+                                        <div className="space-y-1.5 animate-in">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wide ml-1">Confirm Password</label>
+                                            <div className="relative group">
+                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors" size={20} />
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    name="confirmPassword"
+                                                    required
+                                                    value={formData.confirmPassword}
+                                                    onChange={handleChange}
+                                                    autoComplete="new-password"
+                                                    className="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all placeholder:text-slate-300"
+                                                    placeholder="••••••••"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <Button
                                         type="submit"
-                                        disabled={loading}
-                                        className="w-full h-12 bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:bg-orange-700 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 mt-4"
+                                        isLoading={loading}
+                                        className="w-full h-12 shadow-lg shadow-orange-500/30 mt-4 gap-2"
                                     >
-                                        {loading ? <Loader2 className="animate-spin" /> : (
-                                            <>
-                                                {isLogin ? 'Sign In' : 'Create Account'} <ArrowRight size={20} />
-                                            </>
-                                        )}
-                                    </button>
+                                        {isLogin ? 'Sign In' : 'Create Account'} <ArrowRight size={20} />
+                                    </Button>
                                 </form>
                             ) : (
-                                <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className="space-y-6">
+                                <div className="space-y-6">
                                     {!otpSent ? (
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wide ml-1">Mobile Number</label>
@@ -401,6 +468,7 @@ const Login = () => {
                                                     type="tel"
                                                     value={phoneNumber}
                                                     onChange={e => setPhoneNumber(e.target.value)}
+                                                    autoComplete="tel"
                                                     className="w-full pl-14 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xl text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all placeholder:text-slate-300 tracking-wide"
                                                     placeholder="98765 43210"
                                                 />
@@ -417,26 +485,22 @@ const Login = () => {
                                                     value={otp}
                                                     onChange={e => setOtp(e.target.value)}
                                                     maxLength={6}
+                                                    autoComplete="one-time-code"
                                                     className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-2xl text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all placeholder:text-slate-300 tracking-[0.5em] text-center"
                                                     placeholder="••••••"
                                                     autoFocus
                                                 />
                                             </div>
+                                            <Button
+                                                onClick={handleVerifyOtp}
+                                                isLoading={loading}
+                                                className="w-full h-12 shadow-lg shadow-orange-500/30 mt-4 gap-2"
+                                            >
+                                                Verify OTP <ArrowRight size={20} />
+                                            </Button>
                                         </div>
                                     )}
-
-                                    <button
-                                        type="submit"
-                                        disabled={loading}
-                                        className="w-full h-12 bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:bg-orange-700 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2"
-                                    >
-                                        {loading ? <Loader2 className="animate-spin" /> : (
-                                            <>
-                                                {otpSent ? 'Verify & Login' : 'Send Code'} <ArrowRight size={20} />
-                                            </>
-                                        )}
-                                    </button>
-                                </form>
+                                </div>
                             )}
 
                             <div className="relative my-8">
@@ -451,13 +515,13 @@ const Login = () => {
                             <button
                                 onClick={handleGoogleLogin}
                                 disabled={loading}
-                                className="w-full flex items-center justify-center gap-3 px-4 py-3.5 border border-slate-200 rounded-xl shadow-sm text-slate-700 font-bold bg-white hover:bg-slate-50 transition-all hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-200 group"
+                                className="w-full flex items-center justify-center gap-3 px-4 py-3.5 border border-slate-200 rounded-xl shadow-sm text-slate-700 font-bold bg-white hover:bg-slate-50 transition-all hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-200 group active:scale-[0.98]"
                             >
-                                <svg className="h-5 w-5 shrink-0 group-hover:scale-110 transition-transform" aria-hidden="true" viewBox="0 0 24 24">
-                                    <path d="M12.0003 20.45c4.656 0 8.556-3.235 9.967-7.616l-2.614-2.02c-1.127 2.656-3.75 4.536-6.853 4.536-4.067 0-7.365-2.766-8.59-6.49l-2.69 2.083c2.146 6.36 8.216 10.96 15.28 10.96z" fill="#34A853" />
-                                    <path d="M3.41 13.914c-.64-1.92-.64-4.04 0-5.96l2.69 2.084c-.21.58-.33 1.19-.33 1.83s.12 1.25.33 1.83l-2.69 2.084z" fill="#FBBC05" />
-                                    <path d="M12.0003 8.64c2.19 0 4.15.82 5.67 2.17l3.66-3.66c-2.45-2.3-5.77-3.66-9.33-3.66-7.065 0-13.134 4.6-15.28 10.96l2.69 2.083c1.225-3.724 4.523-6.49 8.59-6.49z" fill="#EA4335" />
-                                    <path d="M23.5 12.07c0-.68-.06-1.34-.17-1.97H12v3.74h6.45c-.28 1.48-1.1 2.74-2.33 3.58l2.613 2.02c3.08-2.84 4.86-7.02 4.07-11.83z" fill="#4285F4" />
+                                <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z" fill="#FBBC05" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                                 </svg>
                                 <span className="whitespace-nowrap">Continue with Google</span>
                             </button>
@@ -482,7 +546,7 @@ const Login = () => {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

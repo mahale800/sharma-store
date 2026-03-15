@@ -52,7 +52,7 @@ const AdminSidebar = () => {
                         key={link.path}
                         to={link.path}
                         className={({ isActive }) =>
-                            `flex items - center gap - 3 px - 4 py - 3.5 text - sm font - bold rounded - 2xl transition - all duration - 300 group relative overflow - hidden ${isActive
+                            `flex items-center gap-3 px-4 py-3.5 text-sm font-bold rounded-2xl transition-all duration-300 group relative overflow-hidden ${isActive
                                 ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
                                 : 'text-gray-500 hover:bg-white hover:shadow-sm hover:text-gray-900'
                             } `

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/firebase';
-import { collection, getDocs, query, orderBy, limit, doc, updateDoc, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, doc, updateDoc } from 'firebase/firestore';
 import { Trophy, RefreshCw, Flame, AlertCircle } from 'lucide-react';
-import { getRewardForStreak, getCurrentTier } from '../../utils/loyaltyConstants';
+import { getCurrentTier } from '../../utils/loyaltyConstants';
 
 const AdminRewards = () => {
     const [stats, setStats] = useState({

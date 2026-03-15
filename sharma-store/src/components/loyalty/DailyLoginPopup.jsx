@@ -72,36 +72,6 @@ const DailyLoginPopup = ({ isOpen, onClose }) => {
     // Using simple components from previous file for brevity in this re-write, assuming they are inline or I'll copy them.
 
     // Helper Components inline
-    const ProgressBar = () => {
-        const prevMilestoneDays = currentTier.days === nextMilestone.days ? 0 : currentTier.days;
-        const totalGap = nextMilestone.days - prevMilestoneDays;
-        const currentProgress = streak - prevMilestoneDays;
-        const progressPercent = Math.min(100, Math.max(5, (currentProgress / totalGap) * 100));
-
-        return (
-            <div className="mb-8 w-full">
-                <div className="flex justify-between items-end mb-2">
-                    <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">{currentTier.name}</span>
-                    <div className="flex items-center gap-1.5 text-right">
-                        <span className="text-xs text-gray-500 font-medium">Next:</span>
-                        <span className={`text-sm font-black ${nextMilestone.color}`}>{nextMilestone.name}</span>
-                        <span className="text-xs font-bold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded ml-1">{nextMilestone.days} days</span>
-                    </div>
-                </div>
-                <div className="h-4 bg-gray-100 rounded-full overflow-hidden relative border border-gray-200/50">
-                    <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progressPercent}%` }}
-                        transition={{ duration: 1, ease: "circOut" }}
-                        className={`absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-600 shadow-lg shadow-orange-500/30`}
-                    />
-                </div>
-                <p className="mt-2 text-xs text-center font-medium text-gray-400">
-                    {nextMilestone.days - streak} days until <span className="text-gray-800 font-bold">+{nextMilestone.reward} Coins</span> bonus!
-                </p>
-            </div>
-        );
-    };
 
     return (
         <AnimatePresence>
@@ -172,7 +142,7 @@ const DailyLoginPopup = ({ isOpen, onClose }) => {
                             </p>
 
                             {/* Progress Bar */}
-                            <ProgressBar />
+                            <ProgressBar currentTier={currentTier} nextMilestone={nextMilestone} streak={streak} />
 
                             {/* Action Button */}
                             <button
@@ -201,3 +171,34 @@ const DailyLoginPopup = ({ isOpen, onClose }) => {
 };
 
 export default DailyLoginPopup;
+
+const ProgressBar = ({ currentTier, nextMilestone, streak }) => {
+    const prevMilestoneDays = currentTier.days === nextMilestone.days ? 0 : currentTier.days;
+    const totalGap = nextMilestone.days - prevMilestoneDays;
+    const currentProgress = streak - prevMilestoneDays;
+    const progressPercent = Math.min(100, Math.max(5, (currentProgress / totalGap) * 100));
+
+    return (
+        <div className="mb-8 w-full">
+            <div className="flex justify-between items-end mb-2">
+                <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">{currentTier.name}</span>
+                <div className="flex items-center gap-1.5 text-right">
+                    <span className="text-xs text-gray-500 font-medium">Next:</span>
+                    <span className={`text-sm font-black ${nextMilestone.color}`}>{nextMilestone.name}</span>
+                    <span className="text-xs font-bold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded ml-1">{nextMilestone.days} days</span>
+                </div>
+            </div>
+            <div className="h-4 bg-gray-100 rounded-full overflow-hidden relative border border-gray-200/50">
+                <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ duration: 1, ease: "circOut" }}
+                    className={`absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-600 shadow-lg shadow-orange-500/30`}
+                />
+            </div>
+            <p className="mt-2 text-xs text-center font-medium text-gray-400">
+                {nextMilestone.days - streak} days until <span className="text-gray-800 font-bold">+{nextMilestone.reward} Coins</span> bonus!
+            </p>
+        </div>
+    );
+};

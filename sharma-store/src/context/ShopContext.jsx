@@ -22,11 +22,16 @@ export const ShopProvider = ({ children }) => {
         const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
             const data = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
             // Set SOURCE of truth
+            console.log("Fetched Products:", data);
             setAllProducts(data);
             setLoading(false);
-            console.log("INITIAL FETCH: Loaded", data.length, "products");
         }, (error) => {
-            console.error("Error fetching products:", error);
+            if (error.code === 'permission-denied') {
+                console.warn("Product access denied. Rules likely not deployed. Using empty list.");
+                setAllProducts([]); // Handle gracefully
+            } else {
+                console.error("Error fetching products:", error);
+            }
             setLoading(false);
         });
         return () => unsubscribe();
@@ -34,9 +39,6 @@ export const ShopProvider = ({ children }) => {
 
     // 5. Derived Filter Logic (Effect-based)
     useEffect(() => {
-        console.log("--- FILTERING START ---");
-        console.log("Source Count:", allProducts.length);
-        console.log("Selected Category:", selectedCategory);
 
         let result = [...allProducts];
 
@@ -51,10 +53,9 @@ export const ShopProvider = ({ children }) => {
 
         // Category Filter (Case-Insensitive "all" check)
         // Treat "all", "All", "ALL" as the reset key
-        if (selectedCategory && selectedCategory.trim().toLowerCase() !== "all") {
-            const cat = selectedCategory.trim().toLowerCase();
-            result = result.filter(item =>
-                item.category?.trim().toLowerCase() === cat
+        if (selectedCategory && selectedCategory.toLowerCase() !== "all") {
+            result = result.filter(p =>
+                p.category?.toLowerCase() === selectedCategory.toLowerCase()
             );
         }
 
@@ -65,15 +66,14 @@ export const ShopProvider = ({ children }) => {
             result.sort((a, b) => Number(b.price) - Number(a.price));
         }
 
-        console.log("Filtered Count:", result.length);
-        console.log("--- FILTERING END ---");
+
 
         setFilteredProducts(result);
     }, [allProducts, selectedCategory, searchQuery, sortBy]);
 
     // 6. Derived Categories List
     const categories = useMemo(() => {
-        const uniqueCats = Array.from(new Set(allProducts.map(p => p.category?.trim()).filter(Boolean)));
+        const uniqueCats = Array.from(new Set(allProducts.map(p => p.category).filter(Boolean)));
         // Return "All" as layout friendly name, but logic handles it
         return ["All", ...uniqueCats.sort()];
     }, [allProducts]);

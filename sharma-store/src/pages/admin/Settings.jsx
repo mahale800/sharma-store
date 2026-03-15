@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc, collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { Save, Loader2, Store, Bell, Phone, MessageSquare } from 'lucide-react';
+import Button from '../../components/Button';
 import { seedProducts } from '../../data/seedProducts';
 
 const Settings = () => {
@@ -16,8 +17,6 @@ const Settings = () => {
 
         // if (!confirm("Are you sure? This will add 40 products to your live database.")) return;
         setSeedLoading(true);
-        console.log("Starting seed process...");
-        console.log("Products to seed:", seedProducts.length);
 
         try {
             const productsRef = collection(db, "products");
@@ -113,7 +112,6 @@ const Settings = () => {
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
-                            console.log("Button clicked form propagation");
                             handleSeed();
                         }}
                         disabled={seedLoading}
@@ -226,13 +224,14 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <button
+                <Button
                     type="submit"
+                    isLoading={saving}
                     disabled={saving}
-                    className="w-full py-4 bg-gray-900 text-white font-bold text-lg rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2"
+                    className="w-full h-14 text-lg bg-gray-900 text-white hover:bg-black shadow-xl"
                 >
-                    {saving ? <Loader2 className="animate-spin" /> : <Save />} Save Configuration
-                </button>
+                    {!saving && <Save className="mr-2" />} Save Configuration
+                </Button>
 
             </form>
 

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext'; // Import useAuth
+import { db } from '../firebase/firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export const CartContext = createContext();
 
@@ -22,19 +24,40 @@ export const CartProvider = ({ children }) => {
 
     useEffect(() => {
         localStorage.setItem('sharma-cart', JSON.stringify(cartItems));
-    }, [cartItems]);
+
+        // Sync to Firestore if Logged In
+        if (currentUser && cartItems.length > 0) {
+            const cartRef = doc(db, 'userCarts', currentUser.uid);
+            setDoc(cartRef, {
+                userId: currentUser.uid,
+                items: cartItems,
+                lastUpdated: serverTimestamp(),
+                reminded: false
+            }, { merge: true }).catch(err => console.error("Failed to sync cart", err));
+        }
+    }, [cartItems, currentUser]);
 
     // Clear cart on logout
+    const previousUser = React.useRef(currentUser);
     useEffect(() => {
-        if (!currentUser) {
-            setCartItems([]);
+        if (previousUser.current && !currentUser) {
+            setCartItems([]); // Only clear if transitioning from User to Null (logout)
         }
+        previousUser.current = currentUser;
     }, [currentUser]);
 
 
     const addToCart = (product, quantity = 1) => {
         if (!currentUser) {
-            console.warn("Blocked guest add-to-cart attempt.");
+            // console.warn("Blocked guest add-to-cart attempt.");
+            // alert("Please log in to add items to your cart.");
+            // since we are not in a component, we can't easily navigate without a hook if outside provider context, 
+            // BUT CartProvider is inside BrowserRouter in App.jsx.
+            // However, useCart is a hook. The Provider is a component.
+            // We can use the window.location or just fail silently if the UI handles it.
+            // The ProductCard ALREADY handles the check and redirect. 
+            // Here we just want to be SURE.
+            // Throwing an error or returning early is safe.
             return;
         }
         setCartItems(prevItems => {
@@ -71,15 +94,16 @@ export const CartProvider = ({ children }) => {
     const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
     const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
 
-    const value = React.useMemo(() => ({
+    const value = {
         cartItems,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
         cartCount,
-        cartTotal
-    }), [cartItems, cartCount, cartTotal]);
+        cartTotal,
+        getCartTotal: () => cartTotal
+    };
 
     return (
         <CartContext.Provider value={value}>

@@ -4,8 +4,10 @@ import { db } from '../firebase/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Package, Clock, ShoppingBag, ArrowRight, Home, Truck, Search } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
+import Card from '../components/common/Card';
 
-const MyOrders = () => {
+const MyOrders = ({ isComponent }) => {
     const { currentUser, loading: authLoading } = useAuth();
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
@@ -36,7 +38,11 @@ const MyOrders = () => {
                 }));
 
                 // Client-side sorting (Newest first)
-                ordersData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                ordersData.sort((a, b) => {
+                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+                    return dateB - dateA;
+                });
 
                 setOrders(ordersData);
             } catch (error) {
@@ -49,8 +55,10 @@ const MyOrders = () => {
         fetchOrders();
     }, [currentUser, authLoading]);
 
-    // Spacing Protocol: pt-32 for Navbar clearance
-    const pageClasses = "min-h-screen pt-32 pb-20 px-4 md:px-8 bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] relative z-0";
+    // Spacing Protocol: Handled globally by PublicLayout
+    const pageClasses = isComponent 
+        ? "w-full min-h-[50vh] relative z-0" 
+        : "w-full pb-8 px-4 md:px-8 bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] relative z-0";
 
     // 1. Show Global Loader if Auth is initializing
     if (authLoading) {
@@ -67,21 +75,25 @@ const MyOrders = () => {
     if (!currentUser) {
         return (
             <div className={pageClasses}>
-                <div className="max-w-md mx-auto min-h-[50vh] flex flex-col items-center justify-center text-center p-8 bg-white/80 backdrop-blur-xl rounded-3xl border border-white/50 shadow-xl">
+                <Card className="max-w-md mx-auto min-h-[50vh] flex flex-col items-center justify-center text-center p-8 shadow-xl">
                     <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mb-6">
                         <ShoppingBag size={40} className="text-orange-400" />
                     </div>
                     <h2 className="text-2xl font-black text-gray-900 mb-2">Login Required</h2>
                     <p className="text-gray-500 font-medium mb-8">Please sign in to view your order history.</p>
                     <div className="flex flex-col gap-3 w-full max-w-xs">
-                        <Link to="/login" className="px-8 py-3 bg-orange-600 text-white font-bold rounded-xl shadow-lg hover:bg-orange-700 transition-all flex items-center justify-center gap-2">
-                            Login Now <ArrowRight size={18} />
+                        <Link to="/login">
+                            <Button variant="primary" className="w-full gap-2">
+                                Login Now <ArrowRight size={18} />
+                            </Button>
                         </Link>
-                        <Link to="/track-order" className="px-8 py-3 bg-white border border-gray-200 text-gray-900 font-bold rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
-                            Track Guest Order
+                        <Link to="/track-order">
+                            <Button variant="secondary" className="w-full gap-2">
+                                Track Guest Order
+                            </Button>
                         </Link>
                     </div>
-                </div>
+                </Card>
             </div>
         );
     }
@@ -108,8 +120,10 @@ const MyOrders = () => {
                     <p className="text-gray-500 font-medium text-lg mb-10 max-w-sm">
                         It looks like you haven't bought anything yet. Explore our collection and find something you love!
                     </p>
-                    <Link to="/" className="px-10 py-4 bg-orange-600 text-white font-bold text-lg rounded-full shadow-xl shadow-orange-500/20 hover:bg-orange-700 hover:scale-105 transition-all flex items-center gap-2">
-                        Start Shopping <ArrowRight size={20} />
+                    <Link to="/">
+                        <Button variant="primary" size="lg" className="rounded-full shadow-xl gap-2 hover:scale-105">
+                            Start Shopping <ArrowRight size={20} />
+                        </Button>
                     </Link>
                 </div>
             </div>
@@ -121,26 +135,28 @@ const MyOrders = () => {
             <div className="max-w-4xl mx-auto w-full">
 
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-                    <div>
-                        <button onClick={() => navigate('/')} className="flex items-center gap-2 text-gray-400 hover:text-orange-600 font-bold mb-4 transition-colors">
-                            <Home size={16} /> Back to Home
-                        </button>
-                        <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
-                            My Orders <span className="text-gray-300 text-2xl font-bold ml-2">({orders.length})</span>
-                        </h1>
-                    </div>
+                {!isComponent && (
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+                        <div>
+                            <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="mb-4 text-gray-500 pl-0 hover:bg-transparent hover:text-orange-600 gap-2">
+                                <Home size={16} /> Back to Home
+                            </Button>
+                            <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+                                My Orders <span className="text-gray-300 text-2xl font-bold ml-2">({orders.length})</span>
+                            </h1>
+                        </div>
 
-                    {/* Search/Filter Placeholder - Visual only for now */}
-                    <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-100 flex items-center gap-2 text-gray-400 w-full md:w-auto">
-                        <Search size={18} className="ml-2" />
-                        <input type="text" placeholder="Search orders..." className="bg-transparent outline-none text-sm font-bold text-gray-600 placeholder:text-gray-300 w-full md:w-48" />
+                        {/* Search/Filter Placeholder - Visual only for now */}
+                        <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-100 flex items-center gap-2 text-gray-400 w-full md:w-auto">
+                            <Search size={18} className="ml-2" />
+                            <input type="text" placeholder="Search orders..." className="bg-transparent outline-none text-sm font-bold text-gray-600 placeholder:text-gray-300 w-full md:w-48" />
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <div className="space-y-8">
                     {orders?.map((order) => (
-                        <div key={order.id} className="group bg-white/80 backdrop-blur-md rounded-3xl border border-white/60 shadow-lg shadow-gray-200/50 hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden">
+                        <Card key={order.id} className="group p-0 overflow-hidden shadow-lg shadow-gray-200/50 hover:shadow-orange-500/10 rounded-3xl border-gray-100">
 
                             {/* Glass Header */}
                             <div className="px-6 py-5 bg-gradient-to-r from-gray-50/50 to-white border-b border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -188,9 +204,12 @@ const MyOrders = () => {
                                             <p className="text-xs font-bold text-gray-400 uppercase">Ordered On</p>
                                             <div className="flex items-center gap-2 font-bold text-gray-700">
                                                 <Clock size={16} className="text-orange-500" />
-                                                {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                                                    day: 'numeric', month: 'short', year: 'numeric'
-                                                })}
+                                                {(() => {
+                                                    const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+                                                    return date.toLocaleDateString("en-IN", {
+                                                        day: 'numeric', month: 'short', year: 'numeric'
+                                                    });
+                                                })()}
                                             </div>
                                         </div>
                                         <div>
@@ -202,22 +221,26 @@ const MyOrders = () => {
                                     <div className="flex items-center gap-3 w-full md:w-auto">
                                         <Link
                                             to={`/order/${order.id}`}
-                                            className="flex-1 md:flex-none px-6 py-3 bg-white border-2 border-gray-100 text-gray-700 hover:border-gray-300 hover:bg-gray-50 font-bold rounded-xl transition-all text-center"
+                                            className="flex-1 md:flex-none"
                                         >
-                                            View Details
+                                            <Button variant="secondary" className="w-full">
+                                                View Details
+                                            </Button>
                                         </Link>
                                         <Link
                                             to={`/track-order?orderId=${order.orderId || order.id}&email=${order.userEmail}`}
                                             state={{ orderId: order.orderId || order.id, email: order.userEmail }}
-                                            className="flex-1 md:flex-none px-6 py-3 bg-gray-900 text-white hover:bg-orange-600 font-bold rounded-xl shadow-lg hover:shadow-orange-500/30 transition-all flex items-center justify-center gap-2 group"
+                                            className="flex-1 md:flex-none"
                                         >
-                                            Track Order <Truck size={18} className="group-hover:translate-x-1 transition-transform" />
+                                            <Button variant="primary" className="w-full gap-2 shadow-lg shadow-orange-500/30">
+                                                Track Order <Truck size={18} />
+                                            </Button>
                                         </Link>
                                     </div>
                                 </div>
                             </div>
 
-                        </div>
+                        </Card>
                     ))}
                 </div>
 
