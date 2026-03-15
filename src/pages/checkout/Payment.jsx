@@ -198,31 +198,42 @@ const Payment = () => {
     };
 
     const handlePay = async () => {
-        // Basic Validation
+        setError('');
+
+        // Inline validation (no browser alerts)
         if (paymentMethod === 'card' && (cardData.number.length < 19 || !cardData.cvv || !cardData.expiry)) {
-            alert("Please enter valid card details."); return;
+            setError('Please enter valid card details.'); return;
         }
         if (paymentMethod === 'upi' && !upiId.includes('@')) {
-            alert("Please enter a valid UPI ID."); return;
+            setError('Please enter a valid UPI ID.'); return;
         }
 
-        setLoading(true);
+        try {
+            setLoading(true);
 
-        if (paymentMethod === 'cod') {
-            await new Promise(r => setTimeout(r, 1000)); // Minimal delay for COD
-            await processOrder();
-        } else {
-            // Simulation Sequence
-            setProcessingStep('connecting');
-            await new Promise(r => setTimeout(r, 1500));
+            if (paymentMethod === 'cod') {
+                await new Promise(r => setTimeout(r, 1000));
+                await processOrder();
+            } else {
+                // Simulation Sequence
+                setProcessingStep('connecting');
+                await new Promise(r => setTimeout(r, 1500));
 
-            setProcessingStep('verifying');
-            await new Promise(r => setTimeout(r, 1500));
+                setProcessingStep('verifying');
+                await new Promise(r => setTimeout(r, 1500));
 
-            setProcessingStep('approving');
-            await new Promise(r => setTimeout(r, 1000));
+                setProcessingStep('approving');
+                await new Promise(r => setTimeout(r, 1000));
 
-            await processOrder();
+                await processOrder();
+            }
+        } catch (err) {
+            // processOrder handles its own errors but catch any unexpected ones
+            if (!error) {
+                setError(err.message || 'Something went wrong. Please try again.');
+            }
+            setLoading(false);
+            setProcessingStep(null);
         }
     };
 
@@ -258,6 +269,25 @@ const Payment = () => {
                             {processingStep === 'verifying' && "Verifying secure credentials..."}
                             {processingStep === 'approving' && "Transaction approved! Finalizing..."}
                         </motion.p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* --- Error Banner --- */}
+            <AnimatePresence>
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                        className="bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl flex items-start gap-3"
+                    >
+                        <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-red-600 text-sm font-black">!</span>
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-sm font-bold">{error}</p>
+                            <p className="text-xs text-red-500 mt-1">Your cart has not been cleared. Please try again.</p>
+                        </div>
+                        <button onClick={() => setError('')} className="text-red-400 hover:text-red-600 text-lg font-bold">&times;</button>
                     </motion.div>
                 )}
             </AnimatePresence>
