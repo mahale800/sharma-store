@@ -23,7 +23,8 @@ const RecommendationRow = ({ source, currentProduct }) => {
                 <h3 className="text-xl font-bold text-gray-800">
                     {source === 'cart' ? 'You May Also Like' :
                         source === 'product' ? 'Customers Also Bought' :
-                            'Recommended for You'}
+                            source === 'trending' ? 'Trending Now' :
+                                'Recommended for You'}
                 </h3>
             </div>
 

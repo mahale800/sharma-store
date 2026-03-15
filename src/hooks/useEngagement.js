@@ -91,7 +91,8 @@ export const useEngagement = () => {
             const metrics = {
                 notifications: { sent: 0, clicked: 0, byTone: {} },
                 ai: { sessions: 0, recommendationsClicked: 0 },
-                conversions: { notification: 0, ai: 0, organic: 0 }
+                conversions: { notification: 0, ai: 0, organic: 0 },
+                behavior: { pageViews: 0, productClicks: 0, cartAdditions: 0, checkoutAttempts: 0, purchases: 0 }
             };
 
             events.forEach(e => {
@@ -108,8 +109,15 @@ export const useEngagement = () => {
 
                 // Conversions (Purchase/Checkout)
                 if (e.eventType === 'checkout_complete') {
+                    metrics.behavior.purchases++;
                     if (e.source) metrics.conversions[e.source] = (metrics.conversions[e.source] || 0) + 1;
                 }
+
+                // Behavior Flow
+                if (e.eventType === 'page_view') metrics.behavior.pageViews++;
+                if (e.eventType === 'product_click') metrics.behavior.productClicks++;
+                if (e.eventType === 'add_to_cart') metrics.behavior.cartAdditions++;
+                if (e.eventType === 'checkout_attempt') metrics.behavior.checkoutAttempts++;
             });
 
             return { events, metrics };

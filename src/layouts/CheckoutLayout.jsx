@@ -2,15 +2,22 @@ import React from 'react';
 import { Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
 import { ShoppingBag, MapPin, CreditCard, Check, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/common/PageTransition';
+import { useEngagement } from '../hooks/useEngagement';
 
 const CheckoutLayout = () => {
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const { cartItems } = useCart();
     const isSuccess = pathname.includes('success');
+    const { logEvent } = useEngagement();
+
+    React.useEffect(() => {
+        if (pathname === '/checkout/address') {
+            logEvent('checkout_attempt', 'organic', { itemCount: cartItems.length });
+        }
+    }, [pathname, logEvent, cartItems.length]);
 
     // Steps Logic
     const steps = [

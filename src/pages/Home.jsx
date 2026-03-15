@@ -10,6 +10,8 @@ import DailyLoginPopup from '../components/loyalty/DailyLoginPopup';
 import StreakWarningBanner from '../components/loyalty/StreakWarningBanner';
 import { motion } from 'framer-motion';
 import Logo from '../components/common/Logo';
+import RecommendationRow from '../components/RecommendationRow';
+import RecentlyViewed from '../components/RecentlyViewed';
 
 const Home = () => {
     const {
@@ -148,6 +150,15 @@ const Home = () => {
                                 </div>
                                 <ShoppingBagIcon className="absolute -right-4 -bottom-4 text-black/10 size-32 group-hover:rotate-12 transition-transform" />
                             </div>
+                        </div>
+                    )}
+
+                    {/* Startup Personalization Sections */}
+                    {!searchQuery && (selectedCategory === "All" || selectedCategory === "all") && (
+                        <div className="mb-16 space-y-12">
+                            <RecommendationRow source="home" />
+                            <RecommendationRow source="trending" />
+                            <RecentlyViewed currentProductId={null} />
                         </div>
                     )}
 

@@ -13,6 +13,8 @@ const Shop = () => {
         searchQuery, setSearchQuery,
         selectedCategory, setSelectedCategory,
         sortBy, setSortBy,
+        minPrice, setMinPrice,
+        maxPrice, setMaxPrice,
         categories,
         resetFilters
     } = useShop();
@@ -54,8 +56,29 @@ const Shop = () => {
                         </div>
 
                         {/* Filters & Sort */}
-                        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto no-scrollbar">
-                            <div className="flex bg-gray-100 p-1 rounded-xl">
+                        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto no-scrollbar whitespace-nowrap pb-2 md:pb-0">
+                            
+                            {/* Price Filters */}
+                            <div className="flex items-center bg-white border border-gray-200 p-1 rounded-xl shadow-sm shrink-0">
+                                <span className="text-gray-400 text-xs px-2 font-bold">₹</span>
+                                <input 
+                                    type="number" 
+                                    placeholder="Min" 
+                                    value={minPrice} 
+                                    onChange={(e) => setMinPrice(e.target.value)}
+                                    className="w-16 py-1 text-xs font-bold text-gray-700 outline-none bg-transparent"
+                                />
+                                <span className="text-gray-300">-</span>
+                                <input 
+                                    type="number" 
+                                    placeholder="Max" 
+                                    value={maxPrice} 
+                                    onChange={(e) => setMaxPrice(e.target.value)}
+                                    className="w-16 py-1 pl-2 text-xs font-bold text-gray-700 outline-none bg-transparent"
+                                />
+                            </div>
+
+                            <div className="flex bg-gray-100 p-1 rounded-xl shrink-0">
                                 <button
                                     onClick={() => setSortBy("featured")}
                                     className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${sortBy === "featured" ? 'bg-white shadow text-slate-900' : 'text-gray-500 hover:text-gray-900'}`}

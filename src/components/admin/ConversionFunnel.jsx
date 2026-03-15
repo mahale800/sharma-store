@@ -3,28 +3,37 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import Card from '../common/Card';
 import { Filter } from 'lucide-react';
 
-const ConversionFunnel = ({ stats }) => {
-    // Mock Funnel Data based on Order Statuses
-    // In a real app, this would be: View Content -> Add to Cart -> Initiate Checkout -> Purchase
-    // Here we visualize: Placed -> Processing -> Delivered
+const ConversionFunnel = ({ stats, engagementMetrics }) => {
+    const b = engagementMetrics?.behavior;
+    const hasBehavior = b && b.pageViews > 0;
 
-    // We don't have historical "Placed" count easily without querying all, so we'll approximate 
-    // or just show the distribution of current order statuses as a "Health Funnel".
-
-    const data = [
-        { name: 'Total Orders', value: stats?.totalOrders || 0, fill: '#c2410c' }, // Orange-800
-        { name: 'Processing', value: (stats?.totalOrders || 0) - (stats?.pendingOrders || 0), fill: '#ea580c' }, // Orange-600
-        { name: 'Delivered', value: stats?.deliveredOrders || 0, fill: '#f97316' }, // Orange-500
-    ];
+    let data = [];
+    if (hasBehavior) {
+        data = [
+            { name: 'Page Views', value: b.pageViews, fill: '#fcd34d' },
+            { name: 'Product Clicks', value: b.productClicks, fill: '#fbbf24' },
+            { name: 'Add to Cart', value: b.cartAdditions, fill: '#f59e0b' },
+            { name: 'Checkout Attempts', value: b.checkoutAttempts, fill: '#d97706' },
+            { name: 'Purchases', value: b.purchases, fill: '#b45309' },
+        ];
+    } else {
+        data = [
+            { name: 'Total Orders', value: stats?.totalOrders || 0, fill: '#fcd34d' },
+            { name: 'Processing', value: (stats?.totalOrders || 0) - (stats?.pendingOrders || 0), fill: '#f59e0b' },
+            { name: 'Delivered', value: stats?.deliveredOrders || 0, fill: '#b45309' },
+        ];
+    }
 
     return (
         <Card className="h-full min-h-[300px] flex flex-col">
             <div className="mb-6">
                 <h3 className="font-black text-gray-900 flex items-center gap-2">
                     <Filter size={20} className="text-orange-500" />
-                    Order Fulfillment Funnel
+                    {hasBehavior ? 'Behavior Flow' : 'Order Fulfillment'} Funnel
                 </h3>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Efficiency Metrics</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                    {hasBehavior ? 'Customer Journey & Drop-offs' : 'Efficiency Metrics'}
+                </p>
             </div>
 
             <div className="flex-1 w-full min-h-[200px] flex flex-col justify-center space-y-4">
@@ -56,7 +65,10 @@ const ConversionFunnel = ({ stats }) => {
 
             <div className="mt-4 p-4 bg-gray-50 rounded-xl">
                 <p className="text-xs text-gray-500 text-center leading-relaxed">
-                    <strong>Insight:</strong> {(data[2].value / (data[0].value || 1) * 100).toFixed(1)}% of all orders have been successfully delivered.
+                    <strong>Insight:</strong> {hasBehavior 
+                        ? `${(data[data.length - 1].value / (data[0].value || 1) * 100).toFixed(1)}% overall conversion rate from page view to purchase.`
+                        : `${(data[2].value / (data[0].value || 1) * 100).toFixed(1)}% of all orders have been successfully delivered.`
+                    }
                 </p>
             </div>
         </Card>

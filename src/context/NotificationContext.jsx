@@ -206,9 +206,10 @@ export const NotificationProvider = ({ children }) => {
 
     useEffect(() => {
         if (cartCount > 0) {
+            // Abandoned Cart Recovery: Detect carts left for defined time (15 minutes)
             const timer = setTimeout(() => {
-                addNotification('engagement', `You have ${cartCount} items (₹${cartTotal}) waiting in your cart.`);
-            }, 10000);
+                addNotification('cart', `Your items are waiting in the cart.`);
+            }, 900000); // 15 mins
             return () => clearTimeout(timer);
         }
     }, [cartCount, cartTotal]);

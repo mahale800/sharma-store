@@ -20,9 +20,15 @@ export const useRecommendations = (source, currentProduct) => {
                 initialRecs = products
                     .filter(p => p.category === currentProduct.category && p.id !== currentProduct.id)
                     .slice(0, 5);
+            } else if (source === 'trending') {
+                // Sort by trending metrics (orders, views, ratings)
+                initialRecs = [...products]
+                    .sort((a, b) => (b.unitsSold || b.rating || 0) - (a.unitsSold || a.rating || 0))
+                    .slice(0, 5);
             } else if (source === 'cart' || source === 'home') {
                 // Random trending/featured
                 initialRecs = products.filter(p => p.isFeatured).slice(0, 5);
+                if (initialRecs.length === 0) initialRecs = products.slice(0, 5);
             }
 
             setRecommendations(initialRecs);
@@ -38,8 +44,10 @@ export const useRecommendations = (source, currentProduct) => {
                     context = `User is looking at "${currentProduct.name}". Suggest complementary items.`;
                 } else if (source === 'cart') {
                     context = "User is about to checkout. Suggest impulse buy items under ₹200.";
+                } else if (source === 'trending') {
+                    context = "Suggest products that are currently trending, popular, or highly rated.";
                 } else {
-                    context = "User is on the home page. Suggest popular bestsellers.";
+                    context = "User is on the home page. Suggest popular bestsellers for personalized recommendations.";
                 }
 
                 const aiIds = await getRecommendations(context, products.map(p => ({

@@ -14,6 +14,8 @@ export const ShopProvider = ({ children }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState("featured");
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
 
     // Debounce search query
     useEffect(() => {
@@ -68,6 +70,14 @@ export const ShopProvider = ({ children }) => {
             );
         }
 
+        // Price Filter
+        if (minPrice !== "" && !isNaN(minPrice)) {
+            result = result.filter(p => Number(p.price) >= Number(minPrice));
+        }
+        if (maxPrice !== "" && !isNaN(maxPrice)) {
+            result = result.filter(p => Number(p.price) <= Number(maxPrice));
+        }
+
         // Sort
         if (sortBy === "price-low") {
             result.sort((a, b) => Number(a.price) - Number(b.price));
@@ -78,7 +88,7 @@ export const ShopProvider = ({ children }) => {
 
 
         setFilteredProducts(result);
-    }, [allProducts, selectedCategory, debouncedSearchQuery, sortBy]);
+    }, [allProducts, selectedCategory, debouncedSearchQuery, sortBy, minPrice, maxPrice]);
 
     // 6. Derived Categories List
     const categories = useMemo(() => {
@@ -92,6 +102,8 @@ export const ShopProvider = ({ children }) => {
         setSearchQuery("");
         setSelectedCategory("All");
         setSortBy("featured");
+        setMinPrice("");
+        setMaxPrice("");
     };
 
     const value = {
@@ -101,6 +113,8 @@ export const ShopProvider = ({ children }) => {
         searchQuery, setSearchQuery,
         selectedCategory, setSelectedCategory,
         sortBy, setSortBy,
+        minPrice, setMinPrice,
+        maxPrice, setMaxPrice,
         categories,
         resetFilters
     };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../context/NotificationContext';
 import { db } from '../../firebase/firebase';
 import { collection, addDoc, doc, updateDoc, increment, arrayUnion, runTransaction, getDoc } from 'firebase/firestore';
 import { ShieldCheck, Loader2, Edit2, MapPin, Banknote, QrCode, Lock, CreditCard, ChevronRight, Wallet, CheckCircle } from 'lucide-react';
@@ -15,6 +16,7 @@ const Payment = () => {
     const location = useLocation();
     const { currentUser } = useAuth();
     const { cartItems, getCartTotal, clearCart } = useCart();
+    const { addNotification } = useNotifications();
 
     // Data Setup
     const orderItems = cartItems;
@@ -160,6 +162,15 @@ const Payment = () => {
             sendOrderNotification({ ...orderData, id: docRef.id }).catch(e => {
                 console.error("WhatsApp notification failed", e);
             });
+
+            // Trigger In-App Notifications
+            addNotification('order', `Order Confirmed: ${readableOrderId}. We're getting your items ready!`);
+            
+            if (coinsEarned > 0) {
+                setTimeout(() => {
+                    addNotification('loyalty', `You earned ${coinsEarned} coins from your recent purchase!`);
+                }, 3000); // Slight delay for loyalty notification
+            }
 
             // Clear cart and redirect
             clearCart();

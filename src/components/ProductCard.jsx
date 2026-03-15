@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import { usePerformance } from '../hooks/usePerformance';
+import { useEngagement } from '../hooks/useEngagement';
 import Button from './Button';
 
 import Card from './common/Card';
@@ -19,6 +20,7 @@ const ProductCard = ({ product }) => {
     const [imgSrc, setImgSrc] = useState(product.image || product.imageUrl || product.img || 'https://placehold.co/400x400?text=No+Image');
 
     const { currentUser } = useAuth(); // Import useAuth at top
+    const { logEvent } = useEngagement();
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
@@ -27,6 +29,7 @@ const ProductCard = ({ product }) => {
             navigate('/login');
             return;
         }
+        logEvent('add_to_cart', 'organic', { productId: product.id });
         addToCart(product);
     };
 
@@ -40,6 +43,7 @@ const ProductCard = ({ product }) => {
             navigate('/login');
             return;
         }
+        logEvent('checkout_attempt', 'organic', { productId: product.id, isBuyNow: true });
         // Unified Flow: Clear cart, add item, go to address
         clearCart();
         addToCart(product);

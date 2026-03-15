@@ -54,10 +54,16 @@ import { WishlistProvider } from './context/WishlistContext';
 import { NotificationProvider } from './context/NotificationContext';
 
 import './App.css';
+import { useEngagement } from './hooks/useEngagement';
 
 // Separated Routes Component to use useLocation
 const AppRoutes = () => {
   const location = useLocation();
+  const { logEvent } = useEngagement();
+
+  useEffect(() => {
+    logEvent('page_view', 'organic', { path: location.pathname });
+  }, [location.pathname, logEvent]);
 
   return (
     // Removed AnimatePresence here because it causes Layouts to unmount.

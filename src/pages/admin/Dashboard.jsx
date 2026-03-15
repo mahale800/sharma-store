@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useFeedback } from '../../hooks/useFeedback';
+import { useEngagement } from '../../hooks/useEngagement';
 import { generateBusinessInsights } from '../../services/aiService';
 import StatsCards from '../../components/admin/StatsCards';
 import SalesChart from '../../components/admin/SalesChart';
@@ -22,14 +23,22 @@ const Dashboard = () => {
     const [feedback, setFeedback] = useState([]);
     const [insights, setInsights] = useState(null);
     const [insightLoading, setInsightLoading] = useState(false);
+    
+    const { getEngagementStats } = useEngagement();
+    const [engagementMetrics, setEngagementMetrics] = useState(null);
 
     useEffect(() => {
         const loadData = async () => {
             const feedbackData = await getFeedback();
             setFeedback(feedbackData);
+            
+            const engagementData = await getEngagementStats(7);
+            if (engagementData && engagementData.metrics) {
+                setEngagementMetrics(engagementData.metrics);
+            }
         };
         loadData();
-    }, [getFeedback]);
+    }, [getFeedback, getEngagementStats]);
 
     // Generate Insights when both data sources are ready
     const { allowBackgroundTasks } = usePerformance();
@@ -154,7 +163,7 @@ const Dashboard = () => {
 
                 {/* Conversion Funnel */}
                 <div className="h-full">
-                    <ConversionFunnel stats={stats} />
+                    <ConversionFunnel stats={stats} engagementMetrics={engagementMetrics} />
                 </div>
 
                 {/* Low Stock Alerts */}

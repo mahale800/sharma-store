@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Home, ArrowLeft, Gift } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/common/Card';
+import RecommendationRow from '../components/RecommendationRow';
 
 const Cart = () => {
     const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
@@ -165,6 +166,11 @@ const Cart = () => {
                             </div>
                         </Card>
                     </div>
+                </div>
+
+                {/* Recommendations specific to Cart context */}
+                <div className="mt-16 border-t border-gray-200/50 pt-8">
+                    <RecommendationRow source="cart" />
                 </div>
             </div>
 

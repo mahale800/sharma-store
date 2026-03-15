@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/firebase';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, addDoc } from 'firebase/firestore';
 import { Search, ShoppingBag, Eye, Truck, CheckCircle, Clock, XCircle, AlertCircle, ArrowUpRight, Filter, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
@@ -25,8 +25,23 @@ const Orders = () => {
     const handleStatusUpdate = async (e, orderId) => {
         e.stopPropagation();
         const newStatus = e.target.value;
+        const targetOrder = orders.find(o => o.id === orderId);
+        
         try {
             await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+            
+            // Notify User
+            if ((newStatus === 'Shipped' || newStatus === 'Delivered') && targetOrder?.userId) {
+                await addDoc(collection(db, 'notifications'), {
+                    userId: targetOrder.userId,
+                    type: 'order',
+                    title: 'Sharma Store',
+                    body: `Your order #${targetOrder.orderId || orderId.slice(0, 8)} has been ${newStatus.toLowerCase()}!`,
+                    read: false,
+                    createdAt: new Date().toISOString(),
+                    tone: 'Excited'
+                });
+            }
         } catch (error) { console.error("Update failed", error); }
     };
 
