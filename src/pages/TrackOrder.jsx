@@ -4,6 +4,7 @@ import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firesto
 import { Search, AlertCircle, Check, Home } from 'lucide-react';
 import { Link, useLocation, useSearchParams, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { ORDER_STEPS, getStepIndex, getStatusStyle } from '../utils/orderStateMachine';
 
 const TrackOrder = () => {
     const { orderId: paramOrderId } = useParams();
@@ -165,19 +166,7 @@ const TrackOrder = () => {
         }
     };
 
-    // Helper for Status Steps
-    const getStatusStep = (status) => {
-        const s = (status || '').toLowerCase();
-        const statusMap = { 'pending': 0, 'placed': 0, 'processing': 1, 'shipped': 2, 'delivered': 3, 'cancelled': -1 };
-        return statusMap[s] !== undefined ? statusMap[s] : 0;
-    };
-
-    const steps = [
-        { label: 'Placed' },
-        { label: 'Processing' },
-        { label: 'Shipped' },
-        { label: 'Delivered' }
-    ];
+    const steps = ORDER_STEPS;
 
     return (
         <div className="w-full pb-8 bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
@@ -244,7 +233,7 @@ const TrackOrder = () => {
                                     <h2 className="text-xl font-black text-gray-900">Order Status</h2>
                                     <p className="text-sm text-gray-500 font-bold mt-1">Last updated: {new Date().toLocaleTimeString()}</p>
                                 </div>
-                                <div className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-wide ${order.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                                <div className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-wide ${getStatusStyle(order.status).bg} ${getStatusStyle(order.status).text}`}>
                                     {order.status || 'Processing'}
                                 </div>
                             </div>
@@ -254,11 +243,11 @@ const TrackOrder = () => {
                                 <div className="absolute top-3 left-0 w-full h-1 bg-gray-100 rounded-full"></div>
                                 <div
                                     className="absolute top-3 left-0 h-1 bg-green-500 rounded-full transition-all duration-1000"
-                                    style={{ width: `${Math.min((getStatusStep(order.status) / (steps.length - 1)) * 100, 100)}%` }}
+                                    style={{ width: `${Math.min((getStepIndex(order.status) / (steps.length - 1)) * 100, 100)}%` }}
                                 ></div>
                                 <div className="relative z-10 flex justify-between">
                                     {steps.map((step, index) => {
-                                        const isCompleted = index <= getStatusStep(order.status);
+                                        const isCompleted = index <= getStepIndex(order.status);
                                         return (
                                             <div key={index} className="flex flex-col items-center">
                                                 <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all duration-300 bg-white ${isCompleted ? 'border-green-500 text-green-500' : 'border-gray-200 text-gray-300'}`}>

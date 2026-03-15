@@ -5,6 +5,7 @@ import { Search, ShoppingBag, Eye, Truck, CheckCircle, Clock, XCircle, AlertCirc
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import Card from '../../components/common/Card';
+import { getNextStates, getStatusStyle, ORDER_STATUSES } from '../../utils/orderStateMachine';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -28,7 +29,10 @@ const Orders = () => {
         const targetOrder = orders.find(o => o.id === orderId);
         
         try {
-            await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+            await updateDoc(doc(db, "orders", orderId), {
+                status: newStatus,
+                updatedAt: new Date()
+            });
             
             // Notify User
             if ((newStatus === 'Shipped' || newStatus === 'Delivered') && targetOrder?.userId) {
@@ -45,15 +49,7 @@ const Orders = () => {
         } catch (error) { console.error("Update failed", error); }
     };
 
-    const getStatusStyle = (status) => {
-        switch (status) {
-            case 'Delivered': return { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, border: 'border-green-200' };
-            case 'Processing': return { bg: 'bg-orange-100', text: 'text-orange-700', icon: Clock, border: 'border-orange-200' };
-            case 'Shipped': return { bg: 'bg-blue-100', text: 'text-blue-700', icon: Truck, border: 'border-blue-200' };
-            case 'Cancelled': return { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle, border: 'border-red-200' };
-            default: return { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: AlertCircle, border: 'border-yellow-200' };
-        }
-    };
+    const statusStyle = (status) => getStatusStyle(status);
 
     const filteredOrders = orders.filter(order => {
         const customerName = order.address?.fullName || 'Guest';
@@ -80,7 +76,7 @@ const Orders = () => {
                     <p className="text-sm font-medium text-gray-500">Manage and track customer orders.</p>
                 </div>
                 <div className="flex items-center gap-2 bg-white p-1 rounded-xl border border-gray-100 shadow-sm overflow-x-auto max-w-full">
-                    {['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
+                    {['All', ...ORDER_STATUSES].map(status => (
                         <button
                             key={status}
                             onClick={() => setFilterStatus(status)}
@@ -118,8 +114,7 @@ const Orders = () => {
                     </div>
                 ) : (
                     filteredOrders.map(order => {
-                        const style = getStatusStyle(order.status);
-                        const Icon = style.icon;
+                        const style = statusStyle(order.status);
 
                         return (
                             <Card
@@ -132,7 +127,7 @@ const Orders = () => {
 
                                     {/* Icon Box */}
                                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${style.bg} ${style.text} shadow-inner shrink-0`}>
-                                        <Icon size={28} strokeWidth={2.5} />
+                                        <ShoppingBag size={28} strokeWidth={2.5} />
                                     </div>
 
                                     {/* Order Info */}
@@ -167,7 +162,14 @@ const Orders = () => {
                                                         onChange={e => handleStatusUpdate(e, order.id)}
                                                         className={`appearance-none pl-4 pr-10 py-2.5 rounded-xl text-xs font-black uppercase tracking-wide cursor-pointer outline-none transition-all hover:brightness-95 bg-gray-50 text-gray-600 border border-gray-100 hover:bg-white hover:border-gray-200 hover:shadow-sm`}
                                                     >
-                                                        {['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(s => <option key={s} value={s}>{s}</option>)}
+                                                        {getNextStates(order.status).length > 0 ? (
+                                                            <>
+                                                                <option value={order.status}>{order.status}</option>
+                                                                {getNextStates(order.status).map(s => <option key={s} value={s}>{s}</option>)}
+                                                            </>
+                                                        ) : (
+                                                            <option value={order.status}>{order.status} (Final)</option>
+                                                        )}
                                                     </select>
                                                     <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                                 </div>

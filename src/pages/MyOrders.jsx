@@ -6,6 +6,7 @@ import { Package, Clock, ShoppingBag, ArrowRight, Home, Truck, Search } from 'lu
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Card from '../components/common/Card';
+import { getStatusStyle } from '../utils/orderStateMachine';
 
 const MyOrders = ({ isComponent }) => {
     const { currentUser, loading: authLoading } = useAuth();
@@ -169,10 +170,7 @@ const MyOrders = ({ isComponent }) => {
                                         <p className="font-bold text-gray-900 select-all">#{order.orderId || order.id}</p>
                                     </div>
                                 </div>
-                                <div className={`shrink-0 px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest border whitespace-nowrap ${order.status === 'Delivered' ? 'bg-green-50 text-green-600 border-green-100' :
-                                    order.status === 'Cancelled' ? 'bg-red-50 text-red-600 border-red-100' :
-                                        'bg-orange-50 text-orange-600 border-orange-100'
-                                    }`}>
+                                <div className={`shrink-0 px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest border whitespace-nowrap ${getStatusStyle(order.status).bg} ${getStatusStyle(order.status).text} ${getStatusStyle(order.status).border}`}>
                                     {order.status || 'Processing'}
                                 </div>
                             </div>

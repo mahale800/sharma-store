@@ -103,6 +103,7 @@ const Payment = () => {
                 transactionId: transactionId,
                 source: 'Cart Checkout',
                 createdAt: new Date(),
+                updatedAt: new Date(),
                 customerName: shippingAddress.fullName,
                 phone: shippingAddress.phoneNumber
             };
