@@ -4,7 +4,7 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import { db } from '../../firebase/firebase';
-import { collection, addDoc, doc, updateDoc, increment, arrayUnion, runTransaction, getDoc } from 'firebase/firestore';
+import { collection, doc, updateDoc, increment, arrayUnion, runTransaction } from 'firebase/firestore';
 import { ShieldCheck, Loader2, Edit2, MapPin, Banknote, QrCode, Lock, CreditCard, ChevronRight, Wallet, CheckCircle } from 'lucide-react';
 import Button from '../../components/Button';
 import { sendOrderNotification } from '../../services/whatsappService';
@@ -114,7 +114,7 @@ const Payment = () => {
                 // Check and update stock for each item
                 for (const item of orderItems) {
                     const productRef = doc(db, 'products', item.id);
-                    const productDoc = await getDoc(productRef);
+                    const productDoc = await transaction.get(productRef);
                     
                     if (!productDoc.exists()) {
                         throw new Error(`Product ${item.name} not found`);
@@ -278,6 +278,63 @@ const Payment = () => {
                     <ShieldCheck size={14} /> 256-bit SSL Encrypted
                 </div>
             </div>
+
+            {/* Order Items Summary */}
+            <div className="frosted-paper p-6 rounded-[2rem] border border-white/60 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-black text-gray-900">Order Summary</h3>
+                    <span className="text-xs font-bold text-gray-400 bg-gray-100 px-2.5 py-1 rounded-lg">{orderItems.length} {orderItems.length === 1 ? 'item' : 'items'}</span>
+                </div>
+                <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
+                    {orderItems.map((item) => (
+                        <div key={item.id} className="flex gap-3 items-center">
+                            <div className="w-12 h-12 bg-gray-50 rounded-xl border border-gray-100 overflow-hidden shrink-0">
+                                <img src={item.image || item.imageUrl || 'https://placehold.co/100'} className="w-full h-full object-cover" alt={item.name} loading="lazy" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-gray-900 truncate">{item.name}</p>
+                                <p className="text-xs text-gray-400">Qty: {item.quantity} × ₹{item.price}</p>
+                            </div>
+                            <p className="text-sm font-bold text-gray-900">₹{(item.price * item.quantity).toFixed(0)}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="border-t border-gray-100 mt-4 pt-4 space-y-2">
+                    <div className="flex justify-between text-sm text-gray-500">
+                        <span>Subtotal</span>
+                        <span>₹{totalAmount}</span>
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-500">
+                        <span>Shipping</span>
+                        <span className="text-green-600 font-bold">Free</span>
+                    </div>
+                    <div className="flex justify-between text-sm font-bold text-gray-900 pt-1">
+                        <span>Total</span>
+                        <span className="text-primary">₹{totalAmount}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Shipping Address Preview */}
+            {shippingAddress && (
+                <div className="frosted-paper p-5 rounded-[2rem] border border-white/60 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                            <MapPin size={16} className="text-orange-500" />
+                            <h3 className="font-bold text-gray-900 text-sm">Delivering to</h3>
+                        </div>
+                        <Link to="/checkout/address" className="text-xs font-bold text-orange-500 hover:text-orange-600 flex items-center gap-1">
+                            <Edit2 size={12} /> Change
+                        </Link>
+                    </div>
+                    <p className="text-sm font-bold text-gray-800">{shippingAddress.fullName}</p>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                        {shippingAddress.addressLine1}, {shippingAddress.city}, {shippingAddress.state} - {shippingAddress.pincode}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">{shippingAddress.phoneNumber}</p>
+                </div>
+            )}
 
             {/* 2. Payment Method Tabs */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-gray-100 p-2 rounded-2xl">

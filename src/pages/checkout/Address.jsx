@@ -5,7 +5,6 @@ import { useAuth } from '../../context/AuthContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 
-// ... imports ...
 import { useCart } from '../../context/CartContext';
 
 const Address = () => {
