@@ -87,7 +87,7 @@ const Footer = () => {
                 <p>&copy; 2026 {storeProfile.name}. All rights reserved.</p>
                 <div className="flex items-center gap-1">
                     <span>Designed & Developed by</span>
-                    <a href="https://github.com/yashmahale" target="_blank" rel="noopener noreferrer" className="font-bold text-slate-300 hover:text-orange-500 transition-colors">
+                    <a href="https://github.com/mahale800" target="_blank" rel="noopener noreferrer" className="font-bold text-slate-300 hover:text-orange-500 transition-colors">
                         Yash Mahale
                     </a>
                 </div>
