@@ -32,6 +32,7 @@ const Button = ({
         md: "h-11 px-6 text-sm",
         lg: "h-14 px-8 text-base",
         icon: "h-11 w-11 p-0",
+        "icon-md": "h-11 w-11 p-0",
         "icon-sm": "h-9 w-9 p-0",
         "icon-lg": "h-14 w-14 p-0"
     };

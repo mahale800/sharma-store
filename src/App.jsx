@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import PublicLayout from './layouts/PublicLayout';
 import { Loader2 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
-import MissingConfigWarning from './components/MissingConfigWarning';
 
 // Lazy Load Pages
 const Login = lazy(() => import('./pages/Login'));
@@ -81,11 +80,7 @@ const AppRoutes = () => {
       }>
         <Route path="/" element={<Home />} />
         {/* Login moved out to avoid PublicLayout padding */}
-        <Route path="/cart" element={
-          <ProtectedRoute>
-            <Cart />
-          </ProtectedRoute>
-        } />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/products" element={<Shop />} />
         <Route path="/wishlist" element={
           <ProtectedRoute>
@@ -178,11 +173,6 @@ function App() {
     sessionStorage.setItem('hasSeenSplash', 'true');
   };
 
-  // Show configuration warning if Firebase is not set up
-  if (!hasConfig && !loading) {
-    return <MissingConfigWarning />;
-  }
-
   if (loading) return (
     <>
       {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
@@ -200,6 +190,11 @@ function App() {
               <LoyaltyProvider>
                 <NotificationProvider>
                   <div className="min-h-screen bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+                    {!hasConfig && (
+                      <div className="bg-amber-100 border-b border-amber-200 px-4 py-3 text-sm font-medium text-amber-900">
+                        Firebase is not fully configured, so the app is running in preview mode with local and fallback data where possible.
+                      </div>
+                    )}
                     <Suspense fallback={
                       <div className="min-h-[60vh] flex items-center justify-center">
                         <Loader2 className="animate-spin text-orange-500" size={40} />

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
-import { ShoppingCart, Zap, Heart, ShieldCheck, Truck, RefreshCw, Banknote, Star, Minus, Plus, Store, Gift, MessageCircle, ChevronRight, Share2 } from 'lucide-react';
+import { ShoppingCart, Zap, Heart, ShieldCheck, Truck, RefreshCw, Banknote, Star, Minus, Plus, Gift, MessageCircle, ChevronRight, Share2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
+import { useShop } from '../context/ShopContext';
 import { useWishlist } from '../context/WishlistContext';
-import { motion } from 'framer-motion';
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence } from 'framer-motion';
 import RecommendationRow from '../components/RecommendationRow';
 import ReviewList from '../components/ReviewList';
 import RecentlyViewed from '../components/RecentlyViewed';
@@ -23,9 +24,8 @@ const getDeliveryDate = () => {
 const ProductDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
     const { addToCart, clearCart } = useCart();
-    const { currentUser } = useAuth();
+    const { getProductById } = useShop();
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     const [product, setProduct] = useState(null);
@@ -33,10 +33,20 @@ const ProductDetails = () => {
     const [activeImage, setActiveImage] = useState(null);
     const [qty, setQty] = useState(1);
     const [isGift, setIsGift] = useState(false);
+    const [actionFeedback, setActionFeedback] = useState('');
 
     useEffect(() => {
         if (!id) {
             setLoading(false);
+            return;
+        }
+
+        const cachedProduct = getProductById(id);
+        if (cachedProduct) {
+            setProduct(cachedProduct);
+            setActiveImage(cachedProduct.image || cachedProduct.imageUrl || cachedProduct.img || 'https://placehold.co/600x600?text=No+Image');
+            setLoading(false);
+            window.scrollTo(0, 0);
             return;
         }
 
@@ -61,14 +71,16 @@ const ProductDetails = () => {
 
         fetchProduct();
         window.scrollTo(0, 0);
-    }, [id]);
+    }, [getProductById, id]);
+
+    useEffect(() => {
+        if (!actionFeedback) return;
+        const timer = setTimeout(() => setActionFeedback(''), 2500);
+        return () => clearTimeout(timer);
+    }, [actionFeedback]);
 
     const handleBuyNow = () => {
-        if (!product) return;
-
-        if (!currentUser) {
-            alert("Please log in to proceed with purchase.");
-            navigate('/login', { state: { from: location } });
+        if (!product || Number(product.stock) === 0) {
             return;
         }
 
@@ -80,13 +92,37 @@ const ProductDetails = () => {
     const handleWhatsApp = () => {
         const message = `Hi Sharma Store, I am interested in ${product.name}. Is it available?`;
         const url = `https://wa.me/919021780559?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
+        window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
+    const handleShare = async () => {
+        if (!product) return;
+
+        const shareData = {
+            title: product.name,
+            text: `Check out ${product.name} on Sharma Store.`,
+            url: window.location.href
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                return;
+            }
+
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(window.location.href);
+                setActionFeedback('Product link copied to clipboard.');
+            }
+        } catch (error) {
+            console.error('Sharing failed:', error);
+        }
     };
 
     const handleQtyChange = (delta) => {
         setQty(prev => {
             const manualLimit = 10;
-            const stockLimit = product?.stock || 10;
+            const stockLimit = Number(product?.stock) || manualLimit;
             const limit = Math.min(manualLimit, stockLimit);
             const newValue = prev + delta;
             return Math.max(1, Math.min(newValue, limit));
@@ -105,6 +141,8 @@ const ProductDetails = () => {
     const isWishlisted = isInWishlist(product.id);
     const discount = product.discountPercent || 30; // Use actual discount if available
     const mrp = product.mrp || Math.round(product.price * 1.42);
+    const isOutOfStock = Number(product.stock) === 0;
+    const quantityLimit = Math.min(10, Number(product.stock) || 10);
 
     return (
         <>
@@ -124,10 +162,21 @@ const ProductDetails = () => {
                             <ChevronRight size={14} />
                             <span className="text-gray-400 truncate max-w-[150px]">{product.name}</span>
                         </nav>
-                        <Button variant="ghost" size="icon-sm" className="rounded-full hover:bg-gray-100 text-gray-500">
+                        <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="rounded-full hover:bg-gray-100 text-gray-500"
+                            onClick={handleShare}
+                        >
                             <Share2 size={20} />
                         </Button>
                     </div>
+
+                    {actionFeedback && (
+                        <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
+                            {actionFeedback}
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                         {/* Left: Gallery - Sticky on Desktop */}
@@ -191,22 +240,22 @@ const ProductDetails = () => {
                             {/* Desktop Actions Block */}
                             <div className="hidden md:grid grid-cols-[140px_1fr_1fr] gap-4 mb-8">
                                 {/* Qty Selector */}
-                                <div className="flex items-center justify-between bg-gray-100 rounded-xl px-2 h-14">
-                                    <Button variant="ghost" size="icon-md" onClick={() => handleQtyChange(-1)} disabled={qty <= 1} className="w-10 h-10 rounded-lg hover:bg-white disabled:opacity-30"><Minus size={18} /></Button>
+                            <div className="flex items-center justify-between bg-gray-100 rounded-xl px-2 h-14">
+                                    <Button variant="ghost" size="icon-md" onClick={() => handleQtyChange(-1)} disabled={qty <= 1 || isOutOfStock} className="w-10 h-10 rounded-lg hover:bg-white disabled:opacity-30"><Minus size={18} /></Button>
                                     <span className="font-bold text-lg">{qty}</span>
-                                    <Button variant="ghost" size="icon-md" onClick={() => handleQtyChange(1)} disabled={qty >= 10} className="w-10 h-10 rounded-lg hover:bg-white disabled:opacity-30"><Plus size={18} /></Button>
+                                    <Button variant="ghost" size="icon-md" onClick={() => handleQtyChange(1)} disabled={qty >= quantityLimit || isOutOfStock} className="w-10 h-10 rounded-lg hover:bg-white disabled:opacity-30"><Plus size={18} /></Button>
                                 </div>
 
                                 <Button
                                     variant="secondary"
                                     onClick={() => {
-                                        if (!currentUser) {
-                                            alert("Please log in to add items to your cart.");
-                                            navigate('/login', { state: { from: location } });
+                                        if (isOutOfStock) {
                                             return;
                                         }
                                         addToCart({ ...product, isGift }, qty);
+                                        setActionFeedback(`${product.name} added to cart.`);
                                     }}
+                                    disabled={isOutOfStock}
                                     className="h-14 rounded-xl text-lg gap-2"
                                 >
                                     <ShoppingCart size={20} /> Add to Cart
@@ -215,6 +264,7 @@ const ProductDetails = () => {
                                 <Button
                                     variant="primary"
                                     onClick={handleBuyNow}
+                                    disabled={isOutOfStock}
                                     className="h-14 rounded-xl text-lg gap-2 shadow-lg shadow-orange-500/30"
                                 >
                                     <Zap size={20} fill="currentColor" /> Buy Now
@@ -315,25 +365,26 @@ const ProductDetails = () => {
                     <Button
                         variant="secondary"
                         onClick={() => {
-                            if (!currentUser) {
-                                alert("Please log in to add items to your cart.");
-                                navigate('/login', { state: { from: location } });
+                            if (isOutOfStock) {
                                 return;
                             }
                             addToCart({ ...product, isGift }, qty);
+                            setActionFeedback(`${product.name} added to cart.`);
                         }}
+                        disabled={isOutOfStock}
                         className="flex-1 rounded-lg text-sm"
                     >
-                        Add to Cart
+                        {isOutOfStock ? 'Unavailable' : 'Add to Cart'}
                     </Button>
 
                     {/* Buy Now - Primary & Prominent */}
                     <Button
                         variant="primary"
                         onClick={handleBuyNow}
+                        disabled={isOutOfStock}
                         className="flex-1 rounded-lg text-sm gap-1 shadow-lg shadow-orange-500/30"
                     >
-                        <Zap size={16} fill="currentColor" /> Buy Now
+                        <Zap size={16} fill="currentColor" /> {isOutOfStock ? 'Sold Out' : 'Buy Now'}
                     </Button>
                 </div>
             </div>

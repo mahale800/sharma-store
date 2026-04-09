@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Check, Trash2, X } from 'lucide-react';
 import { useNotifications } from '../context/NotificationContext';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NotificationBell = () => {
@@ -28,6 +29,13 @@ const NotificationBell = () => {
             case 'Flirty': return 'bg-pink-50 border-pink-100';
             default: return 'bg-white border-gray-100';
         }
+    };
+
+    const formatTime = (createdAt) => {
+        const parsed = createdAt ? new Date(createdAt) : null;
+        if (!parsed || Number.isNaN(parsed.getTime())) return 'Just now';
+
+        return parsed.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     return (
@@ -83,9 +91,12 @@ const NotificationBell = () => {
                                         <div className="flex gap-3">
                                             {/* Icon based on Tone/Type could go here */}
                                             <div className="flex-1">
+                                                {notif.title && notif.title !== notif.message && (
+                                                    <p className="text-xs font-black uppercase tracking-wider text-gray-400 mb-1">{notif.title}</p>
+                                                )}
                                                 <p className="text-sm font-bold text-gray-900 leading-snug mb-1">{notif.message}</p>
                                                 <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                                                    <span>{notif.tone}</span> • <span>{new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    <span>{notif.tone}</span> • <span>{formatTime(notif.createdAt)}</span>
                                                 </div>
                                             </div>
                                             {!notif.read && (

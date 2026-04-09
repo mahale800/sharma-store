@@ -1,8 +1,9 @@
 import React from 'react';
 // removed unused firebase imports
 import ProductCard from '../components/ProductCard';
-import { Search } from 'lucide-react';
+import { AlertCircle, Search } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
 
@@ -10,6 +11,7 @@ const Shop = () => {
     const {
         filteredProducts,
         loading,
+        usingFallbackProducts,
         searchQuery, setSearchQuery,
         selectedCategory, setSelectedCategory,
         sortBy, setSortBy,
@@ -103,6 +105,15 @@ const Shop = () => {
                 </div>
 
                 {/* Categories Tabs */}
+                {usingFallbackProducts && (
+                    <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900 flex items-start gap-3">
+                        <AlertCircle size={18} className="mt-0.5 shrink-0" />
+                        <span>
+                            Live products are unavailable, so this page is using a local preview catalog.
+                        </span>
+                    </div>
+                )}
+
                 <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2 no-scrollbar">
                     {categories.map(cat => (
                         <button

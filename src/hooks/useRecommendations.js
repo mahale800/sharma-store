@@ -8,7 +8,11 @@ export const useRecommendations = (source, currentProduct) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!products.length) return;
+        if (!products.length) {
+            setRecommendations([]);
+            setLoading(false);
+            return;
+        }
 
         const fetchRecs = async () => {
             setLoading(true);

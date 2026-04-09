@@ -5,17 +5,36 @@ import { generateNotificationCopy } from '../services/aiService';
 import { CartContext } from './CartContext';
 import { WishlistContext } from './WishlistContext';
 import { useEngagement } from '../hooks/useEngagement';
-import { doc, onSnapshot, updateDoc, setDoc, arrayUnion } from 'firebase/firestore';
+import { doc, onSnapshot, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, messaging, functions } from '../firebase/firebase';
 import { onMessage } from 'firebase/messaging';
 import { httpsCallable } from 'firebase/functions';
 import { showBrowserNotification } from '../utils/showNotification';
 import { requestFcmToken } from '../firebase/messaging';
-import { collection, query, where, orderBy, limit, addDoc, getDocs, writeBatch } from 'firebase/firestore';
+import { collection, query, where, orderBy, limit, addDoc, writeBatch } from 'firebase/firestore';
 
 const NotificationContext = createContext();
 
 export const useNotifications = () => useContext(NotificationContext);
+
+const resolveNotificationDate = (notification) => {
+    if (notification?.timestamp?.toDate) return notification.timestamp.toDate();
+    if (notification?.createdAt?.toDate) return notification.createdAt.toDate();
+
+    const rawDate = notification?.createdAt || notification?.timestamp;
+    const parsedDate = rawDate ? new Date(rawDate) : new Date();
+    return Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+};
+
+const normalizeNotification = (notification) => ({
+    id: notification.id,
+    type: notification.type || 'announcement',
+    title: notification.title || 'Sharma Store',
+    message: notification.message || notification.body || notification.title || 'You have a new update.',
+    tone: notification.tone || 'Neutral',
+    read: Boolean(notification.read),
+    createdAt: resolveNotificationDate(notification).toISOString()
+});
 
 export const NotificationProvider = ({ children }) => {
     const { currentUser } = useAuth();
@@ -28,12 +47,17 @@ export const NotificationProvider = ({ children }) => {
         orderUpdates: true,
         marketing: true,
         loyalty: true,
-        cartReminders: true
+        cartReminders: true,
+        enabled: true,
+        sound: false,
+        tone: 'Friendly'
     };
     const [preferences, setPreferences] = useState(defaultPreferences);
     const [notifications, setNotifications] = useState([]);
     const [fcmToken, setFcmToken] = useState(null);
-    const [permissionStatus, setPermissionStatus] = useState(Notification.permission);
+    const [permissionStatus, setPermissionStatus] = useState(
+        typeof Notification !== 'undefined' ? Notification.permission : 'default'
+    );
 
     // Daily Limit Tracker ({ date: 'YYYY-MM-DD', count: 0 })
     const [dailyCount, setDailyCount] = useState(() => {
@@ -47,8 +71,8 @@ export const NotificationProvider = ({ children }) => {
             // GUEST MODE: Load from LocalStorage
             const savedPrefs = localStorage.getItem('sharma-notification-prefs');
             const savedNotifs = localStorage.getItem('sharma-notifications');
-            if (savedPrefs) setPreferences(JSON.parse(savedPrefs));
-            if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
+            if (savedPrefs) setPreferences(prev => ({ ...prev, ...JSON.parse(savedPrefs) }));
+            if (savedNotifs) setNotifications(JSON.parse(savedNotifs).map(normalizeNotification));
             return;
         }
 
@@ -79,15 +103,14 @@ export const NotificationProvider = ({ children }) => {
         );
 
         const notifUnsubscribe = onSnapshot(notifQuery, (snapshot) => {
-            const fetchedNotifs = snapshot.docs.map(doc => ({
+            const fetchedNotifs = snapshot.docs.map(doc => normalizeNotification({
                 id: doc.id,
                 ...doc.data()
             }));
             setNotifications(fetchedNotifs);
         }, (error) => {
             if (error.code === 'permission-denied') {
-                console.warn("Notifications access denied. Using empty list.");
-                setNotifications([]);
+                console.warn("Notifications access denied. Keeping local notifications only.");
             } else {
                 console.error("Error fetching notifications:", error);
             }
@@ -97,6 +120,7 @@ export const NotificationProvider = ({ children }) => {
             prefsUnsubscribe();
             notifUnsubscribe();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser]);
 
     // Save to LocalStorage (Guest) or Firestore (User)
@@ -158,14 +182,15 @@ export const NotificationProvider = ({ children }) => {
             }
         }
 
-        const newNotif = {
+        const newNotif = normalizeNotification({
             id: Date.now().toString(),
             type,
+            title: 'Sharma Store',
             message: finalMessage,
             tone: toneUsed,
             read: false,
             createdAt: new Date().toISOString()
-        };
+        });
 
         // Optimistic Update
         setNotifications(prev => [newNotif, ...prev].slice(0, 50));
@@ -178,6 +203,7 @@ export const NotificationProvider = ({ children }) => {
                 title: 'Sharma Store',
                 body: finalMessage,
                 read: false,
+                timestamp: serverTimestamp(),
                 createdAt: new Date().toISOString(),
                 tone: toneUsed,
                 meta: {} // Optional meta field
@@ -201,7 +227,7 @@ export const NotificationProvider = ({ children }) => {
     };
 
     // Smart Triggers (Cart / Wishlist)
-    const { cartCount, cartTotal } = useContext(CartContext);
+    const { cartCount } = useContext(CartContext);
     const { wishlistCount } = useContext(WishlistContext);
 
     useEffect(() => {
@@ -212,7 +238,8 @@ export const NotificationProvider = ({ children }) => {
             }, 900000); // 15 mins
             return () => clearTimeout(timer);
         }
-    }, [cartCount, cartTotal]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cartCount]); // Removed cartTotal as it's not used
 
     useEffect(() => {
         if (wishlistCount > 0) {
@@ -221,6 +248,7 @@ export const NotificationProvider = ({ children }) => {
             }, 15000);
             return () => clearTimeout(timer);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wishlistCount]);
 
 
@@ -278,7 +306,7 @@ export const NotificationProvider = ({ children }) => {
 
     // --- FCM LOGIC ---
     const requestPermission = async () => {
-        if (!currentUser) return; // Only save token if logged in (or handle guest tokens separately)
+        if (!currentUser || !messaging || typeof Notification === 'undefined') return;
 
         const token = await requestFcmToken(currentUser.uid);
         setPermissionStatus(Notification.permission);
@@ -289,7 +317,7 @@ export const NotificationProvider = ({ children }) => {
     };
 
     const triggerMarketing = async () => {
-        if (!currentUser) return;
+        if (!currentUser || !functions) return;
         try {
             const trigger = httpsCallable(functions, 'triggerDailyMarketing');
             await trigger();
@@ -301,7 +329,7 @@ export const NotificationProvider = ({ children }) => {
     };
 
     const triggerAbandonedCart = async () => {
-        if (!currentUser) return;
+        if (!currentUser || !functions) return;
         try {
             const trigger = httpsCallable(functions, 'triggerAbandonedCart');
             await trigger();
@@ -313,10 +341,10 @@ export const NotificationProvider = ({ children }) => {
     };
 
     const sendTestNotification = async () => {
-        if (!currentUser) return;
+        if (!currentUser || !functions) return;
         try {
             const sendTest = httpsCallable(functions, 'sendTestNotification');
-            const result = await sendTest({ userId: currentUser.uid });
+            await sendTest({ userId: currentUser.uid });
             addNotification('announcement', 'Test notification sent! Check your other tabs/devices.', true);
         } catch (error) {
             console.error("Failed to send test notification:", error);
@@ -328,9 +356,9 @@ export const NotificationProvider = ({ children }) => {
 
     // Listen for Foreground Messages (FCM)
     useEffect(() => {
-        if (permissionStatus === 'granted') {
+        if (permissionStatus === 'granted' && messaging) {
             const unsubscribe = onMessage(messaging, (payload) => {
-                const title = payload.notification?.title || 'New Update';
+
                 const body = payload.notification?.body || 'You have a new message.';
 
                 // 1. Show In-App Toast
@@ -342,7 +370,8 @@ export const NotificationProvider = ({ children }) => {
             });
             return () => unsubscribe();
         }
-    }, [permissionStatus]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [permissionStatus, messaging]);
 
     const unreadCount = notifications.filter(n => !n.read).length;
 

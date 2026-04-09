@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
-import { ArrowRight, Clock, Coins } from 'lucide-react';
+
+import { AlertCircle, ArrowRight, Clock, Coins } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { useLoyalty } from '../context/LoyaltyContext';
 import DailyLoginPopup from '../components/loyalty/DailyLoginPopup';
 import StreakWarningBanner from '../components/loyalty/StreakWarningBanner';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import Logo from '../components/common/Logo';
 import RecommendationRow from '../components/RecommendationRow';
@@ -17,6 +17,7 @@ const Home = () => {
     const {
         filteredProducts,
         loading,
+        usingFallbackProducts,
         searchQuery,
         selectedCategory, setSelectedCategory,
         categories
@@ -156,6 +157,14 @@ const Home = () => {
                     {/* Startup Personalization Sections */}
                     {!searchQuery && (selectedCategory === "All" || selectedCategory === "all") && (
                         <div className="mb-16 space-y-12">
+                            {usingFallbackProducts && (
+                                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900 flex items-start gap-3">
+                                    <AlertCircle size={18} className="mt-0.5 shrink-0" />
+                                    <span>
+                                        Showing a preview product catalog because the live database is unavailable right now.
+                                    </span>
+                                </div>
+                            )}
                             <RecommendationRow source="home" />
                             <RecommendationRow source="trending" />
                             <RecentlyViewed currentProductId={null} />

@@ -5,7 +5,7 @@ import { doc, setDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
 
 export const CartContext = createContext();
 
-// eslint-disable-next-line react-refresh/only-export-components
+ 
 export const useCart = () => {
     const context = useContext(CartContext);
     if (!context) {
@@ -35,20 +35,30 @@ export const CartProvider = ({ children }) => {
         setIsInitialized(true);
     }, []);
 
+    const clampQuantity = useCallback((product, quantity) => {
+        const nextQuantity = Math.max(1, Number(quantity) || 1);
+        const stockLimit = Number(product?.stock);
+
+        if (Number.isFinite(stockLimit) && stockLimit > 0) {
+            return Math.min(nextQuantity, stockLimit);
+        }
+
+        return nextQuantity;
+    }, []);
+
     // Persist to localStorage and sync to Firestore
     useEffect(() => {
         if (!isInitialized) return;
         
         localStorage.setItem('sharma-cart', JSON.stringify(cartItems));
 
-        // Sync to Firestore if Logged In
-        if (currentUser && cartItems.length > 0) {
+        if (currentUser) {
             const cartRef = doc(db, 'userCarts', currentUser.uid);
             setDoc(cartRef, {
                 userId: currentUser.uid,
                 items: cartItems,
                 lastUpdated: serverTimestamp(),
-                reminded: false
+                reminded: cartItems.length === 0
             }, { merge: true }).catch(err => {
                 console.error("Failed to sync cart", err);
             });
@@ -75,22 +85,14 @@ export const CartProvider = ({ children }) => {
         return () => unsubscribe();
     }, [currentUser]);
 
-    // Clear cart on logout
-    useEffect(() => {
-        if (!currentUser) {
-            setCartItems([]);
-            localStorage.removeItem('sharma-cart');
-        }
-    }, [currentUser]);
-
     const addToCart = useCallback((product, quantity = 1) => {
         if (!product?.id) {
             console.error("Invalid product added to cart");
             return;
         }
 
-        if (quantity < 1) {
-            quantity = 1;
+        if (Number(product.stock) === 0) {
+            return;
         }
 
         setCartItems(prevItems => {
@@ -98,13 +100,13 @@ export const CartProvider = ({ children }) => {
             if (existingItem) {
                 return prevItems.map(item =>
                     item.id === product.id
-                        ? { ...item, quantity: Math.max(1, item.quantity + quantity) }
+                        ? { ...item, quantity: clampQuantity(item, item.quantity + quantity) }
                         : item
                 );
             }
-            return [...prevItems, { ...product, quantity }];
+            return [...prevItems, { ...product, quantity: clampQuantity(product, quantity) }];
         });
-    }, []);
+    }, [clampQuantity]);
 
     const removeFromCart = useCallback((productId) => {
         setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
@@ -114,11 +116,11 @@ export const CartProvider = ({ children }) => {
         setCartItems(prevItems =>
             prevItems.map(item =>
                 item.id === productId
-                    ? { ...item, quantity: Math.max(1, item.quantity + amount) }
+                    ? { ...item, quantity: clampQuantity(item, item.quantity + amount) }
                     : item
             ).filter(item => item.quantity > 0)
         );
-    }, []);
+    }, [clampQuantity]);
 
     const setItemQuantity = useCallback((productId, quantity) => {
         if (quantity < 1) {
@@ -126,11 +128,11 @@ export const CartProvider = ({ children }) => {
         } else {
             setCartItems(prevItems =>
                 prevItems.map(item =>
-                    item.id === productId ? { ...item, quantity } : item
+                    item.id === productId ? { ...item, quantity: clampQuantity(item, quantity) } : item
                 )
             );
         }
-    }, []);
+    }, [clampQuantity]);
 
     const clearCart = useCallback(() => {
         setCartItems([]);

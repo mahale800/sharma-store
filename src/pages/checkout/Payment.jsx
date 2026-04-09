@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
@@ -9,11 +9,12 @@ import { ShieldCheck, Loader2, Edit2, MapPin, Banknote, QrCode, Lock, CreditCard
 import Button from '../../components/Button';
 import { sendOrderNotification } from '../../services/whatsappService';
 import { generateOrderId } from '../../utils/orderUtils';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Payment = () => {
     const navigate = useNavigate();
-    const location = useLocation();
+
     const { currentUser } = useAuth();
     const { cartItems, getCartTotal, clearCart } = useCart();
     const { addNotification } = useNotifications();
@@ -26,7 +27,7 @@ const Payment = () => {
     const [loading, setLoading] = useState(false);
     const [processingStep, setProcessingStep] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('card');
-    const [shippingAddress, setShippingAddress] = useState(() => {
+    const [shippingAddress] = useState(() => {
         const saved = localStorage.getItem('sharma-shipping-address');
         return saved ? JSON.parse(saved) : null;
     });

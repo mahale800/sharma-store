@@ -35,7 +35,7 @@ export const showBrowserNotification = async (title, body, actionUrl = '/') => {
             const n = new Notification(title, options);
             n.onclick = function (event) {
                 event.preventDefault(); // prevent the browser from focusing the Notification's tab
-                window.open(actionUrl, '_blank');
+                window.open(actionUrl, '_blank', 'noopener,noreferrer');
             };
         }
     } catch (error) {

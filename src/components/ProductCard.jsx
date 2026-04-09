@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Zap, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import { usePerformance } from '../hooks/usePerformance';
 import { useEngagement } from '../hooks/useEngagement';
@@ -15,20 +14,18 @@ const ProductCard = ({ product }) => {
     const { addToCart, clearCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
     const isWishlisted = isInWishlist(product.id);
+    const isOutOfStock = Number(product.stock) === 0;
 
     // Fallback image logic
     const [imgSrc, setImgSrc] = useState(product.image || product.imageUrl || product.img || 'https://placehold.co/400x400?text=No+Image');
 
-    const { currentUser } = useAuth(); // Import useAuth at top
     const { logEvent } = useEngagement();
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
-        if (!currentUser) {
-            alert("Please log in to add items to your cart.");
-            navigate('/login');
+        if (isOutOfStock) {
             return;
-        }
+        } 
         logEvent('add_to_cart', 'organic', { productId: product.id });
         addToCart(product);
     };
@@ -36,11 +33,7 @@ const ProductCard = ({ product }) => {
     const handleBuyNow = (e) => {
         e.stopPropagation();
 
-        if (!product) return;
-
-        if (!currentUser) {
-            alert("Please log in to proceed with purchase.");
-            navigate('/login');
+        if (!product || isOutOfStock) {
             return;
         }
         logEvent('checkout_attempt', 'organic', { productId: product.id, isBuyNow: true });
@@ -84,6 +77,11 @@ const ProductCard = ({ product }) => {
                 <p className="absolute top-4 left-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg">
                     {product.category || 'Collection'}
                 </p>
+                {isOutOfStock && (
+                    <span className="absolute bottom-4 left-4 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">
+                        Out of Stock
+                    </span>
+                )}
 
                 {/* Wishlist Button */}
                 <button
@@ -136,10 +134,11 @@ const ProductCard = ({ product }) => {
                         variant="primary"
                         size="md"
                         onClick={handleBuyNow}
+                        disabled={isOutOfStock}
                         className="w-full rounded-full shadow-lg shadow-orange-500/20 group-hover:shadow-orange-500/40 transition-all font-black"
                     >
                         <Zap size={18} className="mr-1" fill="currentColor" />
-                        Buy Now
+                        {isOutOfStock ? 'Unavailable' : 'Buy Now'}
                     </Button>
                 </div>
             </div>
