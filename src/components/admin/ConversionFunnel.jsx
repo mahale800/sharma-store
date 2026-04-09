@@ -37,7 +37,7 @@ const ConversionFunnel = ({ stats, engagementMetrics }) => {
             </div>
 
             <div className="flex-1 w-full min-h-[200px] flex flex-col justify-center space-y-4">
-                {data.map((item, index) => {
+                {data.map((item) => {
                     // Caclulate strict percentage based on previous step to look like a funnel
                     // But here, let's just use percentage of Total
                     const max = data[0].value || 1;

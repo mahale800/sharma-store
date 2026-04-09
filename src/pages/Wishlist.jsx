@@ -3,6 +3,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { Trash2, ShoppingCart, Heart, ArrowRight, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
 import Card from '../components/common/Card';

@@ -1,5 +1,3 @@
-console.debug("OpenRouter key at runtime:", import.meta.env.VITE_OPENROUTER_API_KEY ? "Present" : "Missing");
-
 const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
 // Internal utility to call OpenRouter API
@@ -307,7 +305,7 @@ export const generateEngagementInsights = async (metrics) => {
     if (response) {
         const jsonMatch = response.match(/\[[\s\S]*\]/);
         if (jsonMatch) {
-            try { return JSON.parse(jsonMatch[0]); } catch (e) { }
+            try { return JSON.parse(jsonMatch[0]); } catch { }
         }
     }
     return [];

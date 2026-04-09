@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, updateDoc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, serverTimestamp, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 
 export const useRoadmap = () => {

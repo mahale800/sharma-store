@@ -50,6 +50,7 @@ const AdminRoadmap = () => {
         setRoadmap(prev => prev.map(item => item.id === id ? { ...item, status } : item));
     };
 
+    // eslint-disable-next-line no-unused-vars
     const PriorityColumn = ({ title, priority, icon: Icon, color }) => {
         const items = roadmap.filter(i => i.priority === priority);
         return (

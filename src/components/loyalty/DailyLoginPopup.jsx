@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLoyalty } from '../../context/LoyaltyContext';
-import { useNavigate } from 'react-router-dom';
+
 import { Coins, X, Check, Flame, Lock, Trophy } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { getRewardForStreak, getNextMilestone, getCurrentTier } from '../../utils/loyaltyConstants';
 
 const DailyLoginPopup = ({ isOpen, onClose }) => {
     const { currentUser } = useAuth();
     const { claimDailyReward, getEffectiveStreak, checkCanClaim } = useLoyalty();
-    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [claimed, setClaimed] = useState(false);
@@ -24,7 +24,6 @@ const DailyLoginPopup = ({ isOpen, onClose }) => {
         if (isOpen && currentUser) {
             const effectiveStreak = getEffectiveStreak();
             const claimable = checkCanClaim();
-            const currentStreakDisplay = claimable ? effectiveStreak : effectiveStreak; // If claimable, we are at X. Reward is for X+1.
 
             setStreak(effectiveStreak);
             setCanClaim(claimable);

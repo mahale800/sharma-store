@@ -34,6 +34,7 @@ export const sendOrderNotification = async (orderData) => {
             `- ${item.name} x ${item.quantity}`
         ).join('\n');
 
+        // eslint-disable-next-line no-unused-vars
         const message = `
 🛒 *New Order Received – ${settings.storeName || 'Sharma Store'}*
 

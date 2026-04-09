@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PackageX, AlertTriangle, ArrowRight, CheckCircle } from 'lucide-react';
-import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { Link } from 'react-router-dom';
 

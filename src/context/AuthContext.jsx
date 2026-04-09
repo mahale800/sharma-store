@@ -5,7 +5,7 @@ import { doc, setDoc } from 'firebase/firestore';
 
 const AuthContext = createContext();
 
-// eslint-disable-next-line react-refresh/only-export-components
+ 
 export const useAuth = () => {
     return useContext(AuthContext);
 };
@@ -140,6 +140,7 @@ export const AuthProvider = ({ children }) => {
             clearTimeout(safetyTimer);
             unsubscribe();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const value = {

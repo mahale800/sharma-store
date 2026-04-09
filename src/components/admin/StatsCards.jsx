@@ -2,7 +2,7 @@ import React from 'react';
 import StatsCard from './StatsCard';
 import { DollarSign, ShoppingBag, Package, Users } from 'lucide-react';
 
-const StatsCards = ({ stats, feedbackKPIs }) => {
+const StatsCards = ({ stats }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatsCard

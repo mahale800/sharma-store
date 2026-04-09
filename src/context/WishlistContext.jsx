@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export const WishlistContext = createContext();
 
-// eslint-disable-next-line react-refresh/only-export-components
+ 
 export const useWishlist = () => {
     return useContext(WishlistContext);
 };

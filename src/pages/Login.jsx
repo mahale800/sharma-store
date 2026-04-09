@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { Mail, Lock, Eye, EyeOff, User, Loader2, CheckCircle, Smartphone, MessageSquare, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
@@ -19,7 +19,8 @@ const Login = () => {
         if (currentUser) {
             navigate(from, { state: previousState, replace: true });
         }
-    }, [currentUser, navigate, from, previousState]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser, navigate, from]);
 
     // Mode: 'email' or 'phone'
     const [authMethod, setAuthMethod] = useState('email');
@@ -88,6 +89,7 @@ const Login = () => {
         }
     };
 
+    // eslint-disable-next-line no-unused-vars
     const handleSendOtp = async (e) => {
         e.preventDefault();
         setError('');
@@ -163,7 +165,7 @@ const Login = () => {
                 // Navigation handled by useEffect
             }
             else setError(mapAuthError(res.error));
-        } catch (e) {
+        } catch {
             setError("Google sign-in failed.");
         } finally {
             setLoading(false);

@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from '../common/Card';
 
+// eslint-disable-next-line no-unused-vars
 const StatsCard = ({ title, value, icon: Icon, color = "bg-orange-500" }) => {
     return (
         <Card className="p-6 transition-all group hover:shadow-md">

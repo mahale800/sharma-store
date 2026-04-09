@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useLoyalty } from '../context/LoyaltyContext';
 import { Sparkles, Gift, Tag, Lock, CheckCircle, ArrowLeft, Loader2 } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 import Card from '../components/common/Card';
 
 const Redeem = ({ isComponent }) => {
     const { coins, redeemCoins } = useLoyalty();
-    const navigate = useNavigate();
+
     const [loading, setLoading] = useState(false);
     const [successItem, setSuccessItem] = useState(null);
 
