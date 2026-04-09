@@ -19,35 +19,6 @@ const TrackOrder = () => {
     const location = useLocation();
     const [urlParams, setUrlParams] = useSearchParams();
 
-    // Auto-fill and Search from URL or State
-    useEffect(() => {
-        const queryOrderId = urlParams.get('orderId');
-        const queryEmail = urlParams.get('email');
-        const stateOrderId = location.state?.orderId;
-        const stateEmail = location.state?.email;
-
-        // Priority: Route Param > Query Param > State
-        const effectiveOrderId = paramOrderId || queryOrderId || stateOrderId;
-        // Priority: Param > State > CurrentUser
-        const effectiveEmail = queryEmail || stateEmail || currentUser?.email;
-
-        if (effectiveOrderId) {
-            // Update inputs even if we auto-fetch
-            setSearchParams({
-                orderId: effectiveOrderId,
-                email: effectiveEmail || ''
-            });
-
-            // Auto-fetch if:
-            // 1. We have both ID and Email
-            // 2. We have ID and User is Logged In (we can check userId match)
-            if (effectiveEmail || currentUser) {
-                fetchOrder(effectiveOrderId, effectiveEmail);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.state, urlParams, currentUser, paramOrderId]);
-
     // Independent Fetcher to allow useEffect to call it
     const fetchOrder = React.useCallback(async (oid, uemail) => {
         setLoading(true);
@@ -94,6 +65,35 @@ const TrackOrder = () => {
             setLoading(false);
         }
     }, [currentUser]);
+
+    // Auto-fill and Search from URL or State
+    useEffect(() => {
+        const queryOrderId = urlParams.get('orderId');
+        const queryEmail = urlParams.get('email');
+        const stateOrderId = location.state?.orderId;
+        const stateEmail = location.state?.email;
+
+        // Priority: Route Param > Query Param > State
+        const effectiveOrderId = paramOrderId || queryOrderId || stateOrderId;
+        // Priority: Param > State > CurrentUser
+        const effectiveEmail = queryEmail || stateEmail || currentUser?.email;
+
+        if (effectiveOrderId) {
+            // Update inputs even if we auto-fetch
+            setSearchParams({
+                orderId: effectiveOrderId,
+                email: effectiveEmail || ''
+            });
+
+            // Auto-fetch if:
+            // 1. We have both ID and Email
+            // 2. We have ID and User is Logged In (we can check userId match)
+            if (effectiveEmail || currentUser) {
+                fetchOrder(effectiveOrderId, effectiveEmail);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.state, urlParams, currentUser, paramOrderId]);
 
     // Trigger Fetch if params are present on mount
     useEffect(() => {
