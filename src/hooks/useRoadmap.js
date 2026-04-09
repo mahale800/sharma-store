@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { collection, getDocs, query, orderBy, serverTimestamp, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 
@@ -6,7 +6,7 @@ export const useRoadmap = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchRoadmap = async () => {
+    const fetchRoadmap = useCallback(async () => {
         setLoading(true);
         try {
             const q = query(collection(db, 'roadmap'), orderBy('createdAt', 'desc'));
@@ -19,9 +19,9 @@ export const useRoadmap = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const saveRoadmapItems = async (items) => {
+    const saveRoadmapItems = useCallback(async (items) => {
         setLoading(true);
         try {
             const batch = writeBatch(db);
@@ -42,9 +42,9 @@ export const useRoadmap = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const updateItemStatus = async (id, newStatus) => {
+    const updateItemStatus = useCallback(async (id, newStatus) => {
         try {
             await updateDoc(doc(db, 'roadmap', id), { status: newStatus });
             return true;
@@ -52,7 +52,7 @@ export const useRoadmap = () => {
             console.error("Error updating status:", err);
             return false;
         }
-    };
+    }, []);
 
     return { fetchRoadmap, saveRoadmapItems, updateItemStatus, loading, error };
 };

@@ -45,7 +45,8 @@ const TrackOrder = () => {
                 fetchOrder(effectiveOrderId, effectiveEmail);
             }
         }
-    }, [location.state, urlParams, currentUser, paramOrderId, fetchOrder]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.state, urlParams, currentUser, paramOrderId]);
 
     // Independent Fetcher to allow useEffect to call it
     const fetchOrder = React.useCallback(async (oid, uemail) => {
