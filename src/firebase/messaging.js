@@ -6,9 +6,18 @@ const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY || import.meta.env.VIT
 
 export const requestFcmToken = async (userId) => {
     try {
+        if (!messaging) {
+            return null;
+        }
+
         const permission = await Notification.requestPermission();
         if (permission !== "granted") {
             console.warn("Notification permission denied");
+            return null;
+        }
+
+        if (!VAPID_KEY) {
+            console.warn("Firebase VAPID key missing. Push token cannot be created.");
             return null;
         }
 

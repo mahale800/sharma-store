@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { ArrowLeft, Package, User, MapPin, Phone, CreditCard, ChevronDown, AlertTriangle, CheckCircle, Truck, Clock, XCircle } from 'lucide-react';
 import Button from '../../components/Button';
 import Card from '../../components/common/Card';
+import { createOrderStatusNotification } from '../../services/notificationService';
 
 const AdminOrderDetails = () => {
     const { id } = useParams();
@@ -33,8 +34,17 @@ const AdminOrderDetails = () => {
     const handleStatusChange = async (newStatus) => {
         setUpdating(true);
         try {
-            await updateDoc(doc(db, 'orders', id), { status: newStatus });
+            await updateDoc(doc(db, 'orders', id), { status: newStatus, updatedAt: new Date() });
             setOrder(prev => ({ ...prev, status: newStatus }));
+            if (order?.userId) {
+                await createOrderStatusNotification({
+                    db,
+                    userId: order.userId,
+                    orderId: order.orderId,
+                    docId: id,
+                    status: newStatus
+                });
+            }
         } catch (error) {
             console.error("Error updating status:", error);
             alert("Failed to update status");

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useStoreSettings } from '../../context/StoreSettingsContext';
 
 /**
  * Sharma Store Brand Logo
@@ -11,6 +12,7 @@ import React from 'react';
  * @param {string} props.className - Additional classes
  */
 const Logo = ({ variant = 'full', size = 'md', color = 'colored', className = '' }) => {
+    const { storeProfile } = useStoreSettings();
 
     // Size Mapping
     const sizes = {
@@ -46,7 +48,7 @@ const Logo = ({ variant = 'full', size = 'md', color = 'colored', className = ''
             {variant === 'full' && (
                 <div className="flex flex-col justify-center leading-none">
                     <span className={`font-['Outfit'] font-black tracking-tight whitespace-nowrap ${currentSize.text} ${currentColor.text}`}>
-                        Sharma Store
+                        {storeProfile.name}
                     </span>
                 </div>
             )}

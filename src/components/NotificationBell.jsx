@@ -5,7 +5,17 @@ import { useNotifications } from '../context/NotificationContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NotificationBell = () => {
-    const { notifications, unreadCount, markAllAsRead, clearAll, markAsRead } = useNotifications();
+    const {
+        notifications,
+        unreadCount,
+        markAllAsRead,
+        clearAll,
+        markAsRead,
+        permissionStatus,
+        requestPermission,
+        browserSupported,
+        sendTestNotification
+    } = useNotifications();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -59,7 +69,7 @@ const NotificationBell = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-3 w-80 sm:w-96 bg-white/90 backdrop-blur-xl border border-white/50 shadow-2xl rounded-3xl overflow-hidden z-50 origin-top-right ring-1 ring-black/5"
+                        className="absolute right-0 mt-3 w-[calc(100vw-2rem)] max-w-96 sm:w-96 bg-white/90 backdrop-blur-xl border border-white/50 shadow-2xl rounded-3xl overflow-hidden z-50 origin-top-right ring-1 ring-black/5"
                     >
                         {/* Header */}
                         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white/50">
@@ -78,6 +88,33 @@ const NotificationBell = () => {
                                 </button>
                             </div>
                         </div>
+
+                        {browserSupported && permissionStatus !== 'granted' && (
+                            <div className="px-4 pt-4">
+                                <div className="rounded-2xl border border-orange-100 bg-orange-50 px-4 py-3">
+                                    <p className="text-xs font-black uppercase tracking-widest text-orange-500 mb-1">Device alerts</p>
+                                    <p className="text-sm font-bold text-gray-900">Enable browser notifications for live order updates.</p>
+                                    <button
+                                        onClick={requestPermission}
+                                        className="mt-3 text-xs font-black uppercase tracking-wider text-white bg-gray-900 px-3 py-2 rounded-xl hover:bg-black transition-colors"
+                                    >
+                                        Enable Now
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {permissionStatus === 'granted' && (
+                            <div className="px-4 pt-4">
+                                <button
+                                    onClick={sendTestNotification}
+                                    className="w-full rounded-2xl border border-green-100 bg-green-50 px-4 py-3 text-left hover:bg-green-100 transition-colors"
+                                >
+                                    <p className="text-xs font-black uppercase tracking-widest text-green-600 mb-1">Notification check</p>
+                                    <p className="text-sm font-bold text-gray-900">Send a test device notification</p>
+                                </button>
+                            </div>
+                        )}
 
                         {/* List */}
                         <div className="max-h-[60vh] overflow-y-auto p-2 space-y-2 no-scrollbar">

@@ -1,13 +1,16 @@
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, Store, ShoppingBag, ArrowRight, Truck } from 'lucide-react';
+import { CheckCircle, Store, ShoppingBag, Truck } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { createMapsUrl, createWhatsAppUrl } from '../data/shopProfile';
+import { useStoreSettings } from '../context/StoreSettingsContext';
 
 const OrderSuccess = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { currentUser } = useAuth();
+    const { storeProfile } = useStoreSettings();
     const { orderId, items, total, customerName } = location.state || {}; // Read passed state
 
     useEffect(() => {
@@ -101,6 +104,16 @@ const OrderSuccess = () => {
                 <div className="text-left">
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wide">You Earned</p>
                     <p className="text-2xl font-black text-gray-900">+{Math.floor(total / 100) * 10} Sharma Coins</p>
+                </div>
+            </div>
+
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 mb-8 max-w-md w-full text-left shadow-sm">
+                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Need help after ordering?</p>
+                <p className="text-sm font-bold text-gray-900">{storeProfile.fullAddress}</p>
+                <div className="mt-3 flex flex-col gap-2 text-sm font-bold">
+                    <a href={`tel:+91${storeProfile.primaryPhone}`} className="text-orange-600 hover:text-orange-700">Call +91 {storeProfile.primaryPhone}</a>
+                    <a href={createWhatsAppUrl(storeProfile, 'Hi Sharma Stores, I have a question about my recent order.')} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-700">Chat on WhatsApp</a>
+                    <a href={createMapsUrl(storeProfile)} target="_blank" rel="noopener noreferrer" className="text-slate-700 hover:text-slate-900">Get directions to the shop</a>
                 </div>
             </div>
 

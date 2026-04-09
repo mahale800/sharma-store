@@ -49,6 +49,7 @@ import { AuthProvider } from './context/AuthContext';
 import { LoyaltyProvider } from './context/LoyaltyContext';
 import { CartProvider } from './context/CartContext';
 import { ShopProvider } from './context/ShopContext';
+import { StoreSettingsProvider } from './context/StoreSettingsContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { NotificationProvider } from './context/NotificationContext';
 
@@ -185,28 +186,30 @@ function App() {
       {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
       <AuthProvider>
         <CartProvider>
-          <ShopProvider>
-            <WishlistProvider>
-              <LoyaltyProvider>
-                <NotificationProvider>
-                  <div className="min-h-screen bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
-                    {!hasConfig && (
-                      <div className="bg-amber-100 border-b border-amber-200 px-4 py-3 text-sm font-medium text-amber-900">
-                        Firebase is not fully configured, so the app is running in preview mode with local and fallback data where possible.
-                      </div>
-                    )}
-                    <Suspense fallback={
-                      <div className="min-h-[60vh] flex items-center justify-center">
-                        <Loader2 className="animate-spin text-orange-500" size={40} />
-                      </div>
-                    }>
-                      <AppRoutes />
-                    </Suspense>
-                  </div>
-                </NotificationProvider>
-              </LoyaltyProvider>
-            </WishlistProvider>
-          </ShopProvider>
+          <StoreSettingsProvider>
+            <ShopProvider>
+              <WishlistProvider>
+                <LoyaltyProvider>
+                  <NotificationProvider>
+                    <div className="min-h-screen bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+                      {!hasConfig && (
+                        <div className="bg-amber-100 border-b border-amber-200 px-4 py-3 text-sm font-medium text-amber-900">
+                          Firebase is not fully configured, so the app is running in preview mode with local and fallback data where possible.
+                        </div>
+                      )}
+                      <Suspense fallback={
+                        <div className="min-h-[60vh] flex items-center justify-center">
+                          <Loader2 className="animate-spin text-orange-500" size={40} />
+                        </div>
+                      }>
+                        <AppRoutes />
+                      </Suspense>
+                    </div>
+                  </NotificationProvider>
+                </LoyaltyProvider>
+              </WishlistProvider>
+            </ShopProvider>
+          </StoreSettingsProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

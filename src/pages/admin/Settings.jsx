@@ -3,6 +3,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { Save, Loader2, Store, Phone, MessageSquare } from 'lucide-react';
 import Button from '../../components/Button';
+import { SHOP_PROFILE } from '../../data/shopProfile';
 
 const Settings = () => {
     const [loading, setLoading] = useState(true);
@@ -12,9 +13,12 @@ const Settings = () => {
 
     // Default Settings
     const [config, setConfig] = useState({
-        storeName: 'Sharma Store',
-        contactEmail: '',
-        whatsappNumber: '',
+        storeName: SHOP_PROFILE.name,
+        contactEmail: SHOP_PROFILE.email,
+        whatsappNumber: SHOP_PROFILE.whatsappNumber,
+        secondaryPhone: SHOP_PROFILE.secondaryPhone,
+        storeAddress: SHOP_PROFILE.fullAddress,
+        categories: SHOP_PROFILE.categories.join(', '),
         acceptingOrders: true,
         enableNotifications: true
     });
@@ -99,6 +103,16 @@ const Settings = () => {
                             />
                         </div>
                     </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Store Address</label>
+                        <textarea
+                            name="storeAddress"
+                            value={config.storeAddress || ''}
+                            onChange={handleChange}
+                            rows="3"
+                            className="w-full px-4 py-3 bg-white/50 border border-transparent focus:border-primary/30 rounded-xl font-bold text-gray-900 outline-none transition-all focus:bg-white resize-none"
+                        />
+                    </div>
                 </div>
 
                 <hr className="border-gray-100" />
@@ -123,6 +137,38 @@ const Settings = () => {
                             />
                         </div>
                         <p className="text-[10px] text-gray-400 pl-1">Used for "Chat on WhatsApp" buttons.</p>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Secondary Phone (+91)</label>
+                        <input
+                            type="tel"
+                            name="secondaryPhone"
+                            value={config.secondaryPhone || ''}
+                            onChange={handleChange}
+                            placeholder="8275520881"
+                            className="w-full px-4 py-3 bg-white/50 border border-transparent focus:border-primary/30 rounded-xl font-bold text-gray-900 outline-none transition-all focus:bg-white"
+                        />
+                    </div>
+                </div>
+
+                <hr className="border-gray-100" />
+
+                <div className="space-y-6">
+                    <h2 className="text-lg font-black text-gray-900 flex items-center gap-2">
+                        <Store size={20} className="text-violet-500" /> Categories
+                    </h2>
+
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Main Shop Categories</label>
+                        <textarea
+                            name="categories"
+                            value={config.categories || ''}
+                            onChange={handleChange}
+                            rows="3"
+                            className="w-full px-4 py-3 bg-white/50 border border-transparent focus:border-primary/30 rounded-xl font-bold text-gray-900 outline-none transition-all focus:bg-white resize-none"
+                        />
+                        <p className="text-[10px] text-gray-400 pl-1">Use comma-separated values so the admin panel stays aligned with your real shop sections.</p>
                     </div>
                 </div>
 

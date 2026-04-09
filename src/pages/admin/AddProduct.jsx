@@ -4,6 +4,7 @@ import Button from '../../components/Button';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
+import { SHOP_CATEGORIES } from '../../data/shopProfile';
 
 const AddProduct = () => {
     const navigate = useNavigate();
@@ -132,11 +133,10 @@ const AddProduct = () => {
                             </div>
                             <div className="relative group">
                                 <Layers className="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition-colors" size={20} />
-                                <select name="category" value={formData.category || 'stationary'} onChange={handleChange} className="w-full pl-12 pr-4 py-3.5 bg-white/50 border-2 border-transparent focus:border-primary/20 rounded-2xl font-bold text-gray-900 outline-none focus:bg-white transition-all shadow-sm appearance-none cursor-pointer">
-                                    <option value="stationary">Stationery</option>
-                                    <option value="toys">Toys</option>
-                                    <option value="jewelry">Jewelry</option>
-                                    <option value="birthday">Birthday</option>
+                                <select name="category" value={formData.category || 'Stationery'} onChange={handleChange} className="w-full pl-12 pr-4 py-3.5 bg-white/50 border-2 border-transparent focus:border-primary/20 rounded-2xl font-bold text-gray-900 outline-none focus:bg-white transition-all shadow-sm appearance-none cursor-pointer">
+                                    {SHOP_CATEGORIES.map((category) => (
+                                        <option key={category} value={category}>{category}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>

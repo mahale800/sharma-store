@@ -9,6 +9,7 @@ import { ShieldCheck, Loader2, Edit2, MapPin, Banknote, QrCode, Lock, CreditCard
 import Button from '../../components/Button';
 import { sendOrderNotification } from '../../services/whatsappService';
 import { generateOrderId } from '../../utils/orderUtils';
+import { useStoreSettings } from '../../context/StoreSettingsContext';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,6 +19,7 @@ const Payment = () => {
     const { currentUser } = useAuth();
     const { cartItems, getCartTotal, clearCart } = useCart();
     const { addNotification } = useNotifications();
+    const { acceptingOrders } = useStoreSettings();
 
     // Data Setup
     const orderItems = cartItems;
@@ -202,6 +204,11 @@ const Payment = () => {
     const handlePay = async () => {
         setError('');
 
+        if (!acceptingOrders) {
+            setError('The store is temporarily not accepting new orders. Please try again later or contact the shop directly.');
+            return;
+        }
+
         // Inline validation (no browser alerts)
         if (paymentMethod === 'card' && (cardData.number.length < 19 || !cardData.cvv || !cardData.expiry)) {
             setError('Please enter valid card details.'); return;
@@ -293,6 +300,18 @@ const Payment = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {!acceptingOrders && (
+                <div className="bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-orange-400/20 text-orange-200 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-sm font-black">!</span>
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold">Orders are currently paused by the store admin.</p>
+                        <p className="text-xs text-slate-300 mt-1">You can review your cart and complete checkout once the shop reopens ordering.</p>
+                    </div>
+                </div>
+            )}
 
 
             {/* 1. Order Summary Header */}
@@ -501,7 +520,7 @@ const Payment = () => {
             <Button
                 onClick={handlePay}
                 isLoading={loading}
-                disabled={loading}
+                disabled={loading || !acceptingOrders}
                 className="w-full h-14 text-lg shadow-xl shadow-gray-200 bg-gray-900 text-white hover:bg-black"
             >
                 {!loading && <ShieldCheck size={20} className="mr-2" />}

@@ -1,7 +1,10 @@
 import React from 'react';
 import Logo from './common/Logo';
+import { useStoreSettings } from '../context/StoreSettingsContext';
 
 const Invoice = ({ order, user }) => {
+    const { storeProfile } = useStoreSettings();
+
     if (!order) return null;
 
     return (
@@ -16,10 +19,10 @@ const Invoice = ({ order, user }) => {
                         <Logo variant="full" />
                     </div>
                     <div className="text-xs font-medium text-gray-500 mt-4 space-y-1">
-                        <p className="font-bold text-gray-900">Sharma Store</p>
-                        <p>123, Stationery Lane, Art District</p>
-                        <p>New Delhi, India - 110001</p>
-                        <p>support@sharmastore.com • +91 98765 43210</p>
+                        <p className="font-bold text-gray-900">{storeProfile.name}</p>
+                        <p>{storeProfile.addressLine1}</p>
+                        <p>{storeProfile.addressLine2}</p>
+                        <p>{storeProfile.email} • +91 {storeProfile.primaryPhone}</p>
                     </div>
                 </div>
                 <div className="text-right">
@@ -118,9 +121,9 @@ const Invoice = ({ order, user }) => {
             <div className="border-t-2 border-gray-900 pt-6 text-center">
                 <p className="text-sm font-bold text-gray-900 mb-1">Thank you for your business!</p>
                 <div className="text-[10px] text-gray-500 uppercase tracking-wide space-x-4">
-                    <span>www.sharmastore.com</span>
+                    <span>sharmastore.vercel.app</span>
                     <span>•</span>
-                    <span>support@sharmastore.com</span>
+                    <span>{storeProfile.email}</span>
                 </div>
             </div>
         </div>

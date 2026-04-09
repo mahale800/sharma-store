@@ -17,9 +17,12 @@ import LowStockAlerts from '../../components/admin/LowStockAlerts';
 import ConversionFunnel from '../../components/admin/ConversionFunnel';
 import Button from '../../components/Button';
 import Card from '../../components/common/Card';
+import { useShop } from '../../context/ShopContext';
+import { SHOP_PROFILE } from '../../data/shopProfile';
 
 const Dashboard = () => {
     const { stats, loading: analyticsLoading } = useAnalytics();
+    const { allProducts, usingFallbackProducts } = useShop();
     const { getFeedback, loading: feedbackLoading } = useFeedback();
 
     const [feedback, setFeedback] = useState([]);
@@ -78,6 +81,23 @@ const Dashboard = () => {
         };
     }, [feedback]);
 
+    const inventoryInsights = useMemo(() => {
+        const summary = allProducts.reduce((acc, product) => {
+            const category = product.category || 'Uncategorized';
+            acc.total += 1;
+            if (Number(product.stock) === 0) acc.outOfStock += 1;
+            if (Number(product.stock) > 0 && Number(product.stock) < 10) acc.lowStock += 1;
+            acc.byCategory[category] = (acc.byCategory[category] || 0) + 1;
+            return acc;
+        }, { total: 0, outOfStock: 0, lowStock: 0, byCategory: {} });
+
+        const topCategories = Object.entries(summary.byCategory)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 4);
+
+        return { ...summary, topCategories };
+    }, [allProducts]);
+
 
     // Let the components handle the loading state themselves to avoid a blank layout
     // We only wait for initial analytics load completely if we really must, 
@@ -93,6 +113,69 @@ const Dashboard = () => {
 
             {/* Unified KPI Cards */}
             <StatsCards stats={stats || {}} feedbackKPIs={feedbackKPIs} />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card className="lg:col-span-2 p-6 border-white/60">
+                    <div className="flex items-start justify-between gap-4 mb-5">
+                        <div>
+                            <h2 className="text-xl font-black text-gray-900">Store Profile</h2>
+                            <p className="text-sm font-medium text-gray-500">Live business details based on your shop signage and current setup.</p>
+                        </div>
+                        <Link to="/admin/settings" className="text-xs font-black uppercase tracking-wider text-orange-600 hover:text-orange-700">
+                            Update Details
+                        </Link>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="rounded-2xl bg-slate-900 text-white p-5">
+                            <p className="text-xs font-bold uppercase tracking-[0.22em] text-orange-200 mb-2">Shop Address</p>
+                            <h3 className="text-xl font-black mb-2">{SHOP_PROFILE.name}</h3>
+                            <p className="text-sm text-slate-200 leading-relaxed">{SHOP_PROFILE.fullAddress}</p>
+                        </div>
+                        <div className="rounded-2xl bg-white border border-gray-100 p-5">
+                            <p className="text-xs font-bold uppercase tracking-[0.22em] text-gray-400 mb-3">Support Numbers</p>
+                            <div className="space-y-2">
+                                {SHOP_PROFILE.phones.map((phone) => (
+                                    <p key={phone} className="text-lg font-black text-gray-900">+91 {phone}</p>
+                                ))}
+                            </div>
+                            <p className="text-xs text-gray-500 font-medium mt-4">WhatsApp and direct customer contact can both use these numbers.</p>
+                        </div>
+                    </div>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                        {SHOP_PROFILE.categories.map((category) => (
+                            <span key={category} className="px-3 py-1.5 rounded-full bg-orange-50 text-orange-700 text-xs font-bold border border-orange-100">
+                                {category}
+                            </span>
+                        ))}
+                    </div>
+                </Card>
+
+                <Card className="p-6 border-white/60">
+                    <div className="mb-5">
+                        <h2 className="text-xl font-black text-gray-900">Inventory Health</h2>
+                        <p className="text-sm font-medium text-gray-500">Quick stock and category visibility.</p>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="rounded-2xl bg-gray-50 p-4 border border-gray-100">
+                            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Products Listed</p>
+                            <p className="text-3xl font-black text-gray-900">{inventoryInsights.total}</p>
+                        </div>
+                        <div className="rounded-2xl bg-orange-50 p-4 border border-orange-100">
+                            <p className="text-xs font-bold uppercase tracking-widest text-orange-500">Low Stock</p>
+                            <p className="text-3xl font-black text-orange-700">{inventoryInsights.lowStock}</p>
+                        </div>
+                        <div className="rounded-2xl bg-red-50 p-4 border border-red-100">
+                            <p className="text-xs font-bold uppercase tracking-widest text-red-500">Out of Stock</p>
+                            <p className="text-3xl font-black text-red-700">{inventoryInsights.outOfStock}</p>
+                        </div>
+                        {usingFallbackProducts && (
+                            <p className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+                                Preview catalog is active because live products are unavailable.
+                            </p>
+                        )}
+                    </div>
+                </Card>
+            </div>
 
             {/* AI Business Intelligence Section */}
             <Card className="relative overflow-hidden border-white/60 shadow-lg">
@@ -189,6 +272,22 @@ const Dashboard = () => {
                 <RecentOrders orders={stats?.recentOrders || []} isLoading={analyticsLoading} />
                 <OrderStatusChart data={stats?.statusDistribution || []} isLoading={analyticsLoading} />
             </div>
+
+            <Card className="p-6 border-white/60">
+                <div className="mb-5">
+                    <h3 className="text-lg font-black text-gray-900">Category Coverage</h3>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Based on your current shop sections</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    {inventoryInsights.topCategories.map(([category, count]) => (
+                        <div key={category} className="rounded-2xl border border-gray-100 bg-white p-4">
+                            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">{category}</p>
+                            <p className="text-2xl font-black text-gray-900 mt-2">{count}</p>
+                            <p className="text-sm text-gray-500 font-medium mt-1">catalog items</p>
+                        </div>
+                    ))}
+                </div>
+            </Card>
         </div >
     );
 };

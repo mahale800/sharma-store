@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/firebase';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, addDoc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { Search, ShoppingBag, Eye, Truck, CheckCircle, Clock, XCircle, AlertCircle, ArrowUpRight, Filter, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import Card from '../../components/common/Card';
 import { getNextStates, getStatusStyle, ORDER_STATUSES } from '../../utils/orderStateMachine';
+import { createOrderStatusNotification } from '../../services/notificationService';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -35,15 +36,13 @@ const Orders = () => {
             });
             
             // Notify User
-            if ((newStatus === 'Shipped' || newStatus === 'Delivered') && targetOrder?.userId) {
-                await addDoc(collection(db, 'notifications'), {
+            if (targetOrder?.userId) {
+                await createOrderStatusNotification({
+                    db,
                     userId: targetOrder.userId,
-                    type: 'order',
-                    title: 'Sharma Store',
-                    body: `Your order #${targetOrder.orderId || orderId.slice(0, 8)} has been ${newStatus.toLowerCase()}!`,
-                    read: false,
-                    createdAt: new Date().toISOString(),
-                    tone: 'Excited'
+                    orderId: targetOrder.orderId,
+                    docId: orderId,
+                    status: newStatus
                 });
             }
         } catch (error) { console.error("Update failed", error); }

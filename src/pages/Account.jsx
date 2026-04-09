@@ -4,7 +4,7 @@ import { useLoyalty } from '../context/LoyaltyContext';
 import { useNotifications } from '../context/NotificationContext';
 import { db } from '../firebase/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { User, Mail, Package, MapPin, Camera, Save, Loader2, LogOut, Bell, Gift, ChevronRight, Edit2, Crown, Truck } from 'lucide-react';
+import { User, Mail, Package, MapPin, Camera, Loader2, LogOut, Bell, Gift, ChevronRight, Edit2, Crown, Truck, Smartphone, BellRing } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Card from '../components/common/Card';
@@ -14,7 +14,14 @@ import Redeem from './Redeem';
 const Account = () => {
     const { currentUser, logout } = useAuth();
     const { coins, streak, tier } = useLoyalty();
-    const { preferences, updatePreferences } = useNotifications();
+    const {
+        preferences,
+        updatePreferences,
+        requestPermission,
+        permissionStatus,
+        sendTestNotification,
+        browserSupported
+    } = useNotifications();
     const navigate = useNavigate();
 
     // UI State
@@ -32,6 +39,7 @@ const Account = () => {
     useEffect(() => {
         if (!currentUser) { navigate('/login'); return; }
         fetchUserData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser, navigate]);
 
     const fetchUserData = async () => {
@@ -299,29 +307,96 @@ const Account = () => {
                     </Button>
                 </div>
 
-                {/* 6. Notification Settings (Simplified) */}
-                <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 lg:col-span-2 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600">
-                            <Bell size={20} />
+                {/* 6. Notification Settings */}
+                <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 lg:col-span-2">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600">
+                                <BellRing size={20} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-slate-900">Notifications</h3>
+                                <p className="text-xs text-slate-500 font-medium">Manage live order updates, rewards, and device alerts.</p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 className="font-bold text-slate-900">Notifications</h3>
-                            <p className="text-xs text-slate-500 font-medium">Receive updates about orders & rewards</p>
+                        <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider hidden sm:block">
+                                {preferences.enabled !== false ? 'Enabled' : 'Paused'}
+                            </span>
+                            <button
+                                onClick={() => updatePreferences({ enabled: !preferences.enabled })}
+                                className={`w-12 h-7 rounded-full transition-colors flex items-center px-1 ${(preferences.enabled ?? true) ? 'bg-green-500' : 'bg-slate-200'
+                                    }`}
+                            >
+                                <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform ${(preferences.enabled ?? true) ? 'translate-x-5' : 'translate-x-0'
+                                    }`} />
+                            </button>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider hidden sm:block">
-                            {preferences.enabled !== false ? 'On' : 'Off'}
-                        </span>
-                        <button
-                            onClick={() => updatePreferences({ enabled: !preferences.enabled })}
-                            className={`w-12 h-7 rounded-full transition-colors flex items-center px-1 ${(preferences.enabled ?? true) ? 'bg-green-500' : 'bg-slate-200'
-                                }`}
-                        >
-                            <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform ${(preferences.enabled ?? true) ? 'translate-x-5' : 'translate-x-0'
-                                }`} />
-                        </button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                            <div className="flex items-center gap-3 mb-2">
+                                <Smartphone size={18} className="text-slate-700" />
+                                <p className="text-sm font-black text-slate-900">Device Notifications</p>
+                            </div>
+                            <p className="text-xs text-slate-500 font-medium">
+                                {browserSupported
+                                    ? permissionStatus === 'granted'
+                                        ? 'This browser can show notifications even when the app is in the background.'
+                                        : 'Enable browser permission so order updates can reach the device properly.'
+                                    : 'This browser does not support device notifications.'}
+                            </p>
+                            <div className="flex flex-wrap gap-2 mt-4">
+                                {browserSupported && permissionStatus !== 'granted' && (
+                                    <Button variant="secondary" onClick={requestPermission} className="bg-slate-900 text-white hover:bg-black">
+                                        Enable Alerts
+                                    </Button>
+                                )}
+                                {permissionStatus === 'granted' && (
+                                    <Button variant="secondary" onClick={sendTestNotification} className="bg-green-50 text-green-700 hover:bg-green-100 border border-green-100">
+                                        Send Test
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                            <div className="flex items-center gap-3 mb-2">
+                                <Bell size={18} className="text-slate-700" />
+                                <p className="text-sm font-black text-slate-900">Current Status</p>
+                            </div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                                Browser permission
+                            </p>
+                            <p className="text-sm font-bold text-slate-900 capitalize">{permissionStatus}</p>
+                            <p className="text-xs text-slate-500 font-medium mt-2">
+                                Live order changes are synced inside the app, and device alerts depend on browser permission.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {[
+                            { key: 'orderUpdates', label: 'Order Updates' },
+                            { key: 'loyalty', label: 'Rewards & Coins' },
+                            { key: 'marketing', label: 'Offers & Campaigns' },
+                            { key: 'cartReminders', label: 'Cart Reminders' }
+                        ].map((item) => (
+                            <button
+                                key={item.key}
+                                onClick={() => updatePreferences({ [item.key]: !preferences[item.key] })}
+                                className={`rounded-2xl border px-4 py-4 text-left transition-all ${preferences[item.key] !== false
+                                    ? 'border-orange-200 bg-orange-50'
+                                    : 'border-slate-200 bg-white'
+                                    }`}
+                            >
+                                <p className="text-sm font-black text-slate-900">{item.label}</p>
+                                <p className="text-xs font-medium text-slate-500 mt-1">
+                                    {preferences[item.key] !== false ? 'Enabled' : 'Disabled'}
+                                </p>
+                            </button>
+                        ))}
                     </div>
                 </div>
 

@@ -4,7 +4,7 @@ import { db } from '../firebase/firebase';
 import { useShop } from '../context/ShopContext';
 
 export const useAnalytics = () => {
-    const { products } = useShop();
+    const { allProducts } = useShop();
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({
         totalRevenue: 0,
@@ -48,7 +48,7 @@ export const useAnalytics = () => {
                     let date;
                     try {
                         date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
-                    } catch (e) {
+                    } catch {
                         date = new Date(); // Fallback to now if totally broken
                     }
 
@@ -124,7 +124,7 @@ export const useAnalytics = () => {
         };
 
         fetchAnalytics();
-    }, [products]);
+    }, [allProducts]);
 
     return { stats, loading };
 };

@@ -1,20 +1,19 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useStoreSettings } from '../../context/StoreSettingsContext';
 import {
     LayoutDashboard,
     Package,
     ShoppingCart,
     Users,
-    LogOut,
-    MessageSquare,
-    Map,
-    Trophy
+    LogOut
 } from 'lucide-react';
 
 const AdminMobileNav = () => {
     const { logout } = useAuth();
     const navigate = useNavigate();
+    const { storeProfile } = useStoreSettings();
 
     const handleLogout = async () => {
         try {
@@ -35,13 +34,13 @@ const AdminMobileNav = () => {
     return (
         <>
             {/* --- MOBILE HEADER --- */}
-            <div className="md:hidden flex items-center justify-between mb-8 px-4 py-6">
+            <div className="md:hidden sticky top-0 z-30 flex items-center justify-between mb-6 px-4 py-4 bg-slate-50/90 backdrop-blur-xl border-b border-slate-200">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
                         <span className="font-black text-lg">S.</span>
                     </div>
                     <div>
-                        <h2 className="text-lg font-black text-gray-900">Sharma Store</h2>
+                        <h2 className="text-lg font-black text-gray-900">{storeProfile.shortName}</h2>
                         <p className="text-xs text-gray-500 font-bold">Admin Panel</p>
                     </div>
                 </div>

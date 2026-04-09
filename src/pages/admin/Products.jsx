@@ -1,19 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Trash2, Pencil, Package } from 'lucide-react';
+import { Plus, Search, Trash2, Pencil, Package, Layers3, AlertTriangle, Boxes } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import Button from '../../components/Button';
 import Card from '../../components/common/Card';
+import { FALLBACK_PRODUCTS } from '../../data/fallbackProducts';
+import { SHOP_CATEGORIES } from '../../data/shopProfile';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [usingFallbackProducts, setUsingFallbackProducts] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
-            setProducts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            const liveProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if (liveProducts.length > 0) {
+                setProducts(liveProducts);
+                setUsingFallbackProducts(false);
+            } else {
+                setProducts(FALLBACK_PRODUCTS);
+                setUsingFallbackProducts(true);
+            }
+            setLoading(false);
+        }, () => {
+            setProducts(FALLBACK_PRODUCTS);
+            setUsingFallbackProducts(true);
             setLoading(false);
         });
         return () => unsubscribe();
@@ -27,7 +42,15 @@ const Products = () => {
         }
     };
 
-    const filtered = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = products.filter((product) => {
+        const matchesSearch = `${product.name} ${product.category}`.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
+
+    const lowStockCount = products.filter(product => Number(product.stock) > 0 && Number(product.stock) < 10).length;
+    const outOfStockCount = products.filter(product => Number(product.stock) === 0).length;
+    const categoryCount = new Set(products.map(product => product.category).filter(Boolean)).size;
 
     return (
         <div className="space-y-8">
@@ -65,6 +88,65 @@ const Products = () => {
                     />
                 </div>
             </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="p-5">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center">
+                            <Boxes size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Inventory</p>
+                            <p className="text-2xl font-black text-gray-900">{products.length}</p>
+                        </div>
+                    </div>
+                    <p className="text-sm text-gray-500 font-medium">Products currently visible in the catalog.</p>
+                </Card>
+
+                <Card className="p-5">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-11 h-11 rounded-2xl bg-orange-500 text-white flex items-center justify-center">
+                            <AlertTriangle size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Low Stock</p>
+                            <p className="text-2xl font-black text-gray-900">{lowStockCount + outOfStockCount}</p>
+                        </div>
+                    </div>
+                    <p className="text-sm text-gray-500 font-medium">{outOfStockCount} out of stock, {lowStockCount} running low.</p>
+                </Card>
+
+                <Card className="p-5">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center">
+                            <Layers3 size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Categories</p>
+                            <p className="text-2xl font-black text-gray-900">{categoryCount}</p>
+                        </div>
+                    </div>
+                    <p className="text-sm text-gray-500 font-medium">Aligned with your real in-store sections.</p>
+                </Card>
+            </div>
+
+            {usingFallbackProducts && (
+                <Card className="p-4 border border-amber-200 bg-amber-50 text-amber-900">
+                    <p className="text-sm font-bold">Live inventory is unavailable, so admin is showing the preview product catalog right now.</p>
+                </Card>
+            )}
+
+            <div className="flex flex-wrap gap-2">
+                {['All', ...SHOP_CATEGORIES].map((category) => (
+                    <button
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-colors ${selectedCategory === category ? 'bg-slate-900 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'}`}
+                    >
+                        {category}
+                    </button>
+                ))}
+            </div>
 
             {/* Product List */}
             <div className="space-y-4">

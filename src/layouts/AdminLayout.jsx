@@ -16,7 +16,7 @@ const AdminLayout = () => {
             <AdminMobileNav />
 
             {/* --- MAIN CONTENT WRAPPER --- */}
-            <main className="md:pl-[20rem] pr-4 md:pr-8 py-6 md:py-8 min-h-screen w-full pb-24 md:pb-8">
+            <main className="md:pl-[20rem] px-4 sm:px-6 md:pr-8 md:pl-[20rem] py-4 md:py-8 min-h-screen w-full pb-24 md:pb-8">
 
                 {/* Top Desktop Navbar (Search, Profile, etc) */}
                 <AdminNavbar />

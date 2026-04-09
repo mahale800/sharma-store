@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo } from '
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { FALLBACK_PRODUCTS } from '../data/fallbackProducts';
+import { SHOP_CATEGORIES } from '../data/shopProfile';
 
 const ShopContext = createContext();
 
@@ -124,9 +125,10 @@ export const ShopProvider = ({ children }) => {
 
     // 6. Derived Categories List
     const categories = useMemo(() => {
-        const uniqueCats = Array.from(new Set(allProducts.map(p => p.category).filter(Boolean)));
-        // Return "All" as layout friendly name, but logic handles it
-        return ["All", ...uniqueCats.sort()];
+        const available = new Set(allProducts.map(p => p.category).filter(Boolean));
+        const ordered = SHOP_CATEGORIES.filter(category => available.has(category));
+        const extras = Array.from(available).filter(category => !SHOP_CATEGORIES.includes(category)).sort();
+        return ["All", ...ordered, ...extras];
     }, [allProducts]);
 
     // 7. Reset

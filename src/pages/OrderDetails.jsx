@@ -6,11 +6,14 @@ import { ArrowLeft, Printer, MapPin, CreditCard } from 'lucide-react';
 import Logo from '../components/common/Logo';
 import { useAuth } from '../context/AuthContext';
 import Invoice from '../components/Invoice';
+import { createWhatsAppUrl } from '../data/shopProfile';
+import { useStoreSettings } from '../context/StoreSettingsContext';
 
 const OrderDetails = () => {
     const { orderId } = useParams();
     const navigate = useNavigate();
     const { currentUser } = useAuth();
+    const { storeProfile } = useStoreSettings();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -89,9 +92,9 @@ const OrderDetails = () => {
                             <div className="mb-4">
                                 <Logo variant="full" />
                             </div>
-                            <p className="text-sm text-gray-500 font-medium">123, Stationery Lane, Art District</p>
-                            <p className="text-sm text-gray-500 font-medium">New Delhi, India - 110001</p>
-                            <p className="text-sm text-gray-500 font-medium">support@sharmastore.com</p>
+                            <p className="text-sm text-gray-500 font-medium">{storeProfile.addressLine1}</p>
+                            <p className="text-sm text-gray-500 font-medium">{storeProfile.addressLine2}</p>
+                            <p className="text-sm text-gray-500 font-medium">{storeProfile.email}</p>
                         </div>
                         <div className="text-left md:text-right">
                             <h1 className="text-3xl font-black text-gray-900 mb-2 uppercase tracking-tight">Invoice</h1>
@@ -188,7 +191,7 @@ const OrderDetails = () => {
                 </div>
 
                 <div className="mt-8 text-center print:hidden">
-                    <p className="text-gray-400 text-sm">Need help with this order? <a href="#" className="underline hover:text-orange-600">Contact Support</a></p>
+                    <p className="text-gray-400 text-sm">Need help with this order? <a href={createWhatsAppUrl(storeProfile, 'Hi Sharma Stores, I need help with my order details.')} target="_blank" rel="noopener noreferrer" className="underline hover:text-orange-600">Contact Support</a></p>
                 </div>
             </div>
         </div>

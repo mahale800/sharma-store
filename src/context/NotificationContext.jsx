@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { usePerformance } from '../hooks/usePerformance';
 import { generateNotificationCopy } from '../services/aiService';
@@ -12,6 +12,7 @@ import { httpsCallable } from 'firebase/functions';
 import { showBrowserNotification } from '../utils/showNotification';
 import { requestFcmToken } from '../firebase/messaging';
 import { collection, query, where, orderBy, limit, addDoc, writeBatch } from 'firebase/firestore';
+import { useStoreSettings } from './StoreSettingsContext';
 
 const NotificationContext = createContext();
 
@@ -33,13 +34,17 @@ const normalizeNotification = (notification) => ({
     message: notification.message || notification.body || notification.title || 'You have a new update.',
     tone: notification.tone || 'Neutral',
     read: Boolean(notification.read),
-    createdAt: resolveNotificationDate(notification).toISOString()
+    createdAt: resolveNotificationDate(notification).toISOString(),
+    actionUrl: notification.actionUrl || notification?.data?.url || '/'
 });
 
 export const NotificationProvider = ({ children }) => {
     const { currentUser } = useAuth();
     const { isLowPowerMode } = usePerformance();
     const { logEvent } = useEngagement();
+    const { enableNotifications: storeNotificationsEnabled } = useStoreSettings();
+    const knownOrdersRef = useRef({});
+    const hasPrimedOrdersRef = useRef(false);
 
     // Default States
     const defaultPreferences = {
@@ -55,6 +60,7 @@ export const NotificationProvider = ({ children }) => {
     const [preferences, setPreferences] = useState(defaultPreferences);
     const [notifications, setNotifications] = useState([]);
     const [fcmToken, setFcmToken] = useState(null);
+    const [browserSupported, setBrowserSupported] = useState(typeof Notification !== 'undefined');
     const [permissionStatus, setPermissionStatus] = useState(
         typeof Notification !== 'undefined' ? Notification.permission : 'default'
     );
@@ -137,17 +143,34 @@ export const NotificationProvider = ({ children }) => {
         localStorage.setItem('sharma-notification-daily-count', JSON.stringify(dailyCount));
     }, [dailyCount]);
 
-    const checkDailyUsage = () => {
+    useEffect(() => {
+        const syncPermission = () => {
+            const supported = typeof Notification !== 'undefined';
+            setBrowserSupported(supported);
+            setPermissionStatus(supported ? Notification.permission : 'default');
+        };
+
+        syncPermission();
+        window.addEventListener('focus', syncPermission);
+        document.addEventListener('visibilitychange', syncPermission);
+
+        return () => {
+            window.removeEventListener('focus', syncPermission);
+            document.removeEventListener('visibilitychange', syncPermission);
+        };
+    }, []);
+
+    const checkDailyUsage = useCallback(() => {
         const today = new Date().toDateString();
         if (dailyCount.date !== today) {
             setDailyCount({ date: today, count: 0 });
             return true;
         }
         return dailyCount.count < 5;
-    };
+    }, [dailyCount]);
 
     // Notification logic
-    const addNotification = async (type, rawMessage, force = false) => {
+    const addNotification = useCallback(async (type, rawMessage, force = false, options = {}) => {
         // Flat Preference Check
         // Type map: 'order' -> orderUpdates, 'marketing' -> marketing, 'loyalty' -> loyalty, 'cart' -> cartReminders
         const typeMap = {
@@ -166,6 +189,8 @@ export const NotificationProvider = ({ children }) => {
 
         let finalMessage = rawMessage;
         let toneUsed = 'Neutral';
+        const title = options.title || 'Sharma Store';
+        const actionUrl = options.actionUrl || '/';
 
         // AI Styling
         if (type === 'engagement' && checkDailyUsage()) {
@@ -185,11 +210,12 @@ export const NotificationProvider = ({ children }) => {
         const newNotif = normalizeNotification({
             id: Date.now().toString(),
             type,
-            title: 'Sharma Store',
+            title,
             message: finalMessage,
             tone: toneUsed,
             read: false,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            actionUrl
         });
 
         // Optimistic Update
@@ -200,13 +226,14 @@ export const NotificationProvider = ({ children }) => {
             addDoc(collection(db, 'notifications'), {
                 userId: currentUser.uid,
                 type,
-                title: 'Sharma Store',
+                title,
                 body: finalMessage,
                 read: false,
                 timestamp: serverTimestamp(),
                 createdAt: new Date().toISOString(),
                 tone: toneUsed,
-                meta: {} // Optional meta field
+                actionUrl,
+                meta: options.meta || {}
             }).catch(e => console.error("Failed to add notification", e));
         }
 
@@ -221,10 +248,13 @@ export const NotificationProvider = ({ children }) => {
         // Only if it's an engagement/order alert and permissions are granted
         // We skip this if it was a 'forced' foreground message to avoid double toast + system notif if desired,
         // but user requested "Notifications appear outside the tab".
-        if (permissionStatus === 'granted' && preferences.enabled) {
-            showBrowserNotification('Sharma Store', finalMessage);
+        if (permissionStatus === 'granted' && preferences.enabled && storeNotificationsEnabled && !options.suppressBrowser) {
+            showBrowserNotification(title, finalMessage, {
+                actionUrl,
+                tag: options.tag || `${type}-${newNotif.id}`
+            });
         }
-    };
+    }, [checkDailyUsage, currentUser, isLowPowerMode, logEvent, permissionStatus, preferences, storeNotificationsEnabled]);
 
     // Smart Triggers (Cart / Wishlist)
     const { cartCount } = useContext(CartContext);
@@ -250,6 +280,51 @@ export const NotificationProvider = ({ children }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wishlistCount]);
+
+    useEffect(() => {
+        if (!currentUser) {
+            knownOrdersRef.current = {};
+            hasPrimedOrdersRef.current = false;
+            return undefined;
+        }
+
+        const ordersQuery = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
+        const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
+            const nextKnownOrders = {};
+
+            snapshot.docs.forEach((orderDoc) => {
+                const data = orderDoc.data();
+                const currentStatus = data.status || 'Pending';
+                const readableOrderId = data.orderId || orderDoc.id.slice(0, 8).toUpperCase();
+                const previous = knownOrdersRef.current[orderDoc.id];
+
+                nextKnownOrders[orderDoc.id] = {
+                    status: currentStatus,
+                    orderId: readableOrderId
+                };
+
+                if (hasPrimedOrdersRef.current && previous && previous.status !== currentStatus) {
+                    addNotification(
+                        'order',
+                        `Order #${readableOrderId} is now ${currentStatus}.`,
+                        true,
+                        {
+                            title: 'Order Update',
+                            actionUrl: `/track-order/${data.orderId || orderDoc.id}`,
+                            tag: `order-${orderDoc.id}-${currentStatus}`
+                        }
+                    );
+                }
+            });
+
+            knownOrdersRef.current = nextKnownOrders;
+            hasPrimedOrdersRef.current = true;
+        }, (error) => {
+            console.warn('Live order notifications unavailable:', error?.message || error);
+        });
+
+        return () => unsubscribe();
+    }, [addNotification, currentUser]);
 
 
     const markAsRead = async (id) => {
@@ -306,13 +381,28 @@ export const NotificationProvider = ({ children }) => {
 
     // --- FCM LOGIC ---
     const requestPermission = async () => {
-        if (!currentUser || !messaging || typeof Notification === 'undefined') return;
+        if (typeof Notification === 'undefined') return null;
 
-        const token = await requestFcmToken(currentUser.uid);
-        setPermissionStatus(Notification.permission);
-        if (token) {
-            setFcmToken(token);
+        if (Notification.permission === 'default') {
+            await Notification.requestPermission();
         }
+
+        setPermissionStatus(Notification.permission);
+
+        if (Notification.permission !== 'granted') {
+            return null;
+        }
+
+        if ('serviceWorker' in navigator) {
+            try {
+                await navigator.serviceWorker.ready;
+            } catch {
+                // Ignore readiness issues and continue with in-app notifications.
+            }
+        }
+
+        const token = currentUser && messaging ? await requestFcmToken(currentUser.uid) : null;
+        if (token) setFcmToken(token);
         return token;
     };
 
@@ -341,17 +431,36 @@ export const NotificationProvider = ({ children }) => {
     };
 
     const sendTestNotification = async () => {
-        if (!currentUser || !functions) return;
-        try {
-            const sendTest = httpsCallable(functions, 'sendTestNotification');
-            await sendTest({ userId: currentUser.uid });
-            addNotification('announcement', 'Test notification sent! Check your other tabs/devices.', true);
-        } catch (error) {
-            console.error("Failed to send test notification:", error);
-            // Fallback to local
-            showBrowserNotification('Sharma Store', 'Local Test: This is a fallback notification.');
-            addNotification('alert', 'Cloud test failed. Sent local fallback.', true);
+        if (permissionStatus !== 'granted') {
+            await requestPermission();
         }
+
+        if (currentUser && functions) {
+            try {
+                const sendTest = httpsCallable(functions, 'sendTestNotification');
+                await sendTest({ userId: currentUser.uid });
+                addNotification('announcement', 'Test notification sent! Check your other tabs/devices.', true, {
+                    title: 'Test Notification',
+                    actionUrl: '/account',
+                    suppressBrowser: true
+                });
+                return;
+            } catch (error) {
+                console.error("Failed to send test notification:", error);
+            }
+        }
+
+        const shown = await showBrowserNotification('Sharma Store', 'Device notifications are active on this browser.', {
+            actionUrl: '/account',
+            tag: 'device-test-notification'
+        });
+
+        addNotification(
+            shown ? 'announcement' : 'alert',
+            shown ? 'Local device notification sent successfully.' : 'We could not show a device notification on this browser.',
+            true,
+            { title: 'Notification Check', actionUrl: '/account', suppressBrowser: true }
+        );
     };
 
     // Listen for Foreground Messages (FCM)
@@ -359,13 +468,16 @@ export const NotificationProvider = ({ children }) => {
         if (permissionStatus === 'granted' && messaging) {
             const unsubscribe = onMessage(messaging, (payload) => {
 
+                const title = payload.notification?.title || 'Sharma Store';
                 const body = payload.notification?.body || 'You have a new message.';
+                const actionUrl = payload.data?.url || '/account';
 
                 // 1. Show In-App Toast
                 addNotification(
                     'announcement',
                     body,
-                    true // force
+                    true,
+                    { title, actionUrl, suppressBrowser: true }
                 );
             });
             return () => unsubscribe();
@@ -387,6 +499,7 @@ export const NotificationProvider = ({ children }) => {
             updatePreferences,
             requestPermission,
             permissionStatus,
+            browserSupported,
             fcmToken,
             sendTestNotification,
             triggerMarketing,

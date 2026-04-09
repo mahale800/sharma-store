@@ -12,6 +12,7 @@ import { motion } from 'framer-motion';
 import Logo from '../components/common/Logo';
 import RecommendationRow from '../components/RecommendationRow';
 import RecentlyViewed from '../components/RecentlyViewed';
+import { useStoreSettings } from '../context/StoreSettingsContext';
 
 const Home = () => {
     const {
@@ -23,6 +24,7 @@ const Home = () => {
         categories
     } = useShop();
     const { coins } = useLoyalty();
+    const { storeProfile, acceptingOrders } = useStoreSettings();
 
     // Reward Popup State (Lifted Up)
     const [showReward, setShowReward] = useState(false);
@@ -80,7 +82,7 @@ const Home = () => {
                                         transition={{ delay: 0.3 }}
                                         className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-widest w-fit mb-6"
                                     >
-                                        Limited Release
+                                        Jalgaon Store Specials
                                     </motion.span>
 
                                     <motion.h1
@@ -89,7 +91,7 @@ const Home = () => {
                                         transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
                                         className="text-5xl md:text-6xl font-black text-white leading-tight mb-6 tracking-tight drop-shadow-sm"
                                     >
-                                        New Semester <br /> Essentials
+                                        Gifts, Toys, <br /> Stationery & More
                                     </motion.h1>
 
                                     <motion.p
@@ -98,7 +100,7 @@ const Home = () => {
                                         transition={{ delay: 0.6 }}
                                         className="text-lg text-white/80 font-medium mb-10 leading-relaxed max-w-sm drop-shadow-sm"
                                     >
-                                        Frosted paper textures for the modern creative. Curated for focus and flow.
+                                        {storeProfile.addressLine1}, {storeProfile.city}. Explore our real in-store mix of stationery, birthday supplies, imitation jewellery, cosmetics, and daily essentials.
                                     </motion.p>
 
                                     <motion.div
@@ -107,7 +109,7 @@ const Home = () => {
                                         transition={{ delay: 0.8 }}
                                     >
                                         <Link to="/products" className="bg-white text-indigo-600 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-gray-50 transition-all hover:scale-105 active:scale-95 flex items-center gap-2 w-fit">
-                                            Shop Bundle <ArrowRight size={20} />
+                                            Browse Categories <ArrowRight size={20} />
                                         </Link>
                                     </motion.div>
                                 </div>
@@ -146,8 +148,8 @@ const Home = () => {
                                     <p className="text-sm text-black/70 font-bold flex items-center gap-1"><Clock size={16} /> Ends in 04:22:10</p>
                                 </div>
                                 <div className="relative z-10">
-                                    <p className="text-sm font-bold text-black uppercase">Wooden Toys</p>
-                                    <p className="text-2xl font-black text-black">Up to 40% Off</p>
+                                    <p className="text-sm font-bold text-black uppercase">Birthday & Gift Picks</p>
+                                    <p className="text-2xl font-black text-black">Up to 30% Off</p>
                                 </div>
                                 <ShoppingBagIcon className="absolute -right-4 -bottom-4 text-black/10 size-32 group-hover:rotate-12 transition-transform" />
                             </div>
@@ -161,7 +163,15 @@ const Home = () => {
                                 <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900 flex items-start gap-3">
                                     <AlertCircle size={18} className="mt-0.5 shrink-0" />
                                     <span>
-                                        Showing a preview product catalog because the live database is unavailable right now.
+                                        Showing a preview product catalog based on {storeProfile.name} categories because the live database is unavailable right now.
+                                    </span>
+                                </div>
+                            )}
+                            {!acceptingOrders && (
+                                <div className="rounded-2xl border border-slate-200 bg-slate-900 px-4 py-3 text-sm font-medium text-white flex items-start gap-3">
+                                    <AlertCircle size={18} className="mt-0.5 shrink-0 text-orange-300" />
+                                    <span>
+                                        The store is currently marked as not accepting new orders. You can still browse products and contact the shop for updates.
                                     </span>
                                 </div>
                             )}

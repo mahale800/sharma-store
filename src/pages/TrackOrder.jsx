@@ -5,10 +5,13 @@ import { Search, AlertCircle, Check, Home } from 'lucide-react';
 import { Link, useLocation, useSearchParams, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ORDER_STEPS, getStepIndex, getStatusStyle } from '../utils/orderStateMachine';
+import { createMapsUrl, createWhatsAppUrl } from '../data/shopProfile';
+import { useStoreSettings } from '../context/StoreSettingsContext';
 
 const TrackOrder = () => {
     const { orderId: paramOrderId } = useParams();
     const { currentUser } = useAuth();
+    const { storeProfile } = useStoreSettings();
     const [searchParams, setSearchParams] = useState({ orderId: '', email: '' });
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -84,7 +87,7 @@ const TrackOrder = () => {
             } else {
                 setError("Order not found.");
             }
-        } catch (err) {
+        } catch {
             setError("Failed to track order.");
         } finally {
             setLoading(false);
@@ -175,6 +178,17 @@ const TrackOrder = () => {
                 <div className="text-center mb-10">
                     <h1 className="text-4xl font-black text-gray-900 mb-4 tracking-tight">Track Your Order</h1>
                     <p className="text-gray-500 font-medium">Enter your Order ID and Email to see real-time updates.</p>
+                </div>
+
+                <div className="mb-8 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Store Support</p>
+                    <p className="text-sm font-bold text-gray-900">{storeProfile.fullAddress}</p>
+                    <div className="mt-3 flex flex-wrap gap-3 text-sm font-bold">
+                        <a href={`tel:+91${storeProfile.primaryPhone}`} className="text-orange-600 hover:text-orange-700">+91 {storeProfile.primaryPhone}</a>
+                        <a href={`tel:+91${storeProfile.secondaryPhone}`} className="text-orange-600 hover:text-orange-700">+91 {storeProfile.secondaryPhone}</a>
+                        <a href={createWhatsAppUrl(storeProfile, 'Hi Sharma Stores, I need help tracking my order.')} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-700">WhatsApp Support</a>
+                        <a href={createMapsUrl(storeProfile)} target="_blank" rel="noopener noreferrer" className="text-slate-700 hover:text-slate-900">Get Directions</a>
+                    </div>
                 </div>
 
                 {/* Search Form */}

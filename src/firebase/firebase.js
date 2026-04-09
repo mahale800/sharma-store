@@ -50,8 +50,17 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 
+let messagingInstance = null;
+if (isConfigValid && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  try {
+    messagingInstance = getMessaging(app);
+  } catch (error) {
+    console.warn('Firebase messaging is unavailable in this browser:', error?.message || error);
+  }
+}
+
 // Only initialize messaging and functions if config is valid
-export const messaging = isConfigValid ? getMessaging(app) : null;
+export const messaging = messagingInstance;
 export const functions = isConfigValid ? getFunctions(app) : null;
 
 export default app;
