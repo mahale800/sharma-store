@@ -4,29 +4,27 @@ import App from './App.jsx';
 import './index.css';
 import GlobalErrorBoundary from './components/GlobalErrorBoundary';
 
-import { registerSW } from 'virtual:pwa-register';
-
-let updateSW;
-
-const registerServiceWorker = () => {
-  updateSW = registerSW({
-    onNeedRefresh() {
-      if (confirm('New content available. Reload?')) {
-        updateSW(true);
-      }
-    },
-    onOfflineReady() {
-      console.debug('App is ready for offline work.');
-    },
-    onRegisterError(error) {
-      console.error('SW registration failed:', error);
-    },
+// Manual Service Worker Registration
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("SW registered"))
+      .catch(err => console.log("SW error", err));
   });
-};
 
-// Register service worker only in production
-if (import.meta.env.PROD) {
-  registerServiceWorker();
+  // App Update System
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    alert("New update available! Please refresh.");
+  });
+}
+
+// Push Notification Setup
+if ("Notification" in window) {
+  Notification.requestPermission().then(permission => {
+    if (permission === "granted") {
+      console.log("Notifications enabled");
+    }
+  });
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

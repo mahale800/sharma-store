@@ -63,7 +63,7 @@ const Home = () => {
 
                     {/* Bento Grid Hero Layout */}
                     {!searchQuery && (selectedCategory === "All" || selectedCategory === "all") && (
-                        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-6 mb-16">
+                        <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-auto gap-6 mb-16">
                             {/* Hero Bento Card (2x2) - Solid Indigo */}
                             <div className="md:col-span-2 md:row-span-2 relative h-[500px] md:h-auto rounded-3xl overflow-hidden shadow-xl bg-indigo-600 group">
                                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
@@ -182,14 +182,14 @@ const Home = () => {
                     )}
 
                     <div id="products-grid" className="scroll-mt-32">
-                        <div className="flex items-center justify-between mb-8">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                             <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
                                 {searchQuery ? `Search: ${searchQuery}` : "Latest Drops"}
                                 <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">Hot</span>
                             </h2>
 
                             {/* Scrollable Categories for Mobile/Desktop */}
-                            <div className="flex items-center gap-2 overflow-x-auto pb-2 max-w-[50%] md:max-w-none no-scrollbar">
+                            <div className="flex items-center gap-2 overflow-x-auto pb-2 w-full md:w-auto no-scrollbar">
                                 {categories.map(cat => (
                                     <button
                                         key={cat}

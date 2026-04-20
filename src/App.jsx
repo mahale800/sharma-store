@@ -42,6 +42,7 @@ import GlobalErrorBoundary from './components/GlobalErrorBoundary';
 
 import Preloader from './components/Preloader';
 import SplashScreen from './components/common/SplashScreen';
+import PWAInstallBanner from './components/PWAInstallBanner';
 
 
 // Contexts
@@ -204,6 +205,7 @@ function App() {
                       }>
                         <AppRoutes />
                       </Suspense>
+                      <PWAInstallBanner />
                     </div>
                   </NotificationProvider>
                 </LoyaltyProvider>

@@ -32,7 +32,7 @@ const Cart = () => {
     }
 
     return (
-        <div className="w-full pb-8 bg-slate-50 page-enter">
+        <div className="w-full pb-32 lg:pb-8 bg-slate-50 page-enter">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* Header */}
@@ -87,19 +87,19 @@ const Cart = () => {
                                                 variant="ghost"
                                                 size="icon-sm"
                                                 onClick={() => updateQuantity(item.id, -1)}
-                                                className="w-8 h-8 rounded-lg hover:bg-white text-gray-600 disabled:opacity-30 shadow-sm"
+                                                className="w-10 h-10 rounded-lg hover:bg-white text-gray-600 disabled:opacity-30 shadow-sm"
                                                 disabled={item.quantity <= 1}
                                             >
-                                                <Minus size={14} strokeWidth={3} />
+                                                <Minus size={16} strokeWidth={3} />
                                             </Button>
                                             <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
                                             <Button
                                                 variant="ghost"
                                                 size="icon-sm"
                                                 onClick={() => updateQuantity(item.id, 1)}
-                                                className="w-8 h-8 rounded-lg hover:bg-white text-gray-600 shadow-sm"
+                                                className="w-10 h-10 rounded-lg hover:bg-white text-gray-600 shadow-sm"
                                             >
-                                                <Plus size={14} strokeWidth={3} />
+                                                <Plus size={16} strokeWidth={3} />
                                             </Button>
                                         </div>
                                     </div>

@@ -5,7 +5,6 @@ import Footer from '../components/Footer';
 import WhatsAppBtn from '../components/WhatsAppBtn';
 import ChatBot from '../components/ChatBot';
 import OfflineBanner from '../components/pwa/OfflineBanner';
-import InstallPrompt from '../components/pwa/InstallPrompt';
 import { Loader2 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/common/PageTransition';
@@ -16,7 +15,6 @@ const PublicLayout = () => {
     return (
         <>
             <OfflineBanner />
-            <InstallPrompt />
             <Navbar />
             <div className="print:hidden">
                 <WhatsAppBtn />
