@@ -3,6 +3,8 @@ import { Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePWAInstall } from '../../hooks/usePWAInstall';
 
+const MotionDiv = motion.div;
+
 const PWAInstallPrompt = () => {
   const { isInstallable, isInstalled, promptInstall } = usePWAInstall();
 
@@ -13,7 +15,7 @@ const PWAInstallPrompt = () => {
 
   return (
     <AnimatePresence>
-      <motion.div
+      <MotionDiv
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
@@ -35,9 +37,10 @@ const PWAInstallPrompt = () => {
           <Download size={16} />
           <span>Install</span>
         </button>
-      </motion.div>
+      </MotionDiv>
     </AnimatePresence>
   );
 };
 
 export default PWAInstallPrompt;
+
