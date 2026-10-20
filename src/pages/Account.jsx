@@ -36,12 +36,6 @@ const Account = () => {
         name: '', phone: '', address: '', photoURL: ''
     });
 
-    useEffect(() => {
-        if (!currentUser) { navigate('/login'); return; }
-        fetchUserData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentUser, navigate]);
-
     const fetchUserData = async () => {
         try {
             const docRef = doc(db, "users", currentUser.uid);
@@ -61,6 +55,12 @@ const Account = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (!currentUser) { navigate('/login'); return; }
+        fetchUserData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser, navigate]);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -423,3 +423,4 @@ const Account = () => {
 };
 
 export default Account;
+
