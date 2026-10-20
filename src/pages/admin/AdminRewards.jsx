@@ -14,10 +14,6 @@ const AdminRewards = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -69,6 +65,10 @@ const AdminRewards = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const handleResetStreak = async (userId, currentStreak) => {
         if (!window.confirm(`Are you sure you want to reset the streak for this user? (Current: ${currentStreak})`)) return;
@@ -258,3 +258,4 @@ const AdminRewards = () => {
 };
 
 export default AdminRewards;
+
