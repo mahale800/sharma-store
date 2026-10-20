@@ -4,6 +4,56 @@ import { useFeedback } from '../../hooks/useFeedback';
 import { generateRoadmap } from '../../services/aiService';
 import { Loader2, Sparkles, Map, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
 
+const PriorityColumn = ({ roadmap, title, priority, icon, color, onStatusChange }) => {
+    const items = roadmap.filter(i => i.priority === priority);
+    return (
+        <div className="flex-1 min-w-[300px] bg-slate-50/50 rounded-3xl p-4 border border-slate-100 flex flex-col">
+            <div className={`flex items-center gap-2 mb-4 p-2 rounded-xl ${color} bg-opacity-10 text-${color.split('-')[1]}-600`}>
+                {React.createElement(icon, { size: 18, className: `text-${color.split('-')[1]}-500` })}
+                <h3 className="font-bold text-sm uppercase tracking-wider">{title}</h3>
+                <span className="ml-auto bg-white px-2 py-0.5 rounded-md text-xs font-black shadow-sm">{items.length}</span>
+            </div>
+
+            <div className="space-y-3 flex-1 overflow-y-auto pr-2 scrollbar-thin">
+                {items.length === 0 && (
+                    <div className="text-center py-10 text-gray-400 text-sm border-2 border-dashed border-gray-100 rounded-xl">
+                        No {title.toLowerCase()} items.
+                    </div>
+                )}
+                {items.map(item => (
+                    <div key={item.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group relative">
+                        <div className="flex justify-between items-start mb-2">
+                            <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide
+                                ${item.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                                    item.status === 'In Progress' ? 'bg-blue-100 text-blue-700' :
+                                        'bg-gray-100 text-gray-600'}`}>
+                                {item.status}
+                            </span>
+                            <select
+                                className="opacity-0 group-hover:opacity-100 absolute top-2 right-2 text-xs border border-gray-200 rounded p-1"
+                                value={item.status}
+                                onChange={(e) => onStatusChange(item.id, e.target.value)}
+                            >
+                                <option value="Planned">Planned</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+
+                        <h4 className="font-bold text-gray-800 text-sm mb-1">{item.title}</h4>
+                        <p className="text-xs text-slate-500 mb-3 line-clamp-2">{item.reason}</p>
+
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded w-fit">
+                            <Sparkles size={10} />
+                            {item.impact}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 const AdminRoadmap = () => {
     const { fetchRoadmap, saveRoadmapItems, updateItemStatus } = useRoadmap();
     const { getFeedback } = useFeedback();
@@ -50,58 +100,6 @@ const AdminRoadmap = () => {
         setRoadmap(prev => prev.map(item => item.id === id ? { ...item, status } : item));
     };
 
-    // eslint-disable-next-line no-unused-vars
-    const PriorityColumn = ({ title, priority, icon: Icon, color }) => {
-        const items = roadmap.filter(i => i.priority === priority);
-        return (
-            <div className="flex-1 min-w-[300px] bg-slate-50/50 rounded-3xl p-4 border border-slate-100 flex flex-col">
-                <div className={`flex items-center gap-2 mb-4 p-2 rounded-xl ${color} bg-opacity-10 text-${color.split('-')[1]}-600`}>
-                    <Icon size={18} className={`text-${color.split('-')[1]}-500`} />
-                    <h3 className="font-bold text-sm uppercase tracking-wider">{title}</h3>
-                    <span className="ml-auto bg-white px-2 py-0.5 rounded-md text-xs font-black shadow-sm">{items.length}</span>
-                </div>
-
-                <div className="space-y-3 flex-1 overflow-y-auto pr-2 scrollbar-thin">
-                    {items.length === 0 && (
-                        <div className="text-center py-10 text-gray-400 text-sm border-2 border-dashed border-gray-100 rounded-xl">
-                            No {title.toLowerCase()} items.
-                        </div>
-                    )}
-                    {items.map(item => (
-                        <div key={item.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group relative">
-                            {/* Status Badge */}
-                            <div className="flex justify-between items-start mb-2">
-                                <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide
-                                    ${item.status === 'Completed' ? 'bg-green-100 text-green-700' :
-                                        item.status === 'In Progress' ? 'bg-blue-100 text-blue-700' :
-                                            'bg-gray-100 text-gray-600'}`}>
-                                    {item.status}
-                                </span>
-                                <select
-                                    className="opacity-0 group-hover:opacity-100 absolute top-2 right-2 text-xs border border-gray-200 rounded p-1"
-                                    value={item.status}
-                                    onChange={(e) => handleStatusChange(item.id, e.target.value)}
-                                >
-                                    <option value="Planned">Planned</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                </select>
-                            </div>
-
-                            <h4 className="font-bold text-gray-800 text-sm mb-1">{item.title}</h4>
-                            <p className="text-xs text-slate-500 mb-3 line-clamp-2">{item.reason}</p>
-
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded w-fit">
-                                <Sparkles size={10} />
-                                {item.impact}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    };
-
     return (
         <div className="h-[calc(100vh-100px)] flex flex-col space-y-6 pb-4 animate-in fade-in duration-500">
             {/* Header */}
@@ -129,9 +127,9 @@ const AdminRoadmap = () => {
                 </div>
             ) : (
                 <div className="flex-1 flex flex-col md:flex-row gap-6 overflow-x-auto pb-4">
-                    <PriorityColumn title="High Priority" priority="High" icon={AlertCircle} color="bg-red-50" />
-                    <PriorityColumn title="Medium Priority" priority="Medium" icon={Clock} color="bg-orange-50" />
-                    <PriorityColumn title="Low Priority" priority="Low" icon={CheckCircle2} color="bg-blue-50" />
+                    <PriorityColumn roadmap={roadmap} onStatusChange={handleStatusChange} title="High Priority" priority="High" icon={AlertCircle} color="bg-red-50" />
+                    <PriorityColumn roadmap={roadmap} onStatusChange={handleStatusChange} title="Medium Priority" priority="Medium" icon={Clock} color="bg-orange-50" />
+                    <PriorityColumn roadmap={roadmap} onStatusChange={handleStatusChange} title="Low Priority" priority="Low" icon={CheckCircle2} color="bg-blue-50" />
                 </div>
             )}
         </div>
@@ -139,3 +137,4 @@ const AdminRoadmap = () => {
 };
 
 export default AdminRoadmap;
+
