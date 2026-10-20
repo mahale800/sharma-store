@@ -1,99 +1,69 @@
-# Sharma Store - Vercel Deployment Guide
+# Sharma Store deployment guide
 
-## Environment Variables Required
+This guide covers the Vite frontend deployment. Configure and test Firebase separately before treating the app as a production commerce system.
 
-Add these environment variables in your Vercel Dashboard:
-1. Go to your project on Vercel
-2. Navigate to **Settings** → **Environment Variables**
-3. Add the following variables for **Production**, **Preview**, and **Development** environments:
-
-### Firebase Configuration (Required)
-```
-VITE_FIREBASE_API_KEY=your_actual_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-```
-
-### Optional: AI Features
-```
-VITE_OPENROUTER_API_KEY=your_openrouter_api_key
-```
-
-## How to Get Firebase Credentials
-
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Select your project (or create a new one)
-3. Go to **Project Settings** (gear icon)
-4. Scroll down to "Your apps" section
-5. Select the **Web** app (or create one if not exists)
-6. Copy the `firebaseConfig` values to Vercel environment variables
-
-## Firestore Security Rules
-
-Make sure to deploy Firestore rules. In Firebase Console:
-1. Go to **Firestore Database** → **Rules**
-2. Deploy the rules from `firestore.rules` file
-3. Also deploy indexes from `firestore.indexes.json`
-
-## Build Settings
-
-Vercel should auto-detect these settings:
-- **Framework Preset**: Vite
-- **Build Command**: `npm run build`
-- **Output Directory**: `dist`
-- **Install Command**: `npm install`
-
-## Troubleshooting
-
-### Blank Page / White Screen
-- Check browser console for errors
-- Verify all environment variables are set correctly
-- Check Vercel deployment logs for build errors
-
-### Firebase Authentication Not Working
-- Ensure Firebase credentials are correct
-- Check Firebase Console → Authentication → Sign-in method is enabled
-- Verify authorized domains in Firebase Console
-
-### Products Not Loading
-- Check Firestore rules are deployed
-- Verify products collection exists in Firestore
-- Check browser console for permission errors
-
-### PWA Not Working
-- Service workers require HTTPS (Vercel provides this)
-- Clear browser cache and reload
-- Check browser DevTools → Application → Service Workers
-
-## Deployment Commands
+## 1. Verify locally
 
 ```bash
-# Install Vercel CLI
-npm i -g vercel
+npm install
+npm run lint
+npm run build
+```
 
-# Login to Vercel
+The build output should be generated in `dist/`.
+
+## 2. Configure Vercel
+
+The repository includes `vercel.json` with these settings:
+
+- Framework: Vite
+- Build command: `npm run build`
+- Output directory: `dist`
+- SPA fallback: all routes rewrite to `/index.html`
+
+Add the following variables in the Vercel project for the environments you use:
+
+```text
+VITE_FIREBASE_API_KEY
+VITE_FIREBASE_AUTH_DOMAIN
+VITE_FIREBASE_PROJECT_ID
+VITE_FIREBASE_STORAGE_BUCKET
+VITE_FIREBASE_MESSAGING_SENDER_ID
+VITE_FIREBASE_APP_ID
+VITE_FIREBASE_VAPID_KEY       # optional, for web push
+```
+
+The optional `VITE_OPENROUTER_API_KEY` is currently consumed by browser code. Do not use an unrestricted production key; move AI requests behind a server-side function first.
+
+## 3. Configure Firebase
+
+1. Enable the Firebase Authentication providers used by the app.
+2. Create a Firestore database for the target environment.
+3. Review and deploy `firestore.rules` and `firestore.indexes.json`.
+4. Add the Vercel deployment domain to Firebase Authentication's authorized domains.
+5. Seed test products and an explicitly authorized administrator account.
+
+If Firebase Functions are deployed, review `functions/index.js` and add authentication/administrator checks to callable functions before enabling them publicly.
+
+## 4. Deploy
+
+With the repository linked to Vercel, pushing the production branch triggers a deployment. The CLI alternative is:
+
+```bash
+npm install --global vercel
 vercel login
-
-# Link project
 vercel link
-
-# Deploy to production
 vercel --prod
 ```
 
-## Post-Deployment Checklist
+## Post-deployment checklist
 
-- [ ] All environment variables configured in Vercel
-- [ ] Firestore rules deployed
-- [ ] Firestore indexes created
-- [ ] Firebase Authentication enabled (Email/Google)
-- [ ] Test user registration and login
-- [ ] Test product browsing
-- [ ] Test cart functionality
-- [ ] Test checkout flow
-- [ ] Test admin dashboard (if applicable)
-- [ ] Test PWA installation
-- [ ] Check browser console for errors
+- [ ] The deployed URL returns the application rather than a 404
+- [ ] Firebase environment variables are present in the deployment
+- [ ] Authentication and authorized domains work
+- [ ] Firestore rules and indexes are deployed
+- [ ] Customer browsing, cart, and order creation work in a test account
+- [ ] Admin routes reject non-admin accounts
+- [ ] No provider secret appears in the browser bundle
+- [ ] PWA install and offline fallback work over HTTPS
+
