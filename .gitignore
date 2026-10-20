@@ -42,3 +42,11 @@ coverage/
 # Misc
 *.local
 .cache
+
+# Local diagnostics and generated reports
+build_log.txt
+diff.txt
+eslint_report*.json
+eslint_output*.txt
+lint_*.txt
+
