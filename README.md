@@ -1,260 +1,116 @@
-# Sharma Store 🛍️
+# Sharma Store
 
-> **Next-Gen AI-Powered E-commerce Experience**
+Sharma Store is a mobile-first React storefront prototype backed by Firebase. It combines a product catalogue, authentication, cart and checkout flows, loyalty features, admin screens, notifications, and Progressive Web App support.
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
-![PWA](https://img.shields.io/badge/PWA-Supported-purple?style=for-the-badge&logo=pwa&logoColor=white)
-![AI Powered](https://img.shields.io/badge/AI-Powered-FF4F00?style=for-the-badge&logo=openai&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-In%20Development-orange?style=for-the-badge)
+## Current status
 
----
+The repository is an active development project. The frontend is a Vite SPA and the repository also contains Firebase Functions source for notifications. A working production deployment, payment processor, and server-side AI proxy should be verified before this project is presented as a production commerce system.
 
-## 🚀 Overview
+## Implemented areas
 
-**Sharma Store** is a cutting-edge, mobile-first Progressive Web App (PWA) designed to revolutionize the online shopping experience. Built with performance and user engagement in mind, it seamlessly integrates advanced AI capabilities with a robust e-commerce engine.
+- Product browsing, search, filtering, cart, wishlist, and order history
+- Firebase Authentication and Firestore-backed application state
+- Admin pages for products, orders, customers, settings, and analytics
+- Loyalty points, streaks, rewards, reviews, and notifications
+- PWA manifest, service worker, offline fallback, and install prompts
+- Optional AI helpers for recommendations, feedback analysis, and notification copy
+- Reference UI explorations under `assets/reference_ui/`
 
-By leveraging **Groq AI (Llama models)** for intelligent product recommendations and providing a sophisticated admin intelligence dashboard, Sharma Store bridges the gap between traditional retail and the future of digital commerce. It features a fully integrated loyalty system, personalized notifications, and a sleek, modern UI.
+The checkout UI includes card, UPI, wallet, and cash-on-delivery selections. The repository does not currently show a connected payment processor, so treat those screens as a product-flow prototype until a payment provider is integrated and tested.
 
----
+## Tech stack
 
-## ✨ Key Features
+- React 19 and Vite
+- Tailwind CSS, Framer Motion, Lucide React, Recharts, and canvas-confetti
+- Firebase Authentication, Firestore, Cloud Messaging, and Functions source
+- Vite PWA plugin for installability and offline behavior
+- OpenRouter client integration for optional AI helpers
 
-### 🛒 Customer Experience
-*   **Progressive Web App (PWA)**: Installable on mobile and desktop for a native-app-like experience.
-*   **Smart Product Discovery**: AI-driven search and recommendations tailored to user preferences.
-*   **Seamless Checkout**: Secure and fast checkout process with integrated payment gateways.
-*   **Loyalty System**: Earn points, track streaks, and redeem rewards for exclusive discounts.
-*   **Real-time Tracking**: Live order status updates and tracking directly from the dashboard.
-*   **Personalized Notifications**: AI-generated notifications with customizable tones (Professional, Friendly, Flirty, Comedy).
-
-### 🛠️ Admin Powerhouse
-*   **Intelligence Dashboard**: Real-time analytics and insights into sales and user behavior.
-*   **Inventory Management**: Full control over product stock, variations, and categories.
-*   **Order Management**: Efficient workflow for processing, shipping, and fulfilling orders.
-*   **User Management**: Detailed customer profiles and activity logs.
-
-### 🤖 AI Integration
-*   **Smart Recommendations**: Analyzes user behavior to suggest products they'll love.
-*   **Automated Copy**: Generates engaging notification and marketing copy dynamically.
-*   **Chat Assistant**: (Coming Soon) 24/7 AI customer support assistant.
-
----
-
-## 💻 Tech Stack
-
-| Category | Technology | Usage |
-| :--- | :--- | :--- |
-| **Frontend** | React 19, Vite | Core application framework and build tool |
-| **Styling** | Tailwind CSS 4 | Utility-first styling and design system |
-| **Backend & DB** | Firebase (Auth, Firestore) | Authentication, Database, and Hosting |
-| **AI Engine** | Groq SDK (Llama Models) | AI logic for recommendations and text generation |
-| **Animations** | Framer Motion | Smooth, complex UI transitions and animations |
-| **Icons** | Lucide React | Modern, consistent icon set |
-| **PWA** | Vite PWA Plugin | Offline capabilities and installability |
-
----
-
-## 📱 Screens / Modules
-
-*   **Public**:
-    *   `Home`: Landing page with featured products and promotional banners.
-    *   `Shop`: Full product catalog with advanced filtering and sorting.
-    *   `ProductDetails`: Detailed view with reviews, related items, and add-to-cart.
-    *   `Login / Register`: Secure authentication flow.
-*   **Private (User)**:
-    *   `Cart`: Cart management and price estimation.
-    *   `Checkout`: Secure payment and address selection.
-    *   `Profile`: User settings, preferences, and loyalty stats.
-    *   `MyOrders`: Order history and detailed tracking.
-    *   `Wishlist`: Saved items for future purchase.
-*   **Admin**:
-    *   `Dashboard`: High-level metrics (Revenue, Orders, Active Users).
-    *   `Products`: CRUD operations for inventory.
-    *   `Orders`: Status updates and fulfillment tracking.
-
----
-
-## 🏗️ System Architecture
-
-The application follows a **Serverless Mobile-First Architecture**:
-
-1.  **Client**: A React SPA (Single Page Application) served via a high-performance CDN.
-2.  **PWA Layer**: Service Workers cache assets and API responses for offline access.
-3.  **Backend Services**: 
-    *   **Firebase Authentication**: Manages user identity and session security.
-    *   **Firestore**: NoSQL database for real-time data syncing (Products, Users, Orders).
-    *   **AI Service**: Edge functions calling Groq AI for compute-heavy intelligence tasks.
-
----
-
-## 📂 Project Folder Structure
-
-```
-sharma-store/
-├── public/              # Static assets (images, icons, manifest)
-├── src/
-│   ├── assets/          # Project-specific assets
-│   ├── components/      # Reusable UI components
-│   ├── context/         # Global state (Shop, Auth, Loyalty, Notification)
-│   ├── firebase/        # Firebase configuration and service initialization
-│   ├── page/            # Main route components (Home, Shop, Admin, etc.)
-│   ├── utils/           # Helper functions and constants
-│   ├── App.jsx          # Main application component with Routing
-│   └── main.jsx         # Entry point
-├── .env                 # Environment variables (Authentication & Keys)
-├── tailwind.config.js   # Tailwind CSS configuration
-└── vite.config.js       # Vite bundler configuration
-```
-
----
-
-## 🚀 Getting Started
-
-Follow these steps to set up the project locally.
+## Local setup
 
 ### Prerequisites
 
-*   **Node.js**: v18.0.0 or higher
-*   **npm**: v9.0.0 or higher
-*   **Git**: Latest version
+- Current Node.js LTS and npm
+- A Firebase web app with Authentication and Firestore enabled for full functionality
 
-### Installation
+### Install and run
 
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/your-username/sharma-store.git
-    cd sharma-store
-    ```
+```bash
+git clone https://github.com/mahale800/sharma-store.git
+cd sharma-store
+npm install
+Copy-Item .env.example .env
+npm run dev
+```
 
-2.  **Install dependencies**
-    ```bash
-    npm install
-    ```
+On macOS/Linux, use `cp .env.example .env` instead of `Copy-Item`.
 
-3.  **Configure Environment**
-    Create a `.env` file in the root directory (refer to [Environment Variables](#environment-variables-setup)).
+### Environment variables
 
-4.  **Run Locally**
-    ```bash
-    npm run dev
-    ```
-    Access the app at `http://localhost:5173`.
-
----
-
-## 🔑 Environment Variables Setup
-
-Create a `.env` file in the root of your project and add the following keys. 
-> **Note:** You will need your own Firebase and Groq API keys.
+The Firebase values are read from `.env` at build time:
 
 ```env
-# Firebase Configuration
-VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_API_KEY=your_api_key_here
 VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=your_project_id
 VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
-
-# AI Configuration
-VITE_GROQ_API_KEY=your_groq_api_key
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id_here
+VITE_FIREBASE_APP_ID=your_app_id_here
+VITE_FIREBASE_VAPID_KEY=your_vapid_key_here
 ```
 
----
+`VITE_OPENROUTER_API_KEY` is optional for the current AI helpers. Because `VITE_*` values are bundled into browser JavaScript, this key must not be treated as a server-side secret. Use a restricted development key only, or move the OpenRouter call behind an authenticated server-side function before production use.
 
-## 📦 Build and Deployment
-
-To create a production-ready build:
+## Quality checks
 
 ```bash
+npm run lint
 npm run build
 ```
 
-The output will be in the `dist/` directory. You can deploy this folder to any static hosting provider like **Netlify**, **Vercel**, or **Firebase Hosting**.
+The repository currently has no automated test suite. Exercise authentication, Firestore rules, checkout, admin authorization, PWA installation, and notification flows against a test Firebase project before deploying.
 
----
+## Deployment
 
-## 🛡️ Security Overview
+The included `vercel.json` configures Vite with `npm run build` and `dist` as the output directory. See [DEPLOYMENT.md](DEPLOYMENT.md) for the environment and Firebase setup checklist.
 
-*   **Authentication**: All sensitive routes (Checkout, Profile, Admin) are protected by `AuthGuard`.
-*   **Role-Based Access**: Admin routes are strictly gated and require specific user privileges.
-*   **Data Protection**: Firestore security rules ensure users can only access their own data.
-*   **Environment Safety**: Sensitive keys are kept in `.env` and excluded from Git.
+Do not claim a live demo until the deployment URL has been checked. The previously listed `sharma-store-one.vercel.app` URL returned HTTP 404 during the October 20, 2026 audit.
 
----
+## Project structure
 
-## ⚡ Performance Optimizations
+```text
+src/
+├── components/       # Shared UI, admin, dashboard, loyalty, and PWA components
+├── context/          # Auth, cart, shop, loyalty, notification, and wishlist state
+├── data/              # Fallback catalogue and shop profile data
+├── firebase/          # Firebase app and messaging setup
+├── hooks/             # Analytics, engagement, PWA, performance, and recommendation hooks
+├── layouts/           # Public, checkout, and admin layouts
+├── pages/             # Customer, checkout, and admin routes
+├── services/          # AI, notification, and WhatsApp integrations
+└── utils/             # Order state and shared helpers
+functions/index.js     # Firebase notification functions source
+firestore.rules        # Firestore access rules
+vercel.json            # Vercel build and SPA routing configuration
+```
 
-*   **Lazy Loading**: Routes and heavy components are code-split and loaded on demand.
-*   **Asset Optimization**: Images are optimized, and SVGs are used for icons.
-*   **PWA Caching**: Service workers cache critical assets for instant load times on repeat visits.
-*   **Efficient State**: React Context is optimized to minimize re-renders.
+## Security review notes
 
----
+- Firebase web configuration values are intended for client initialization; Firestore rules are the actual data boundary.
+- The current AI helper reads `VITE_OPENROUTER_API_KEY` in the browser. That exposes the key to visitors and should be replaced with a server-side proxy before production use.
+- The current Firestore rules allow unauthenticated reads of an order document by ID for guest tracking. That returns the full document, so sensitive order fields should be separated or guest tracking should move to a controlled server endpoint.
+- Callable notification functions should enforce authentication and administrator authorization before they can be used outside a local test project.
+- Never commit `.env`, Firebase service-account credentials, or unrestricted provider keys.
 
-## 🛣️ Future Roadmap
+## Contributing
 
-- [ ] **Voice Search Integration**: Voice-enabled product search.
-- [ ] **AR Try-On**: Augmented Reality for viewing products in 3D.
-- [ ] **Multi-Language Support**: i18n implementation for global access.
-- [ ] **Advanced Analytics**: Deeper integration with Google Analytics 4.
+Keep changes focused, run the quality checks above, and open a pull request with a short description of the user-visible and security impact.
 
----
+## License
 
-## 🤝 Contribution Guide
+This project is distributed under the [MIT License](LICENSE).
 
-Contributions are welcome! Please fork the repository and submit a Pull Request.
+## Author
 
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
+Yash Mahale — [GitHub profile](https://github.com/mahale800)
 
----
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
----
-
-## 🔧 Troubleshooting
-
-### App shows blank/white screen
-- Check browser console for errors
-- Verify Firebase credentials in `.env` are correct
-- Ensure environment variables are set in Vercel (for production)
-
-### Products not loading
-- Check Firestore security rules are deployed
-- Verify products collection exists in Firebase
-- Check browser console for permission errors
-
-### Authentication not working
-- Ensure Firebase Authentication is enabled in Firebase Console
-- Check that authorized domains include your deployment URL
-- Verify Google Sign-in provider is configured (if using)
-
-### Build errors
-- Clear `node_modules` and run `npm install` again
-- Delete `dist` folder before building
-- Check Node.js version (v18+ required)
-
-### PWA not working
-- Service workers require HTTPS (Vercel provides this)
-- Clear browser cache and reload
-- Check DevTools → Application → Service Workers
-
-For more detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md) and [FIX_SUMMARY.md](./FIX_SUMMARY.md).
-
----
-
-<p align="center">
-  Built with ❤️ by the <strong>Sharma Store Engineering Team</strong>
-</p>
